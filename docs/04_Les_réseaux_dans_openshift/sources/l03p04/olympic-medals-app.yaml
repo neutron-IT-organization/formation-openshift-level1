@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: olympic-medals-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: olympic-medals-app
+  template:
+    metadata:
+      labels:
+        app: olympic-medals-app
+    spec:
+      containers:
+        - name: olympic-medals-app
+          image: quay.io/neutron-it/olympic-medals-app:latest
+          ports:
+            - containerPort: 5000

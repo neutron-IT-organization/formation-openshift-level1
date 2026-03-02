@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: l03p02-app
+  labels:
+    app: l03p02-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: l03p02-quarkus-aap
+  template:
+    metadata:
+      labels:
+        app: l03p02-quarkus-aap
+    spec:
+      containers:
+        - name: quarkus-container
+          image: registry.access.redhat.com/ubi8/ubi:latest
+          command: ["/bin/bash"]
+          args:
+            ["-c", "echo hello from neutron IT; while true; do sleep 10; done"]

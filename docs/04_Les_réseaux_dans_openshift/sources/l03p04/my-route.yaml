@@ -1,0 +1,8 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: my-http-route
+spec:
+  to:
+    kind: Service
+    name: my-clusterip-service

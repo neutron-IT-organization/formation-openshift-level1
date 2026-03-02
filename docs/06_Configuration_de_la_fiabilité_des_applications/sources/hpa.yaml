@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-load-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpu-load-app
+  template:
+    metadata:
+      labels:
+        app: cpu-load-app
+    spec:
+      containers:
+        - name: php-apache
+          image: registry.access.redhat.com/ubi8/httpd-24:latest
+          resources:
+            requests:
+              cpu: 20m
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpu-load-app
+spec:
+  selector:
+    app: cpu-load-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: cpu-load-app
+spec:
+  to:
+    kind: Service
+    name: cpu-load-app
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge

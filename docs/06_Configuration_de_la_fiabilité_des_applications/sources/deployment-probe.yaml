@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: probes-app
+  template:
+    metadata:
+      labels:
+        app: probes-app
+    spec:
+      containers:
+      - name: probes-app
+        image: quay.io/neutron-it/probes-app:latest
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 1
+          failureThreshold: 3

@@ -1,0 +1,10 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: my-edge-route
+spec:
+  to:
+    kind: Service
+    name: my-clusterip-service
+  tls:
+    termination: edge

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: welcome-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: welcome-app
+  template:
+    metadata:
+      labels:
+        app: welcome-app
+    spec:
+      containers:
+        - name: welcome-app-container
+          image: quay.io/neutron-it/welcome-app:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: WELCOME_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: welcome-config
+                  key: welcome_message
+            - name: APP_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: welcome-config
+                  key: app_mode
+            - name: API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: welcome-secret
+                  key: api_token

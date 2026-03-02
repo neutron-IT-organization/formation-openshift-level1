@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      volumes:
+        - name: postgres-storage
+          emptyDir: {} # Utilisation de emptyDir pour le stockage temporaire
+      containers:
+        - name: postgres
+          image: registry.redhat.io/rhel8/postgresql-12:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRESQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: POSTGRES_USER
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRESQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: POSTGRES_DB
+            - name: POSTGRESQL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: POSTGRES_PORT
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/pgsql/data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+apiVersion: v1
+data:
+  POSTGRES_DB: dGFzaw==
+  POSTGRES_PASSWORD: bXlzZWNyZXRwYXNzd29yZA==
+  POSTGRES_PORT: NTQzMg==
+  POSTGRES_USER: dGFzay11c2Vy
+kind: Secret
+metadata:
+  name: postgres-credentials
+type: Opaque
