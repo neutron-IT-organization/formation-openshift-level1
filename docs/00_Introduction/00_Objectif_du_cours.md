@@ -2,7 +2,8 @@
 
 L'objectif de ce cours est de vous fournir une compréhension complète et pratique de l'utilisation  d'OpenShift pour déployer, gérer et mettre à l'échelle des applications conteneurisées.
 
-## À qui s'adresse ce cours ?
+## À qui s'adresse ce cours 
+
 
 Ce cours s'adresse à :
 * **Les administrateurs système** : qui cherchent à automatiser la gestion des déploiements et des infrastructures.
