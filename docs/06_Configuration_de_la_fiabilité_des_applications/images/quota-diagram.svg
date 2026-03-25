@@ -1,0 +1,65 @@
+<svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="780" height="340" fill="#F8F9FA" rx="12"/>
+  <text x="390" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#1A1A2E">ResourceQuota : limiter les ressources d'un namespace</text>
+
+  <!-- Namespace container -->
+  <rect x="20" y="50" width="740" height="270" rx="12" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="390" y="73" text-anchor="middle" font-size="13" font-weight="bold" fill="#6A1B9A">Namespace : prague-user-ns</text>
+
+  <!-- Quota ceiling bar -->
+  <rect x="40" y="83" width="700" height="28" rx="6" fill="#7B1FA2"/>
+  <text x="390" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="white">ResourceQuota — requests.cpu: 900m (maximum autorisé)</text>
+
+  <!-- Pod 1 - running -->
+  <rect x="60" y="125" width="140" height="130" rx="8" fill="#C8E6C9" stroke="#388E3C" stroke-width="2"/>
+  <text x="130" y="150" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B5E20">Pod 1 ✅</text>
+  <text x="130" y="168" text-anchor="middle" font-size="11" fill="#2E7D32">Running</text>
+  <!-- CPU bar -->
+  <rect x="75" y="180" width="110" height="18" rx="4" fill="#EEE"/>
+  <rect x="75" y="180" width="37" height="18" rx="4" fill="#4CAF50"/>
+  <text x="130" y="194" text-anchor="middle" font-size="10" fill="#333">CPU: 300m</text>
+  <rect x="75" y="203" width="110" height="18" rx="4" fill="#EEE"/>
+  <rect x="75" y="203" width="37" height="18" rx="4" fill="#4CAF50"/>
+  <text x="130" y="217" text-anchor="middle" font-size="10" fill="#333">RAM: 128Mi</text>
+  <text x="130" y="243" text-anchor="middle" font-size="10" fill="#1B5E20">test-limite-aaa</text>
+
+  <!-- Pod 2 - running -->
+  <rect x="220" y="125" width="140" height="130" rx="8" fill="#C8E6C9" stroke="#388E3C" stroke-width="2"/>
+  <text x="290" y="150" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B5E20">Pod 2 ✅</text>
+  <text x="290" y="168" text-anchor="middle" font-size="11" fill="#2E7D32">Running</text>
+  <rect x="235" y="180" width="110" height="18" rx="4" fill="#EEE"/>
+  <rect x="235" y="180" width="37" height="18" rx="4" fill="#4CAF50"/>
+  <text x="290" y="194" text-anchor="middle" font-size="10" fill="#333">CPU: 300m</text>
+  <rect x="235" y="203" width="110" height="18" rx="4" fill="#EEE"/>
+  <rect x="235" y="203" width="37" height="18" rx="4" fill="#4CAF50"/>
+  <text x="290" y="217" text-anchor="middle" font-size="10" fill="#333">RAM: 128Mi</text>
+  <text x="290" y="243" text-anchor="middle" font-size="10" fill="#1B5E20">test-limite-bbb</text>
+
+  <!-- Pod 3 - running -->
+  <rect x="380" y="125" width="140" height="130" rx="8" fill="#C8E6C9" stroke="#388E3C" stroke-width="2"/>
+  <text x="450" y="150" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B5E20">Pod 3 ✅</text>
+  <text x="450" y="168" text-anchor="middle" font-size="11" fill="#2E7D32">Running</text>
+  <rect x="395" y="180" width="110" height="18" rx="4" fill="#EEE"/>
+  <rect x="395" y="180" width="37" height="18" rx="4" fill="#4CAF50"/>
+  <text x="450" y="194" text-anchor="middle" font-size="10" fill="#333">CPU: 300m</text>
+  <rect x="395" y="203" width="110" height="18" rx="4" fill="#EEE"/>
+  <rect x="395" y="203" width="37" height="18" rx="4" fill="#4CAF50"/>
+  <text x="450" y="217" text-anchor="middle" font-size="10" fill="#333">RAM: 128Mi</text>
+  <text x="450" y="243" text-anchor="middle" font-size="10" fill="#1B5E20">test-limite-ccc</text>
+
+  <!-- Usage bar total -->
+  <text x="130" y="278" text-anchor="middle" font-size="10" fill="#333">Utilisé: 900m / 900m (100%)</text>
+  <rect x="55" y="282" width="480" height="16" rx="4" fill="#E57373"/>
+  <rect x="55" y="282" width="480" height="16" rx="4" fill="#EF5350"/>
+  <text x="295" y="294" text-anchor="middle" font-size="10" fill="white" font-weight="bold">QUOTA ATTEINT — 900m / 900m</text>
+
+  <!-- Pod 4 blocked -->
+  <rect x="540" y="125" width="140" height="130" rx="8" fill="#FFCDD2" stroke="#E53935" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="610" y="150" text-anchor="middle" font-size="12" font-weight="bold" fill="#B71C1C">Pod 4 ❌</text>
+  <text x="610" y="168" text-anchor="middle" font-size="11" fill="#C62828">FailedCreate</text>
+  <rect x="555" y="180" width="110" height="18" rx="4" fill="#FFCDD2"/>
+  <text x="610" y="194" text-anchor="middle" font-size="10" fill="#C62828">CPU: 300m requis</text>
+  <text x="610" y="215" text-anchor="middle" font-size="11" fill="#B71C1C" font-weight="bold">Bloqué par quota !</text>
+  <text x="610" y="235" text-anchor="middle" font-size="10" fill="#EF5350">exceeded quota:</text>
+  <text x="610" y="250" text-anchor="middle" font-size="10" fill="#EF5350">requests.cpu=900m</text>
+</svg>

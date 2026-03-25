@@ -1,0 +1,75 @@
+<svg viewBox="0 0 780 320" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="780" height="320" fill="#F8F9FA" rx="12"/>
+  <text x="390" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#1A1A2E">Stockage éphémère vs Stockage persistant</text>
+
+  <!-- LEFT: emptyDir scenario -->
+  <rect x="20" y="55" width="360" height="250" rx="10" fill="#FFEBEE" stroke="#EF5350" stroke-width="2"/>
+  <text x="200" y="82" text-anchor="middle" font-size="15" font-weight="bold" fill="#B71C1C">❌ emptyDir (éphémère)</text>
+
+  <!-- Pod 1 (alive) -->
+  <rect x="50" y="100" width="130" height="80" rx="8" fill="#EF9A9A" stroke="#C62828" stroke-width="1.5"/>
+  <text x="115" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#B71C1C">Pod</text>
+  <text x="115" y="145" text-anchor="middle" font-size="10" fill="#C62828">postgres-abc</text>
+  <rect x="65" y="157" width="100" height="18" rx="4" fill="#FFCDD2"/>
+  <text x="115" y="170" text-anchor="middle" font-size="10" fill="#B71C1C">emptyDir 📁</text>
+
+  <!-- Data in emptyDir -->
+  <text x="115" y="200" text-anchor="middle" font-size="10" fill="#333">Données : task1, task2</text>
+
+  <!-- Delete arrow -->
+  <text x="215" y="148" text-anchor="middle" font-size="24">💥</text>
+  <text x="215" y="165" text-anchor="middle" font-size="10" fill="#C62828">oc delete pod</text>
+
+  <!-- Pod 2 (new, empty) -->
+  <rect x="250" y="100" width="110" height="80" rx="8" fill="#EF9A9A" stroke="#C62828" stroke-width="1.5"/>
+  <text x="305" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#B71C1C">Nouveau Pod</text>
+  <text x="305" y="145" text-anchor="middle" font-size="10" fill="#C62828">postgres-xyz</text>
+  <rect x="265" y="157" width="80" height="18" rx="4" fill="#FFCDD2"/>
+  <text x="305" y="170" text-anchor="middle" font-size="10" fill="#B71C1C">emptyDir 📁</text>
+
+  <!-- Empty data -->
+  <text x="305" y="200" text-anchor="middle" font-size="10" fill="#C62828">Données : VIDE !</text>
+
+  <!-- Result -->
+  <rect x="50" y="218" width="310" height="70" rx="8" fill="#FFCDD2" stroke="#EF5350" stroke-width="1.5"/>
+  <text x="205" y="245" text-anchor="middle" font-size="14" font-weight="bold" fill="#B71C1C">💀 Données perdues !</text>
+  <text x="205" y="262" text-anchor="middle" font-size="11" fill="#C62828">La base de données est vide</text>
+  <text x="205" y="277" text-anchor="middle" font-size="11" fill="#C62828">après redémarrage du pod</text>
+
+  <!-- RIGHT: PVC scenario -->
+  <rect x="400" y="55" width="360" height="250" rx="10" fill="#E8F5E9" stroke="#43A047" stroke-width="2"/>
+  <text x="580" y="82" text-anchor="middle" font-size="15" font-weight="bold" fill="#1B5E20">✅ PVC (persistant)</text>
+
+  <!-- Pod 1 alive -->
+  <rect x="420" y="100" width="130" height="80" rx="8" fill="#A5D6A7" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="485" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B5E20">Pod</text>
+  <text x="485" y="145" text-anchor="middle" font-size="10" fill="#2E7D32">postgres-abc</text>
+  <rect x="435" y="157" width="100" height="18" rx="4" fill="#C8E6C9"/>
+  <text x="485" y="170" text-anchor="middle" font-size="10" fill="#1B5E20">PVC monté 💾</text>
+
+  <text x="485" y="200" text-anchor="middle" font-size="10" fill="#333">Données : task1, task2</text>
+
+  <!-- Delete arrow -->
+  <text x="590" y="148" text-anchor="middle" font-size="24">💥</text>
+  <text x="590" y="165" text-anchor="middle" font-size="10" fill="#388E3C">oc delete pod</text>
+
+  <!-- Pod 2 new -->
+  <rect x="620" y="100" width="110" height="80" rx="8" fill="#A5D6A7" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="675" y="128" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B5E20">Nouveau Pod</text>
+  <text x="675" y="145" text-anchor="middle" font-size="10" fill="#2E7D32">postgres-xyz</text>
+  <rect x="635" y="157" width="80" height="18" rx="4" fill="#C8E6C9"/>
+  <text x="675" y="170" text-anchor="middle" font-size="10" fill="#1B5E20">PVC monté 💾</text>
+
+  <text x="675" y="200" text-anchor="middle" font-size="10" fill="#2E7D32">Données : task1, task2</text>
+
+  <!-- PVC shared block (below both pods) -->
+  <rect x="435" y="95" width="270" height="10" rx="3" fill="none" stroke="none"/>
+  <!-- Line from pod1 to PVC -->
+  <line x1="485" y1="180" x1="485" y1="195" stroke="#1B5E20" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Result -->
+  <rect x="420" y="218" width="310" height="70" rx="8" fill="#C8E6C9" stroke="#43A047" stroke-width="1.5"/>
+  <text x="575" y="245" text-anchor="middle" font-size="14" font-weight="bold" fill="#1B5E20">✅ Données préservées !</text>
+  <text x="575" y="262" text-anchor="middle" font-size="11" fill="#2E7D32">Le PVC est indépendant du pod</text>
+  <text x="575" y="277" text-anchor="middle" font-size="11" fill="#2E7D32">Les données survivent au redémarrage</text>
+</svg>

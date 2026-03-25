@@ -1,0 +1,74 @@
+<svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="800" height="340" fill="#F8F9FA" rx="12"/>
+  <text x="400" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#1A1A2E">Liveness Probe vs Readiness Probe</text>
+
+  <!-- Liveness Probe (LEFT) -->
+  <rect x="20" y="50" width="370" height="270" rx="10" fill="#E8EAF6" stroke="#3F51B5" stroke-width="2"/>
+  <text x="205" y="78" text-anchor="middle" font-size="15" font-weight="bold" fill="#1A237E">🔴 Liveness Probe</text>
+  <text x="205" y="97" text-anchor="middle" font-size="11" fill="#283593">"L'application est-elle encore vivante ?"</text>
+  <text x="205" y="113" text-anchor="middle" font-size="11" fill="#3949AB">GET /healthz → 200 OK ?</text>
+
+  <!-- Liveness flow -->
+  <rect x="55" y="130" width="130" height="45" rx="8" fill="#3F51B5"/>
+  <text x="120" y="150" text-anchor="middle" font-size="12" fill="white" font-weight="bold">Pod</text>
+  <text x="120" y="166" text-anchor="middle" font-size="10" fill="#C5CAE9">en cours d'exécution</text>
+
+  <line x1="185" y1="153" x2="250" y2="153" stroke="#3F51B5" stroke-width="2" marker-end="url(#arrowBlue4)"/>
+  <text x="218" y="145" text-anchor="middle" font-size="10" fill="#1A237E">probe</text>
+
+  <rect x="250" y="130" width="110" height="45" rx="8" fill="#FF5722"/>
+  <text x="305" y="150" text-anchor="middle" font-size="11" fill="white" font-weight="bold">GET /healthz</text>
+  <text x="305" y="166" text-anchor="middle" font-size="10" fill="#FFCCBC">→ 503 ❌</text>
+
+  <!-- Failure threshold -->
+  <text x="205" y="205" text-anchor="middle" font-size="11" fill="#555">3 échecs consécutifs (failureThreshold)</text>
+  <line x1="205" y1="210" x2="205" y2="230" stroke="#EF5350" stroke-width="2" marker-end="url(#arrowRed4)"/>
+
+  <rect x="100" y="230" width="210" height="45" rx="8" fill="#EF5350" stroke="#B71C1C" stroke-width="1.5"/>
+  <text x="205" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="white">🔄 Redémarrage du conteneur</text>
+  <text x="205" y="267" text-anchor="middle" font-size="10" fill="#FFCDD2">Kubernetes tue et redémarre le pod</text>
+
+  <!-- Readiness Probe (RIGHT) -->
+  <rect x="410" y="50" width="370" height="270" rx="10" fill="#E8F5E9" stroke="#43A047" stroke-width="2"/>
+  <text x="595" y="78" text-anchor="middle" font-size="15" font-weight="bold" fill="#1B5E20">🟡 Readiness Probe</text>
+  <text x="595" y="97" text-anchor="middle" font-size="11" fill="#2E7D32">"L'application est-elle prête pour du trafic ?"</text>
+  <text x="595" y="113" text-anchor="middle" font-size="11" fill="#388E3C">GET /readyz → 200 OK ?</text>
+
+  <!-- Readiness flow -->
+  <rect x="440" y="130" width="130" height="45" rx="8" fill="#43A047"/>
+  <text x="505" y="150" text-anchor="middle" font-size="12" fill="white" font-weight="bold">Pod</text>
+  <text x="505" y="166" text-anchor="middle" font-size="10" fill="#C8E6C9">en cours d'exécution</text>
+
+  <line x1="570" y1="153" x2="635" y2="153" stroke="#43A047" stroke-width="2" marker-end="url(#arrowGreen4)"/>
+  <text x="602" y="145" text-anchor="middle" font-size="10" fill="#1B5E20">probe</text>
+
+  <rect x="635" y="130" width="110" height="45" rx="8" fill="#FF9800"/>
+  <text x="690" y="150" text-anchor="middle" font-size="11" fill="white" font-weight="bold">GET /readyz</text>
+  <text x="690" y="166" text-anchor="middle" font-size="10" fill="#FFF3E0">→ 503 ⏳</text>
+
+  <!-- Readiness consequence -->
+  <text x="595" y="205" text-anchor="middle" font-size="11" fill="#555">3 échecs consécutifs</text>
+  <line x1="595" y1="210" x2="595" y2="230" stroke="#FF9800" stroke-width="2" marker-end="url(#arrowOrange4)"/>
+
+  <rect x="460" y="230" width="270" height="45" rx="8" fill="#FF9800" stroke="#E65100" stroke-width="1.5"/>
+  <text x="595" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="white">⛔ Retiré du Service</text>
+  <text x="595" y="267" text-anchor="middle" font-size="10" fill="#FFF3E0">Plus de trafic — le pod n'est PAS redémarré</text>
+
+  <!-- Bottom comparison -->
+  <rect x="20" y="300" width="760" height="0" rx="0" fill="none"/>
+
+  <defs>
+    <marker id="arrowBlue4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3F51B5"/>
+    </marker>
+    <marker id="arrowRed4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#EF5350"/>
+    </marker>
+    <marker id="arrowGreen4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#43A047"/>
+    </marker>
+    <marker id="arrowOrange4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#FF9800"/>
+    </marker>
+  </defs>
+</svg>
