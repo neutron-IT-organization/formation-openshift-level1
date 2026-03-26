@@ -2,7 +2,7 @@
 
 ## Ce que vous allez apprendre
 
-Cet exercice vous guide pas à pas dans votre **première interaction** avec la console web d'OpenShift. Vous allez découvrir comment créer un espace de travail (un *projet*), y déployer une application à partir d'une image de conteneur, puis observer les ressources que Kubernetes a créées pour vous. Chaque étape explique **pourquoi** vous faites telle ou telle action, afin que vous compreniez les concepts sous-jacents et pas seulement la marche à suivre.
+Cet exercice vous guide pas à pas dans votre **première interaction** avec la console web d'OpenShift. Vous allez découvrir comment créer un espace de travail (un *projet*), naviguer dans la perspective Administrator, y déployer une application, puis observer et gérer les ressources que Kubernetes a créées pour vous. Chaque étape explique **pourquoi** vous faites telle ou telle action, afin que vous compreniez les concepts sous-jacents et pas seulement la marche à suivre.
 
 Ne vous inquiétez pas si certains termes sont nouveaux : ils seront tous expliqués au fil de l'exercice.
 
@@ -15,12 +15,12 @@ Ne vous inquiétez pas si certains termes sont nouveaux : ils seront tous expliq
 A la fin de cet exercice, vous serez capable de :
 
 - [ ] Vous connecter à la console web d'OpenShift
+- [ ] Naviguer dans la perspective **Administrator**
 - [ ] Créer un **projet** (espace de travail isolé)
-- [ ] Déployer une application à partir d'une **image de conteneur**
-- [ ] Accéder à l'application depuis votre navigateur grâce à une **Route**
-- [ ] Basculer entre les perspectives **Developer** et **Administrator**
-- [ ] Identifier les ressources Kubernetes créées automatiquement (Pod, Deployment, Service, Route)
-- [ ] Supprimer proprement un projet et toutes ses ressources
+- [ ] Déployer une application à partir d'un manifeste YAML via l'éditeur de la console
+- [ ] Exposer l'application via un **Service** et une **Route**
+- [ ] Identifier les ressources Kubernetes créées (Pod, Deployment, Service, Route)
+- [ ] Supprimer proprement les ressources depuis la console
 
 ---
 
@@ -61,24 +61,15 @@ Ajoutez cette URL à vos favoris, vous en aurez besoin tout au long de la format
 Le nom d'utilisateur est composé du **nom de votre ville en minuscules**, suivi de `-user`. Vérifiez bien l'orthographe. Si la connexion échoue, vérifiez que vous avez bien sélectionné "Neutron Guest Identity Management" et non un autre fournisseur d'identité.
 :::
 
-### 1.3 — Découvrir l'interface
+### 1.2 — Découvrir l'interface
 
 Une fois connecté, vous arrivez sur la page d'accueil de la console. Prenez quelques secondes pour repérer les éléments suivants :
 
-- **Le menu de gauche** : il permet d'accéder aux différentes sections (Topology, Builds, Monitoring...).
-- **Le sélecteur de perspective** (en haut à gauche) : il permet de basculer entre la vue **Developer** et la vue **Administrator**.
+- **Le menu de gauche** : il permet d'accéder aux différentes sections (Workloads, Networking, Storage, Observe, Administration…).
+- **Le sélecteur de projet** (en haut à gauche) : il permet de choisir dans quel projet vous travaillez.
 
-![Sélecteur de perspective](/img/screenshots/perspective_switcher.png)
-
-- **Le sélecteur de projet** (en haut à gauche, sous la perspective) : il permet de choisir dans quel projet vous travaillez.
-
-![Sélecteur de projet](/img/screenshots/topology_empty.png)
-
-:::info Perspectives Developer vs Administrator
-- La perspective **Developer** est optimisée pour le développement : elle met en avant la topologie des applications, les builds et les pipelines.
-- La perspective **Administrator** montre une vue plus détaillée des ressources Kubernetes (Pods, Services, Deployments, etc.) et donne accès aux paramètres du cluster.
-
-Vous utiliserez les deux au cours de cet exercice.
+:::info Console unifiée — perspective Administrator
+Depuis OpenShift 4.17, la console ne dispose plus que d'une seule perspective : **Administrator**. Cette perspective unifiée couvre aussi bien les besoins des administrateurs cluster que ceux des développeurs qui déploient et gèrent des applications.
 :::
 
 ### Vérification
@@ -89,28 +80,39 @@ Vous avez réussi cette étape si :
 
 ---
 
-## Étape 2 : Créer un projet
+## Étape 2 : Navigation dans la console Administrator
 
-**Pourquoi ?** Dans OpenShift, un **projet** est un espace de travail isolé. Il regroupe toutes les ressources liées à une application ou un environnement. Chaque projet a ses propres droits d'accès, ses quotas de ressources et son réseau interne. C'est l'équivalent d'un *namespace* Kubernetes avec des fonctionnalités supplémentaires.
+**Pourquoi ?** Avant de déployer une application, il est important de comprendre comment la console est organisée. Chaque section du menu correspond à un domaine de gestion du cluster.
+
+### 2.1 — Explorer les sections du menu
+
+Parcourez les sections suivantes dans le menu latéral gauche et observez leur contenu :
+
+| Section | Contenu principal |
+|---------|------------------|
+| **Home** | Tableau de bord du cluster, projets, événements |
+| **Workloads** | Pods, Deployments, ReplicaSets, StatefulSets, Jobs |
+| **Networking** | Services, Routes, Ingress, NetworkPolicies |
+| **Storage** | PersistentVolumes, PersistentVolumeClaims, StorageClasses |
+| **Observe** | Métriques, alertes, logs |
+| **Administration** | Namespaces, quotas, paramètres du cluster |
+
+### 2.2 — Créer un projet
+
+Dans OpenShift, un **projet** est un espace de travail isolé. Il regroupe toutes les ressources liées à une application ou un environnement. C'est l'équivalent d'un *namespace* Kubernetes avec des fonctionnalités supplémentaires.
 
 :::note Analogie
 Pensez au projet comme à un **dossier** sur votre ordinateur : il vous permet d'organiser et d'isoler vos fichiers (ici, vos ressources Kubernetes) des autres utilisateurs.
 :::
 
-### 2.1 — Basculer en perspective Developer
-
-1. En haut à gauche de la console, cliquez sur le **sélecteur de perspective**.
-2. Choisissez **"Developer"**.
-
-### 2.2 — Créer le projet
-
-3. Cliquez sur le **sélecteur de projet** (juste en dessous), puis sur **"Create Project"**.
+1. Dans le menu de gauche, allez dans **"Home" > "Projects"**.
+2. Cliquez sur **"Create Project"** en haut à droite.
 
 ![Create Project](/img/screenshots/create_project_form.png)
 
-4. Remplissez le formulaire :
+3. Remplissez le formulaire :
    - **Name** : `console-exploration-<CITY>` (par exemple : `console-exploration-prague`)
-   - **Display Name** : `Exploration Console` (optionnel, pour un affichage plus lisible)
+   - **Display Name** : `Exploration Console` (optionnel)
    - **Description** : `Mon premier projet OpenShift` (optionnel)
 
 :::warning Règles de nommage
@@ -123,95 +125,136 @@ Exemple valide : `console-exploration-prague`
 Exemple invalide : `Console_Exploration_Prague`
 :::
 
-5. Cliquez sur **"Create"**.
+4. Cliquez sur **"Create"**.
 
 ### Vérification
 
 Vous avez réussi cette étape si :
 - Le nom de votre projet apparaît dans le sélecteur de projet en haut à gauche
-- Vous êtes dans la perspective **Developer**
-- La page **Topology** s'affiche (elle est vide pour l'instant, c'est normal)
+- Vous êtes dans la perspective **Administrator**
 
 ---
 
-## Étape 3 : Déployer une application à partir d'une image de conteneur
+## Étape 3 : Déployer une application depuis la console
 
-**Pourquoi ?** L'objectif principal d'OpenShift est d'exécuter des applications conteneurisées. Une **image de conteneur** est un package qui contient tout ce dont une application a besoin pour fonctionner : le code, les bibliothèques, les dépendances et la configuration. Ici, vous allez utiliser une image toute prête (`hello-openshift`) qui affiche un simple message de bienvenue.
+**Pourquoi ?** L'objectif principal d'OpenShift est d'exécuter des applications conteneurisées. Vous allez déployer l'application `hello-openshift` directement depuis l'éditeur YAML intégré à la console, ce qui vous familiarisera avec la structure des ressources Kubernetes.
 
 :::info Qu'est-ce qu'une image de conteneur ?
-Une image de conteneur est un **modèle en lecture seule** qui sert à créer des conteneurs. C'est un peu comme un fichier ISO pour une machine virtuelle, mais beaucoup plus léger. L'image `hello-openshift` que nous utilisons fait seulement quelques mégaoctets.
+Une image de conteneur est un **modèle en lecture seule** qui sert à créer des conteneurs. C'est un peu comme un fichier ISO pour une machine virtuelle, mais beaucoup plus léger. L'image `hello-openshift` que nous utilisons fait seulement quelques mégaoctets et affiche un simple message de bienvenue.
 :::
 
-### 3.1 — Accéder au menu d'ajout
+### 3.1 — Accéder à la création de Deployment
 
-1. Dans la perspective **Developer**, cliquez sur **"+Add"** dans le menu de gauche.
-2. Vous voyez plusieurs méthodes pour ajouter une application. Sélectionnez **"Container images"**.
+1. Dans le menu de gauche, allez dans **"Workloads" > "Deployments"**.
+2. Vérifiez que le projet sélectionné est bien `console-exploration-<CITY>`.
+3. Cliquez sur **"Create Deployment"** en haut à droite.
+4. La console ouvre un **éditeur YAML** avec un modèle de déploiement pré-rempli.
 
-![Container images](/img/screenshots/add_page.png)
+![Création d'un Deployment](./images/console-create-deployment.svg)
 
-### 3.2 — Configurer le déploiement
+### 3.2 — Saisir le manifeste YAML
 
-3. Dans le champ **"Image name from external registry"**, saisissez :
+5. Remplacez le contenu de l'éditeur par le YAML suivant (adaptez `<CITY>` à votre ville) :
 
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-openshift
+  namespace: console-exploration-<CITY>
+  labels:
+    app: hello-openshift
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-openshift
+  template:
+    metadata:
+      labels:
+        app: hello-openshift
+    spec:
+      containers:
+      - name: hello-openshift
+        image: quay.io/openshift/origin-hello-openshift:latest
+        ports:
+        - containerPort: 8080
 ```
-docker.io/openshift/hello-openshift
-```
-
-:::tip Que signifie cette adresse ?
-- `docker.io` : le registre d'images (Docker Hub, le plus connu)
-- `openshift` : le compte/organisation qui publie l'image
-- `hello-openshift` : le nom de l'image
-
-C'est un peu comme une URL qui pointe vers un fichier téléchargeable.
-:::
-
-4. Attendez quelques secondes qu'OpenShift valide l'image (un indicateur de chargement apparaît).
-5. Examinez les valeurs qui ont été remplies automatiquement :
-   - **Application name** : le nom logique du groupe d'application
-   - **Name** : `hello-openshift` (le nom de votre déploiement)
-   - **Target port** : le port sur lequel l'application écoute (détecté automatiquement)
-   - **Create a Route** : coché par défaut (c'est ce qui rendra votre application accessible depuis un navigateur)
-
-6. Laissez toutes les valeurs par défaut et cliquez sur **"Create"** en bas de la page.
-
-![Create application](/img/screenshots/container_images_form.png)
 
 :::note Que se passe-t-il en coulisses ?
-En cliquant sur "Create", OpenShift crée automatiquement **plusieurs ressources Kubernetes** pour vous :
-1. Un **Deployment** : définit comment exécuter l'application (quelle image, combien de réplicas...)
-2. Un **Pod** : l'instance en cours d'exécution de votre conteneur
-3. Un **Service** : un point d'accès réseau interne vers votre application
-4. Une **Route** : expose le Service à l'extérieur du cluster, pour le rendre accessible via un navigateur
-
-Vous inspecterez toutes ces ressources à l'étape 5.
+En cliquant sur "Create", OpenShift crée un **Deployment** qui décrit comment exécuter l'application. Kubernetes crée ensuite automatiquement un **ReplicaSet** et un **Pod** pour faire tourner le conteneur.
 :::
+
+6. Cliquez sur **"Create"** en bas de la page.
 
 ### Vérification
 
 Vous avez réussi cette étape si :
-- Vous êtes redirigé vers la page **Topology**
-- Un cercle bleu apparaît, représentant votre déploiement `hello-openshift`
-- Le cercle devient bleu foncé (le Pod est en cours d'exécution)
+- La console affiche la page de détails du Deployment `hello-openshift`
+- Le statut indique **1 of 1 pods** disponible après quelques secondes
 
 ---
 
-## Étape 4 : Accéder à l'application via la Route
+## Étape 4 : Exposer l'application via un Service et une Route
 
-**Pourquoi ?** Une **Route** est une ressource propre à OpenShift qui expose votre application sur une URL publique. Sans Route, votre application ne serait accessible qu'à l'intérieur du cluster. C'est le mécanisme qui fait le lien entre le monde extérieur et votre conteneur.
+**Pourquoi ?** Un Deployment fait tourner des pods, mais ceux-ci ne sont pas accessibles de l'extérieur sans un **Service** (point d'accès réseau interne) et une **Route** (URL publique). Vous allez créer ces deux ressources depuis la console.
 
-### 4.1 — Trouver la Route dans la Topology
+### 4.1 — Créer un Service
 
-1. Sur la page **Topology**, repérez le cercle représentant `hello-openshift`.
-2. Cliquez dessus pour ouvrir le **panneau de détails** à droite.
+1. Dans le menu de gauche, allez dans **"Networking" > "Services"**.
+2. Cliquez sur **"Create Service"** en haut à droite.
+3. Remplacez le contenu de l'éditeur YAML par :
 
-![Topology view](/img/screenshots/topology_active.png)
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-openshift
+  namespace: console-exploration-<CITY>
+spec:
+  selector:
+    app: hello-openshift
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+```
 
-### 4.2 — Ouvrir l'application
+4. Cliquez sur **"Create"**.
 
-3. Dans le panneau de détails, cherchez la section **"Routes"**.
-4. Cliquez sur l'URL affichée (elle ressemble à `http://hello-openshift-console-exploration-<CITY>.apps.neutron-sno-office.neutron-it.fr`).
+:::note Rôle du Service
+Le **Service** utilise le champ `selector` pour trouver les pods correspondants (ceux qui ont le label `app: hello-openshift`). Il leur fournit une adresse réseau stable, indépendante des redémarrages de pods.
+:::
 
-![Get route](/img/screenshots/topology_sidebar_resources.png)
+### 4.2 — Créer une Route
+
+5. Dans le menu de gauche, allez dans **"Networking" > "Routes"**.
+6. Cliquez sur **"Create Route"** en haut à droite.
+7. Remplissez le formulaire :
+   - **Name** : `hello-openshift`
+   - **Service** : sélectionnez `hello-openshift`
+   - **Target port** : `8080 -> 8080 (TCP)`
+   - Laissez les autres options par défaut (pas de TLS pour cet exercice)
+8. Cliquez sur **"Create"**.
+
+### Vérification
+
+Vous avez réussi cette étape si :
+- Le Service `hello-openshift` est visible dans **Networking > Services**
+- La Route `hello-openshift` est visible dans **Networking > Routes**
+- La Route affiche une URL dans la colonne **Location**
+
+---
+
+## Étape 5 : Vérifier que l'application est accessible
+
+**Pourquoi ?** Une Route expose votre application via une URL publique. En accédant à cette URL, vous vérifiez que toute la chaîne fonctionne : Deployment → Pod → Service → Route.
+
+### 5.1 — Accéder à l'application
+
+1. Dans **"Networking" > "Routes"**, repérez la route `hello-openshift`.
+2. Cliquez sur l'URL affichée dans la colonne **Location** (elle ressemble à `http://hello-openshift-console-exploration-<CITY>.apps.neutron-sno-office.neutron-it.fr`).
 
 ```
 Sortie attendue :
@@ -221,126 +264,33 @@ Un nouvel onglet s'ouvre dans votre navigateur avec le message :
 Hello OpenShift!
 ```
 
-![Result](./images/result_hello_world.png)
+### 5.2 — Inspecter les ressources depuis la console
 
-:::tip Astuce
-Vous pouvez aussi accéder à l'application en cliquant sur la **petite icône en forme de flèche** dans le coin supérieur droit du cercle sur la vue Topology. C'est un raccourci vers la Route.
+3. Dans **"Workloads" > "Pods"**, vérifiez que le pod est en statut **Running** avec **Ready 1/1**.
+4. Cliquez sur le nom du pod pour explorer ses détails : onglets **Logs**, **Events**, **Terminal**.
+
+:::tip Explorer un Pod
+L'onglet **Logs** affiche la sortie standard du conteneur en temps réel. L'onglet **Terminal** vous donne un accès shell direct dans le conteneur — très utile pour le débogage.
 :::
+
+```
+Sortie attendue (Workloads > Pods) :
+───────────────────────────────────
+NAME                                READY   STATUS    RESTARTS   AGE
+hello-openshift-xxxxxxxxx-xxxxx     1/1     Running   0          2m
+```
 
 ### Vérification
 
 Vous avez réussi cette étape si :
 - Vous voyez le message **"Hello OpenShift!"** dans votre navigateur
-- L'URL dans la barre d'adresse contient le nom de votre projet
+- Le pod est en statut **Running** dans la console
 
 ---
 
-## Étape 5 : Inspecter les ressources en vue Administrator
+## Étape 6 : Supprimer les ressources depuis la console
 
-**Pourquoi ?** Quand vous avez cliqué sur "Create" à l'étape 3, OpenShift a créé plusieurs ressources Kubernetes en coulisses. La perspective **Administrator** vous permet de les voir en détail. Comprendre ces ressources est fondamental pour la suite de la formation.
-
-### 5.1 — Basculer en perspective Administrator
-
-1. En haut à gauche, cliquez sur le **sélecteur de perspective**.
-2. Choisissez **"Administrator"**.
-
-### 5.2 — Voir la vue d'ensemble du projet
-
-3. Dans le menu de gauche, allez dans **"Home" > "Projects"**.
-4. Cliquez sur votre projet `console-exploration-<CITY>`.
-
-![Global](/img/screenshots/dashboard.png)
-
-:::info Que voyez-vous ?
-La page du projet affiche un tableau de bord avec :
-- L'**utilisation des ressources** (CPU, mémoire)
-- Le **nombre de Pods** en cours d'exécution
-- Les **événements** récents (création de ressources, erreurs éventuelles)
-:::
-
-### 5.3 — Inspecter les Pods
-
-**Qu'est-ce qu'un Pod ?** C'est la plus petite unité d'exécution dans Kubernetes. Un Pod contient un ou plusieurs conteneurs qui partagent le même réseau et le même stockage. Ici, votre Pod contient un seul conteneur : celui de `hello-openshift`.
-
-5. Dans le menu de gauche, allez dans **"Workloads" > "Pods"**.
-6. Vérifiez que le projet sélectionné est bien `console-exploration-<CITY>`.
-
-![pod](/img/screenshots/admin_pods_list.png)
-
-```
-Sortie attendue :
-───────────────
-Vous devriez voir un Pod dont le nom commence par "hello-openshift-"
-suivi d'un identifiant aléatoire (ex: hello-openshift-7d4f5b8c9-xk2mn).
-
-Status : Running
-Ready  : 1/1
-```
-
-:::tip Explorer un Pod
-Cliquez sur le nom du Pod pour voir ses détails : logs, événements, variables d'environnement, terminal... C'est très utile pour le débogage.
-:::
-
-### Vérification
-
-Vous avez réussi cette étape si :
-- Vous voyez **1 Pod** avec le statut **Running**
-- La colonne **Ready** affiche **1/1**
-
-### 5.4 — Inspecter le Deployment
-
-**Qu'est-ce qu'un Deployment ?** C'est une ressource qui décrit l'état souhaité de votre application : quelle image utiliser, combien de réplicas (copies) lancer, comment effectuer les mises à jour. Kubernetes s'assure en permanence que l'état réel correspond à l'état souhaité.
-
-![deployment](/img/screenshots/admin_events.png)
-
-```
-Sortie attendue :
-───────────────
-Nom          : hello-openshift
-Status       : Available (1 of 1 pods)
-```
-
-### Vérification
-
-Vous avez réussi cette étape si :
-- Vous voyez le Deployment `hello-openshift`
-- Il indique **1 pod disponible** sur 1
-
-### 5.5 — Inspecter le Service
-
-**Qu'est-ce qu'un Service ?** C'est un point d'accès réseau **stable** vers votre application. Les Pods sont éphémères (ils peuvent être recréés à tout moment avec une nouvelle adresse IP), mais le Service conserve toujours la même adresse. Il joue le rôle de **répartiteur de charge** interne.
-
-8. Dans le menu de gauche, allez dans **"Networking" > "Services"**.
-
-![service](/img/screenshots/admin_services_list.png)
-
-```
-Sortie attendue :
-───────────────
-Nom          : hello-openshift
-Type         : ClusterIP
-Port(s)      : 8080/TCP (et éventuellement 8443/TCP)
-```
-
-:::note Récapitulatif du flux réseau
-Le chemin d'une requête depuis votre navigateur jusqu'à l'application est le suivant :
-
-**Navigateur** --> **Route** (URL publique) --> **Service** (répartiteur interne) --> **Pod** (conteneur)
-
-Chaque couche a un rôle précis, et c'est cette architecture qui rend Kubernetes si résilient.
-:::
-
-### Vérification
-
-Vous avez réussi cette étape si :
-- Vous voyez le Service `hello-openshift`
-- Il est de type **ClusterIP**
-
----
-
-## Étape 6 : Supprimer le projet
-
-**Pourquoi ?** Il est important de nettoyer les ressources que vous n'utilisez plus. Supprimer un projet supprime **toutes** les ressources qu'il contient (Pods, Deployments, Services, Routes...). Cela libère des ressources sur le cluster pour les autres utilisateurs.
+**Pourquoi ?** Il est important de nettoyer les ressources que vous n'utilisez plus. Vous allez supprimer le projet entier, ce qui supprimera automatiquement toutes les ressources qu'il contient (Deployment, Pod, Service, Route).
 
 :::warning Suppression irréversible
 La suppression d'un projet est **définitive**. Toutes les ressources, données et configurations du projet seront perdues. OpenShift vous demande de taper le nom du projet pour confirmer, afin d'éviter les suppressions accidentelles.
@@ -353,7 +303,7 @@ La suppression d'un projet est **définitive**. Toutes les ressources, données 
 3. Cliquez sur le **menu contextuel** (l'icône **⋮** à droite de la ligne).
 4. Sélectionnez **"Delete Project"**.
 
-![project](./images/project_delete.png)
+![Suppression du projet](./images/project_delete.png)
 
 5. Dans la fenêtre de confirmation, tapez le nom exact de votre projet : `console-exploration-<CITY>`.
 6. Cliquez sur **"Delete"**.
@@ -380,10 +330,10 @@ Voici un résumé de tout ce que vous avez créé et observé au cours de cet ex
 | Ressource | Nom | Rôle | Créée à l'étape |
 |---|---|---|---|
 | **Projet** | `console-exploration-<CITY>` | Espace de travail isolé (namespace) | Étape 2 |
-| **Deployment** | `hello-openshift` | Décrit l'état souhaité de l'application | Étape 3 (automatique) |
+| **Deployment** | `hello-openshift` | Décrit l'état souhaité de l'application | Étape 3 |
 | **Pod** | `hello-openshift-xxxxx-xxxxx` | Instance en cours d'exécution du conteneur | Étape 3 (automatique) |
-| **Service** | `hello-openshift` | Point d'accès réseau interne stable | Étape 3 (automatique) |
-| **Route** | `hello-openshift` | URL publique vers l'application | Étape 3 (automatique) |
+| **Service** | `hello-openshift` | Point d'accès réseau interne stable | Étape 4 |
+| **Route** | `hello-openshift` | URL publique vers l'application | Étape 4 |
 
 ### Concepts clés retenus
 
@@ -395,11 +345,10 @@ Voici un résumé de tout ce que vous avez créé et observé au cours de cet ex
 | **Deployment** | Contrôle le cycle de vie des Pods |
 | **Service** | Adresse réseau stable pour accéder aux Pods |
 | **Route** | Expose un Service à l'extérieur du cluster |
-| **Perspective Developer** | Vue orientée développement (Topology, +Add) |
-| **Perspective Administrator** | Vue détaillée des ressources Kubernetes |
+| **Perspective Administrator** | Interface unifiée de la console OpenShift 4.17+ |
 
 :::tip Pour aller plus loin
-Essayez de refaire cet exercice sans regarder les instructions. C'est le meilleur moyen de vérifier que vous avez bien compris chaque étape. Vous pouvez aussi essayer de déployer une autre image, par exemple `docker.io/nginx:latest`.
+Essayez de refaire cet exercice sans regarder les instructions. C'est le meilleur moyen de vérifier que vous avez bien compris chaque étape. Vous pouvez aussi essayer de déployer une autre image, par exemple `docker.io/nginx:latest`, en créant votre propre YAML.
 :::
 
 ---

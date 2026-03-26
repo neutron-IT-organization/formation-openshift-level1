@@ -49,36 +49,28 @@ Une fois connecté, vous arrivez sur le tableau de bord principal de la console 
 
 *Tableau de bord principal : accès rapide aux ressources, alertes et état du cluster.*
 
+:::info Depuis OpenShift 4.17, la console ne propose plus qu'une seule perspective unifiée : **Administrator**. L'ancienne perspective Developer a été supprimée.
+:::
+
 La console est organisée en deux grandes zones :
 
 | Zone | Description |
 |------|-------------|
-| **Barre de navigation latérale gauche** | Accès à toutes les sections de la console selon la perspective active |
+| **Barre de navigation latérale gauche** | Accès à toutes les sections de la console |
 | **Zone de contenu principale** | Affichage des ressources, formulaires et tableaux de bord |
-| **Barre supérieure** | Sélecteur de perspective, notifications, accès au terminal web, profil utilisateur |
-
-:::info Sélecteur de perspective
-En haut du menu latéral gauche se trouve un sélecteur de **perspective**. Ce sélecteur permet de basculer entre la vue **Administrator** et la vue **Developer**. La disposition des menus change complètement selon la perspective choisie.
-:::
+| **Barre supérieure** | Notifications, accès au terminal web, profil utilisateur |
 
 ---
 
-## Les deux perspectives de la console
+## La perspective Administrator
 
-### Basculer entre les perspectives
+Depuis OpenShift 4.17, la console ne dispose plus que d'une seule perspective : **Administrator**. Cette perspective unifiée couvre à la fois les besoins des administrateurs de cluster et ceux des développeurs qui déploient et gèrent des applications.
 
-La console OpenShift propose deux modes principaux, accessibles via le sélecteur en haut du menu latéral :
+| Perspective | Description |
+|------------|-------------|
+| **Administrator** | Interface unifiée pour la gestion de l'infrastructure, le déploiement d'applications, la sécurité et l'observabilité |
 
-| Perspective | Public cible | Orientation |
-|------------|--------------|-------------|
-| **Administrator** | Administrateurs cluster, ops | Gestion de l'infrastructure, des nœuds, de la sécurité |
-| **Developer** | Développeurs, DevOps | Déploiement et suivi des applications |
-
----
-
-## Perspective Administrateur
-
-La perspective Administrateur donne accès à l'ensemble des ressources du cluster. Voici les sections principales :
+La perspective Administrator donne accès à l'ensemble des ressources du cluster. Voici les sections principales :
 
 ### Accueil (Home)
 
@@ -162,77 +154,22 @@ Configuration globale du cluster :
 
 ---
 
-## Perspective Développeur
-
-La perspective Developer est conçue pour les développeurs qui déploient et surveillent des applications. Elle est plus simple et plus visuelle que la perspective administrateur.
-
-![Vue Développeur — Topology](/img/screenshots/topology_active.png)
-
-*Vue Topology en perspective Developer : visualisation graphique des applications et de leurs relations.*
-
-### Topology (Topologie)
-
-La vue Topology est la fonctionnalité phare de la perspective Developer. Elle affiche une représentation graphique de toutes les ressources déployées dans un projet :
-
-- Chaque application est représentée par un nœud visuel
-- Les relations entre services sont matérialisées par des liens
-- Le statut de chaque déploiement (running, failed, building) est indiqué visuellement
-- Un clic sur un nœud ouvre un panneau latéral avec les détails et les actions disponibles
-
-:::tip Déploiement depuis la Topology
-Depuis la vue Topology, il est possible d'ajouter de nouvelles applications directement en cliquant sur le bouton **"+ Add"**. OpenShift propose plusieurs méthodes : depuis Git, depuis une image existante, depuis le catalogue, ou via un fichier YAML.
-:::
-
-### Observe (Développeur)
-
-Version allégée de l'observabilité, centrée sur le projet courant :
-
-- Métriques CPU et mémoire des pods du projet
-- Logs des conteneurs en temps réel
-- Événements du namespace
-
-### Builds
-
-Gestion des builds spécifiques au projet :
-
-- Suivi des builds en cours et de leur historique
-- Configuration des BuildConfigs (source, stratégie, déclencheurs)
-- Visualisation des pipelines Tekton
-
-### Helm
-
-Déploiement d'applications via Helm Charts :
-
-- Accès au catalogue de charts disponibles
-- Installation et configuration de releases Helm
-- Suivi et mise à jour des applications déployées via Helm
-
-### Project
-
-Vue de gestion du projet courant :
-
-- Quotas et limites de ressources
-- Membres du projet et leurs rôles
-- Labels et annotations du namespace
-
----
-
 ## Navigation rapide
 
-Voici un récapitulatif des sections les plus utiles selon votre rôle :
+Voici un récapitulatif des sections les plus utiles dans la console Administrator :
 
-| Action | Perspective | Chemin dans la console |
-|--------|------------|------------------------|
-| Voir tous les pods | Administrator | Workloads > Pods |
-| Créer un déploiement | Developer | +Add > Import from Git |
-| Visualiser l'architecture | Developer | Topology |
-| Voir les logs d'un pod | Administrator ou Developer | Workloads > Pods > [pod] > Logs |
-| Exposer une application | Administrator | Networking > Routes |
-| Créer un PVC | Administrator | Storage > PersistentVolumeClaims |
-| Voir les métriques | Administrator | Observe > Metrics |
-| Gérer les utilisateurs | Administrator | User Management > Users |
-| Accéder au terminal d'un pod | Administrator | Workloads > Pods > [pod] > Terminal |
-| Voir les événements | Administrator | Home > Events |
+| Action | Chemin dans la console |
+|--------|------------------------|
+| Voir tous les pods | Workloads > Pods |
+| Créer un déploiement | Workloads > Deployments > Create Deployment |
+| Voir les logs d'un pod | Workloads > Pods > [pod] > Logs |
+| Exposer une application | Networking > Routes |
+| Créer un PVC | Storage > PersistentVolumeClaims |
+| Voir les métriques | Observe > Metrics |
+| Gérer les utilisateurs | User Management > Users |
+| Accéder au terminal d'un pod | Workloads > Pods > [pod] > Terminal |
+| Voir les événements | Home > Events |
+| Gérer les namespaces | Administration > Namespaces |
 
 :::info Raccourci clavier
 La console OpenShift intègre une barre de recherche globale accessible avec le raccourci **Ctrl+K** (ou **Cmd+K** sur Mac). Elle permet de rechercher n'importe quelle ressource par nom, type ou namespace sans naviguer dans les menus.
@@ -242,4 +179,4 @@ La console OpenShift intègre une barre de recherche globale accessible avec le 
 
 ## Conclusion
 
-La console web d'OpenShift est un outil puissant qui centralise la gestion du cluster, le déploiement des applications et la supervision des ressources. La distinction entre perspective Administrator et perspective Developer vous permet de toujours avoir une interface adaptée à votre contexte de travail. Dans la prochaine section, vous réaliserez un exercice guidé pour explorer la console en autonomie.
+La console web d'OpenShift est un outil puissant qui centralise la gestion du cluster, le déploiement des applications et la supervision des ressources. Depuis OpenShift 4.17, la perspective unique **Administrator** offre une interface unifiée adaptée à tous les profils, des administrateurs cluster aux développeurs. Dans la prochaine section, vous réaliserez un exercice guidé pour explorer la console en autonomie.

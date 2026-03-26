@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400" font-family="'Segoe UI', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 440" width="820" height="440" font-family="'Segoe UI', Arial, sans-serif">
   <defs>
     <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
       <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.1"/>
@@ -6,98 +6,97 @@
   </defs>
 
   <!-- Background -->
-  <rect width="800" height="400" rx="8" fill="#F5F5F5"/>
+  <rect width="820" height="440" rx="8" fill="#F5F5F5"/>
 
   <!-- Title -->
-  <text x="400" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">Les deux perspectives de la console OpenShift</text>
+  <text x="410" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">La console OpenShift — Perspective Administrator</text>
+  <text x="410" y="55" text-anchor="middle" font-size="12" fill="#666">Depuis OpenShift 4.17 : interface unifiée, une seule perspective</text>
 
-  <!-- Divider line -->
-  <line x1="400" y1="55" x2="400" y2="385" stroke="#DDD" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <!-- Main card -->
+  <rect x="30" y="70" width="760" height="355" rx="10" fill="white" stroke="#202cac" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="30" y="70" width="760" height="42" rx="10" fill="#202cac"/>
+  <rect x="30" y="100" width="760" height="12" fill="#202cac"/>
+  <text x="410" y="97" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Administrator</text>
 
-  <!-- Developer Perspective -->
-  <rect x="30" y="55" width="340" height="330" rx="10" fill="white" stroke="#202cac" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="30" y="55" width="340" height="40" rx="10" fill="#202cac"/>
-  <rect x="30" y="85" width="340" height="10" fill="#202cac"/>
-  <text x="200" y="82" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Developer</text>
-
-  <!-- Developer icon -->
-  <circle cx="65" cy="76" r="12" fill="none" stroke="white" stroke-width="1.5"/>
-  <circle cx="65" cy="72" r="4" fill="white"/>
-  <path d="M55 84 Q65 88 75 84" stroke="white" stroke-width="1.5" fill="none"/>
-
-  <!-- Developer items -->
-  <g transform="translate(60, 115)">
-    <rect width="280" height="45" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#202cac"/>
-    <text x="25" y="27" text-anchor="middle" font-size="14" fill="white">T</text>
-    <text x="55" y="27" font-size="15" fill="#333">Topology</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">Vue graphique des apps</text>
+  <!-- Row 1 -->
+  <g transform="translate(50, 130)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">H</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Home</text>
+    <text x="58" y="40" font-size="11" fill="#666">Dashboard, Events, Projects</text>
   </g>
 
-  <g transform="translate(60, 170)">
-    <rect width="280" height="45" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#202cac"/>
-    <text x="25" y="27" text-anchor="middle" font-size="18" fill="white">+</text>
-    <text x="55" y="27" font-size="15" fill="#333">+Add</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">Ajouter des ressources</text>
+  <g transform="translate(300, 130)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">W</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Workloads</text>
+    <text x="58" y="40" font-size="11" fill="#666">Pods, Deployments, StatefulSets</text>
   </g>
 
-  <g transform="translate(60, 225)">
-    <rect width="280" height="45" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#202cac"/>
-    <text x="25" y="27" text-anchor="middle" font-size="14" fill="white">B</text>
-    <text x="55" y="27" font-size="15" fill="#333">Builds</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">Constructions d'images</text>
+  <g transform="translate(550, 130)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">N</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Networking</text>
+    <text x="58" y="40" font-size="11" fill="#666">Services, Routes, NetworkPolicies</text>
   </g>
 
-  <g transform="translate(60, 280)">
-    <rect width="280" height="45" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#202cac"/>
-    <text x="25" y="27" text-anchor="middle" font-size="14" fill="white">P</text>
-    <text x="55" y="27" font-size="15" fill="#333">Pipelines</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">CI/CD Tekton</text>
+  <!-- Row 2 -->
+  <g transform="translate(50, 200)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">S</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Storage</text>
+    <text x="58" y="40" font-size="11" fill="#666">PersistentVolumes, PVCs, StorageClass</text>
   </g>
 
-  <!-- Administrator Perspective -->
-  <rect x="430" y="55" width="340" height="330" rx="10" fill="white" stroke="#ff0454" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="430" y="55" width="340" height="40" rx="10" fill="#ff0454"/>
-  <rect x="430" y="85" width="340" height="10" fill="#ff0454"/>
-  <text x="600" y="82" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Administrator</text>
-
-  <!-- Admin icon -->
-  <circle cx="465" cy="76" r="12" fill="none" stroke="white" stroke-width="1.5"/>
-  <path d="M459 76 L465 70 L471 76 L465 82Z" fill="white"/>
-
-  <!-- Admin items -->
-  <g transform="translate(460, 115)">
-    <rect width="280" height="45" rx="6" fill="#ffe0e8" stroke="#ff0454" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#ff0454"/>
-    <text x="25" y="27" text-anchor="middle" font-size="14" fill="white">H</text>
-    <text x="55" y="27" font-size="15" fill="#333">Home</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">Dashboard, projets</text>
+  <g transform="translate(300, 200)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">O</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Observe</text>
+    <text x="58" y="40" font-size="11" fill="#666">Metrics, Logs, Alerts, Dashboards</text>
   </g>
 
-  <g transform="translate(460, 170)">
-    <rect width="280" height="45" rx="6" fill="#ffe0e8" stroke="#ff0454" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#ff0454"/>
-    <text x="25" y="27" text-anchor="middle" font-size="14" fill="white">W</text>
-    <text x="55" y="27" font-size="15" fill="#333">Workloads</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">Pods, Deployments</text>
+  <g transform="translate(550, 200)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">C</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Compute</text>
+    <text x="58" y="40" font-size="11" fill="#666">Nodes, MachineSets, MachineConfigs</text>
   </g>
 
-  <g transform="translate(460, 225)">
-    <rect width="280" height="45" rx="6" fill="#ffe0e8" stroke="#ff0454" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#ff0454"/>
-    <text x="25" y="27" text-anchor="middle" font-size="14" fill="white">N</text>
-    <text x="55" y="27" font-size="15" fill="#333">Networking</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">Services, Routes</text>
+  <!-- Row 3 -->
+  <g transform="translate(50, 270)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">U</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">User Management</text>
+    <text x="58" y="40" font-size="11" fill="#666">Users, Groups, RoleBindings</text>
   </g>
 
-  <g transform="translate(460, 280)">
-    <rect width="280" height="45" rx="6" fill="#ffe0e8" stroke="#ff0454" stroke-width="1"/>
-    <circle cx="25" cy="22" r="14" fill="#ff0454"/>
-    <text x="25" y="27" text-anchor="middle" font-size="14" fill="white">S</text>
-    <text x="55" y="27" font-size="15" fill="#333">Storage</text>
-    <text x="270" y="27" text-anchor="end" font-size="11" fill="#666">PV, PVC</text>
+  <g transform="translate(300, 270)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">A</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Administration</text>
+    <text x="58" y="40" font-size="11" fill="#666">Cluster Settings, ResourceQuotas</text>
   </g>
+
+  <g transform="translate(550, 270)">
+    <rect width="230" height="52" rx="6" fill="#e8eaf6" stroke="#202cac" stroke-width="1"/>
+    <circle cx="28" cy="26" r="16" fill="#202cac"/>
+    <text x="28" y="31" text-anchor="middle" font-size="13" fill="white">Op</text>
+    <text x="58" y="24" font-size="14" font-weight="bold" fill="#333">Operators</text>
+    <text x="58" y="40" font-size="11" fill="#666">OperatorHub, Installed Operators</text>
+  </g>
+
+  <!-- Note at bottom -->
+  <rect x="50" y="340" width="720" height="68" rx="6" fill="#fff8e8" stroke="#f0ab00" stroke-width="1.5"/>
+  <rect x="58" y="352" width="5" height="44" rx="2" fill="#f0ab00"/>
+  <text x="78" y="370" font-size="13" font-weight="bold" fill="#b45309">OpenShift 4.17+ — Console unifiée</text>
+  <text x="78" y="388" font-size="12" fill="#555">La perspective Developer (Topology, +Add) a été supprimée.</text>
+  <text x="78" y="403" font-size="12" fill="#555">Toutes les fonctions développeur sont désormais accessibles depuis la perspective Administrator.</text>
 </svg>

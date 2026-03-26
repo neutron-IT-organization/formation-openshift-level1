@@ -40,10 +40,10 @@ Il existe aussi un champ `status` que Kubernetes remplit automatiquement -- vous
 
 | Element | Valeur |
 |---|---|
-| Namespace partagé (lecture seule) | `l03p02` |
-| Application de démonstration | `l03p02-app` |
+| Namespace partagé (lecture seule) | `shared-workloads` |
+| Application de démonstration | `shared-app` |
 | Votre namespace personnel | `<CITY>-user-ns` (ex: `prague-user-ns`) |
-| Votre déploiement | `<CITY>-l03p02-app` (ex: `prague-l03p02-app`) |
+| Votre déploiement | `<CITY>-demo-app` (ex: `prague-demo-app`) |
 
 :::warning Remplacez les valeurs
 Tout au long de cet exercice, remplacez **`<CITY>`** par le nom de votre ville (en minuscules, sans accents). Par exemple, si votre ville est Prague, utilisez `prague`.
@@ -59,10 +59,10 @@ Avant de manipuler une ressource, il faut d'abord savoir **ce qui tourne sur le 
 
 ### Instructions
 
-Affichez les pods dans le namespace partagé `l03p02` :
+Affichez les pods dans le namespace partagé `shared-workloads` :
 
 ```bash
-oc get pods -n l03p02
+oc get pods -n shared-workloads
 ```
 
 :::tip Le flag -n (namespace)
@@ -72,7 +72,7 @@ Le flag `-n` permet de spécifier dans quel namespace chercher. Sans ce flag, `o
 **Sortie attendue :**
 ```
 NAME                          READY   STATUS    RESTARTS   AGE
-l03p02-app-75bb5d5698-c7dzj   1/1     Running   0          10m
+shared-app-75bb5d5698-c7dzj   1/1     Running   0          10m
 ```
 
 :::note Comprendre la sortie
@@ -88,13 +88,13 @@ l03p02-app-75bb5d5698-c7dzj   1/1     Running   0          10m
 Parfois, la sortie par défaut contient trop d'informations. Vous pouvez créer votre propre vue avec `--custom-columns` :
 
 ```bash
-oc get pods --custom-columns=NAME:.metadata.name,STATUS:.status.phase -n l03p02
+oc get pods --custom-columns=NAME:.metadata.name,STATUS:.status.phase -n shared-workloads
 ```
 
 **Sortie attendue :**
 ```
 NAME                          STATUS
-l03p02-app-75bb5d5698-c7dzj   Running
+shared-app-75bb5d5698-c7dzj   Running
 ```
 
 :::tip Syntaxe des colonnes personnalisées
@@ -110,7 +110,7 @@ C'est tres utile pour créer des rapports concis ou des scripts d'automatisation
 ### Vérification
 
 Avant de passer a l'étape suivante, vérifiez que :
-- [ ] Vous voyez au moins un pod nommé `l03p02-app-...` dans le namespace `l03p02`
+- [ ] Vous voyez au moins un pod nommé `shared-app-...` dans le namespace `shared-workloads`
 - [ ] Le pod est en status `Running`
 - [ ] Vous comprenez la syntaxe `--custom-columns`
 
@@ -124,15 +124,15 @@ Dans la vraie vie, on ne recrée pas tout de zéro. On **récupere la définitio
 
 ### Instructions
 
-Extrayez le manifeste du déploiement `l03p02-app` et sauvegardez-le dans un fichier :
+Extrayez le manifeste du déploiement `shared-app` et sauvegardez-le dans un fichier :
 
 ```bash
-oc get deployment l03p02-app -n l03p02 -o yaml > deployment.yaml
+oc get deployment shared-app -n shared-workloads -o yaml > deployment.yaml
 ```
 
 :::info Que fait cette commande ?
-- `oc get deployment l03p02-app` : récupere le déploiement nommé `l03p02-app`
-- `-n l03p02` : dans le namespace `l03p02`
+- `oc get deployment shared-app` : récupere le déploiement nommé `shared-app`
+- `-n shared-workloads` : dans le namespace `shared-workloads`
 - `-o yaml` : formate la sortie en YAML (au lieu du tableau par défaut)
 - `> deployment.yaml` : redirige la sortie dans un fichier local
 :::
@@ -150,10 +150,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: l03p02-app
-    app.kubernetes.io/instance: l03p02
-  name: l03p02-app
-  namespace: l03p02
+    app: shared-app
+    app.kubernetes.io/instance: shared-workloads
+  name: shared-app
+  namespace: shared-workloads
   resourceVersion: "12345678"
   uid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
   creationTimestamp: "2026-03-20T10:00:00Z"
@@ -161,11 +161,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: l03p02-quarkus-aap
+      app: shared-app
   template:
     metadata:
       labels:
-        app: l03p02-quarkus-aap
+        app: shared-app
     spec:
       containers:
       - args:
@@ -236,18 +236,18 @@ Dans la section `metadata`, gardez **uniquement** `name` et `namespace`. Supprim
 
 Remplacez :
 ```yaml
-  name: l03p02-app
+  name: shared-app
 ```
 Par :
 ```yaml
-  name: <CITY>-l03p02-app
+  name: <CITY>-demo-app
 ```
 
 #### 3.4 -- Changer le namespace
 
 Remplacez :
 ```yaml
-  namespace: l03p02
+  namespace: shared-workloads
 ```
 Par :
 ```yaml
@@ -262,17 +262,17 @@ Votre fichier `deployment.yaml` doit ressembler a ceci (exemple pour la ville **
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prague-l03p02-app
+  name: prague-demo-app
   namespace: prague-user-ns
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: l03p02-quarkus-aap
+      app: shared-app
   template:
     metadata:
       labels:
-        app: l03p02-quarkus-aap
+        app: shared-app
     spec:
       containers:
       - args:
@@ -315,7 +315,7 @@ oc apply -f deployment.yaml
 
 **Sortie attendue :**
 ```
-deployment.apps/prague-l03p02-app created
+deployment.apps/prague-demo-app created
 ```
 
 :::tip apply vs create
@@ -334,7 +334,7 @@ oc get deployment -n <CITY>-user-ns
 **Sortie attendue :**
 ```
 NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
-prague-l03p02-app     1/1     1            1           30s
+prague-demo-app       1/1     1            1           30s
 ```
 
 Vérifiez que le pod associé tourne correctement :
@@ -346,7 +346,7 @@ oc get pods -n <CITY>-user-ns
 **Sortie attendue :**
 ```
 NAME                                 READY   STATUS    RESTARTS   AGE
-prague-l03p02-app-75bb5d5698-x9kml   1/1     Running   0          45s
+prague-demo-app-75bb5d5698-x9kml     1/1     Running   0          45s
 ```
 
 Voici a quoi ressemble un déploiement réussi dans la console web OpenShift :
@@ -385,7 +385,7 @@ oc delete -f deployment.yaml
 
 **Sortie attendue :**
 ```
-deployment.apps/prague-l03p02-app deleted
+deployment.apps/prague-demo-app deleted
 ```
 
 Vérifiez que le déploiement a bien été supprimé :
@@ -401,7 +401,7 @@ No resources found in prague-user-ns namespace.
 
 :::tip Supprimer avec le fichier vs par le nom
 - `oc delete -f deployment.yaml` : supprime toutes les ressources décrites dans le fichier
-- `oc delete deployment prague-l03p02-app -n prague-user-ns` : supprime une ressource spécifique par son nom
+- `oc delete deployment prague-demo-app -n prague-user-ns` : supprime une ressource spécifique par son nom
 
 Les deux méthodes fonctionnent, mais utiliser le fichier est pratique quand vous avez plusieurs ressources a supprimer en meme temps.
 :::
