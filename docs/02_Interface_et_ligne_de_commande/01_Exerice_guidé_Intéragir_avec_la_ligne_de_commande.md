@@ -47,7 +47,7 @@ Avant de pouvoir faire quoi que ce soit sur le cluster, vous devez **vous authen
 
 3. Sélectionnez **"Copy login command"**.
 
-    ![Copy login command](./images/copy-login-command.svg)
+    ![Copy login command](/img/screenshots/perspective_switcher.png)
 
 :::tip Astuce
 Le menu se trouve tout en haut à droite de l'interface. Si vous ne voyez pas votre nom d'utilisateur, vérifiez que vous êtes bien connecté à la console web.
@@ -61,7 +61,7 @@ Le menu se trouve tout en haut à droite de l'interface. Si vous ne voyez pas vo
 
 6. Ouvrez le **terminal web OpenShift** en cliquant sur l'icône de terminal en haut à droite de la console.
 
-    ![Open web terminal](./images/open-web-terminal.svg)
+    ![Open web terminal](/img/screenshots/dashboard.png)
 
 7. Dans la fenêtre qui s'ouvre, cliquez sur **"Open terminal in a new tab"**, puis sélectionnez votre projet `<CITY>-user-ns` et cliquez sur **"Start"**.
 

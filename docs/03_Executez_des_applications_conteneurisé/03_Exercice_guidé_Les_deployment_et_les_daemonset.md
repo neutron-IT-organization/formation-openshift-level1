@@ -204,11 +204,11 @@ Pod Template:
 
 Ouvrez la console web OpenShift et naviguez vers **Workloads > Deployments**. Vous devriez voir votre déploiement :
 
-![Workloads Section](./images/workloads-section.png)
+![Workloads Section](/img/screenshots/admin_deployments_list.png)
 
 Cliquez sur `my-deployment` pour voir les détails :
 
-![My Deployment](./images/my-deployment.png)
+![My Deployment](/img/screenshots/admin_pod_details.png)
 
 :::tip
 La console web est un excellent outil pour **visualiser** l'état de vos ressources. Elle offre une vue graphique du nombre de pods, de leur état, et permet de voir les événements en temps réel.
@@ -408,7 +408,7 @@ oc rollout undo deployment/my-deployment --to-revision=1
 
 Ouvrez la console web et observez le rollback en temps réel :
 
-![Rollback](./images/rollback.png)
+![Rollback](/img/screenshots/admin_events.png)
 
 ### Vérification
 

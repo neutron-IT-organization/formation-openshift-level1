@@ -52,7 +52,7 @@ Cette règle sera appliqué au bout d'environ quelques minutes (environ 5 minute
 
 Pour vérifier que la règle est appliqué, rendez-vous dans Observe>Alerting>Alerting rules et cherchez OpenshiftPodNotHealthy dans les filtres.
 
-![Prague alerting rule](./images/prague-alerting-rule.png)
+![Alerte Prometheus](/img/screenshots/admin_alerts_list.png)
 
 ## Étape 2 : Déployer un Pod Défectueux
 
@@ -95,7 +95,7 @@ Pour vérifier que la règle est appliqué, rendez-vous dans Observe>Alerting>Al
      - Le pod concerné (`failed-pod-demo`).  
      - Les annotations configurées, comme le résumé et la description.  
 
-![Prague alerting rule in dashboard](./images/rule-in-dashboard.png)     
+![Détails de l'alerte](/img/screenshots/admin_alerts_list.png)
 
 3. **Analyser les détails de l’alerte** :  
    - Observez le **namespace** et le **pod** liés à l’alerte.  
@@ -105,7 +105,7 @@ Pour vérifier que la règle est appliqué, rendez-vous dans Observe>Alerting>Al
    - Prenez note des valeurs affichées pour comprendre pourquoi l’alerte a été déclenchée.  
    - Identifiez les actions nécessaires pour résoudre cette alerte.  
 
-![rule full view](./images/rule-full-view.png)
+![Vue complète de la règle](/img/screenshots/admin_alerts_list.png)
 
 
 ## Étape 4 : Résoudre l'Alerte
@@ -130,7 +130,7 @@ Revenez dans l’onglet **Alerts** pour confirmer que l’alerte a disparu.
      - Analysez l’utilisation des ressources (CPU, mémoire) pour les pods de votre namespace.  
      - Filtrez pour le namespace `YOURCITY-user-ns` pour une vue spécifique à vos ressources.  
 
-![compute resources](./images/dashboard-resource-view.png)
+![Dashboard de ressources](/img/screenshots/admin_monitoring_dashboard.png)
 
 3. **Comprendre les graphiques et données** :  
    - Passez votre souris sur les graphiques pour voir les valeurs exactes à un instant donné.  

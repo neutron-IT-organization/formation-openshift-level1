@@ -16,11 +16,11 @@ Toutes les actions réalisables dans la console sont également disponibles via 
 
 Ouvrez votre navigateur et rendez-vous à l'adresse suivante :
 
-**[https://console-openshift-console.apps.neutron-sno-office.intraneutron.fr/](https://console-openshift-console.apps.neutron-sno-office.intraneutron.fr/)**
+**[https://console-openshift-console.apps.neutron-sno-office.neutron-it.fr/](https://console-openshift-console.apps.neutron-sno-office.neutron-it.fr/)**
 
 Vous serez automatiquement redirigé vers la page d'authentification OAuth d'OpenShift. Cette redirection est normale et sécurisée.
 
-![Page de connexion de la console OpenShift](./images/console-login.svg)
+![Page de connexion de la console OpenShift](/img/screenshots/login_selector.png)
 
 *Page de connexion OpenShift : sélectionnez votre fournisseur d'identité pour vous authentifier.*
 
@@ -45,7 +45,7 @@ Les sessions OpenShift expirent après un certain délai d'inactivité. Si vous 
 
 Une fois connecté, vous arrivez sur le tableau de bord principal de la console OpenShift.
 
-![Vue d'ensemble de la console OpenShift](./images/console-overview.svg)
+![Vue d'ensemble de la console OpenShift](/img/screenshots/dashboard.png)
 
 *Tableau de bord principal : accès rapide aux ressources, alertes et état du cluster.*
 
@@ -166,7 +166,7 @@ Configuration globale du cluster :
 
 La perspective Developer est conçue pour les développeurs qui déploient et surveillent des applications. Elle est plus simple et plus visuelle que la perspective administrateur.
 
-![Vue Développeur — Topology](./images/console-developer-topology.svg)
+![Vue Développeur — Topology](/img/screenshots/topology_active.png)
 
 *Vue Topology en perspective Developer : visualisation graphique des applications et de leurs relations.*
 

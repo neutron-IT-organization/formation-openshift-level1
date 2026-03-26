@@ -209,7 +209,7 @@ oc apply -f postgres-pvc.yaml
 **Sortie attendue :**
 
 ```
-persistentvolumeclaim/postgres-pvc created
+![PVC List](/img/screenshots/admin_pvcs_list.png)
 ```
 
 ### 2.3 — Vérifier que le PVC est lié
@@ -497,6 +497,8 @@ oc get storageclass
 NAME                 PROVISIONER                    RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
 thin-csi (default)   csi.vsphere.vmware.com         Delete          Immediate           true                   90d
 ```
+
+![StorageClass List](/img/screenshots/admin_storageclasses_list.png)
 
 :::note Storage Class par défaut
 La Storage Class marquée `(default)` est utilisée automatiquement quand vous ne spécifiez pas de `storageClassName` dans votre PVC. C'est pour cela que notre PVC a fonctionné sans préciser de classe de stockage.

@@ -97,7 +97,7 @@ La console OpenShift offre un formulaire visuel qui simplifie la configuration d
 | Period | `5` secondes | Intervalle entre chaque verification |
 | Failure Threshold | `3` | Nombre d'echecs consecutifs avant de considerer le pod comme mort |
 
-![liveness probe](./images/liveness-probe.png)
+![liveness probe](/img/screenshots/admin_pod_details.png)
 
 :::tip Comprendre le Failure Threshold
 Avec un **Period** de 5 secondes et un **Failure Threshold** de 3, OpenShift attendra **3 echecs consecutifs** (soit environ 15 secondes) avant de redemarrer le conteneur. Cela evite de redemarrer sur un simple ralentissement passager.
@@ -116,7 +116,7 @@ Avec un **Period** de 5 secondes et un **Failure Threshold** de 3, OpenShift att
 | Period | `5` secondes | Intervalle entre chaque verification |
 | Failure Threshold | `3` | Nombre d'echecs consecutifs avant de considerer le pod comme non pret |
 
-![readiness probe](./images/readiness-probe.png)
+![readiness probe](/img/screenshots/admin_pod_details.png)
 
 ### 1.5. Sauvegarder
 
@@ -229,7 +229,7 @@ HTTP/1.1 503 Service Unavailable
 
 Vous devriez voir un evenement indiquant que le pod est marque comme **"Non Pret"** (`Readiness probe failed`).
 
-![readiness probe events](./images/not-ready-event.png)
+![readiness probe events](/img/screenshots/admin_events.png)
 
 :::info Consequence concrete
 Le pod n'est **plus inclus dans les endpoints du service**. Cela signifie qu'aucun trafic utilisateur ne lui est envoye. Si d'autres replicas etaient disponibles, ils prendraient le relais automatiquement.

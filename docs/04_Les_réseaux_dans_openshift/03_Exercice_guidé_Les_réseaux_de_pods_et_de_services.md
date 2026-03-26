@@ -256,7 +256,7 @@ http://olympic-medals-http-votre-namespace.apps.cluster.example.com
 
 Ouvrez l'URL obtenue dans votre navigateur. Vous devriez voir l'application Olympic Medals :
 
-![Accès à l'application via la route HTTP](./images/route-access.png)
+![Accès à l'application via la route HTTP](/img/screenshots/admin_routes_list.png)
 
 :::tip Tester depuis le terminal
 Vous pouvez aussi tester avec `curl` directement depuis le terminal :
@@ -367,7 +367,7 @@ Ouvrez l'URL HTTPS dans votre navigateur. Vous devriez voir :
 - L'application Olympic Medals qui s'affiche normalement
 - Un cadenas dans la barre d'adresse indiquant que la connexion est sécurisée
 
-![Accès sécurisé via la route HTTPS](./images/route-https-access.png)
+![Accès sécurisé via la route HTTPS](/img/screenshots/admin_route_details.png)
 
 :::tip Testez la redirection HTTP → HTTPS
 Essayez d'accéder à la même URL en remplaçant `https://` par `http://`. Vous serez automatiquement redirigé vers la version HTTPS grâce à `insecureEdgeTerminationPolicy: Redirect`.

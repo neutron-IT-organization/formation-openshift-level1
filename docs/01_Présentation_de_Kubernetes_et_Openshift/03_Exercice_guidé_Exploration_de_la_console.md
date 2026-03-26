@@ -6,7 +6,7 @@ Cet exercice vous guide pas à pas dans votre **première interaction** avec la 
 
 Ne vous inquiétez pas si certains termes sont nouveaux : ils seront tous expliqués au fil de l'exercice.
 
-![Vue d'ensemble](./images/console-overview.svg)
+![Vue d'ensemble](/img/screenshots/dashboard.png)
 
 ---
 
@@ -45,11 +45,15 @@ https://console-openshift-console.apps.neutron-sno-office.neutron-it.fr/
 Ajoutez cette URL à vos favoris, vous en aurez besoin tout au long de la formation.
 :::
 
-### 1.2 — Se connecter
+3. Sur la page de connexion, sélectionnez **"Neutron Guest Identity Management"**.
 
-3. Sur la page de connexion, cliquez sur **"Neutron Guest Identity Management"**.
+![Sélection de l'Identity Provider](/img/screenshots/login_selector.png)
+
 4. Saisissez vos identifiants :
-   - **Utilisateur** : `<CITY>-user` (par exemple : `prague-user`, `lyon-user`, `paris-user`...)
+   - **Utilisateur** : `<CITY>-user` (par exemple : `prague-user`)
+
+![Formulaire de connexion](/img/screenshots/login_form.png)
+
    - **Mot de passe** : `OpenShift4formation!`
 5. Cliquez sur **"Log in"**.
 
@@ -63,7 +67,12 @@ Une fois connecté, vous arrivez sur la page d'accueil de la console. Prenez que
 
 - **Le menu de gauche** : il permet d'accéder aux différentes sections (Topology, Builds, Monitoring...).
 - **Le sélecteur de perspective** (en haut à gauche) : il permet de basculer entre la vue **Developer** et la vue **Administrator**.
+
+![Sélecteur de perspective](/img/screenshots/perspective_switcher.png)
+
 - **Le sélecteur de projet** (en haut à gauche, sous la perspective) : il permet de choisir dans quel projet vous travaillez.
+
+![Sélecteur de projet](/img/screenshots/topology_empty.png)
 
 :::info Perspectives Developer vs Administrator
 - La perspective **Developer** est optimisée pour le développement : elle met en avant la topologie des applications, les builds et les pipelines.
@@ -97,7 +106,7 @@ Pensez au projet comme à un **dossier** sur votre ordinateur : il vous permet d
 
 3. Cliquez sur le **sélecteur de projet** (juste en dessous), puis sur **"Create Project"**.
 
-![Create Project](./images/create_project.png)
+![Create Project](/img/screenshots/create_project_form.png)
 
 4. Remplissez le formulaire :
    - **Name** : `console-exploration-<CITY>` (par exemple : `console-exploration-prague`)
@@ -115,8 +124,6 @@ Exemple invalide : `Console_Exploration_Prague`
 :::
 
 5. Cliquez sur **"Create"**.
-
-![Create Project](./images/assistant_create_project.png)
 
 ### Vérification
 
@@ -140,7 +147,7 @@ Une image de conteneur est un **modèle en lecture seule** qui sert à créer de
 1. Dans la perspective **Developer**, cliquez sur **"+Add"** dans le menu de gauche.
 2. Vous voyez plusieurs méthodes pour ajouter une application. Sélectionnez **"Container images"**.
 
-![Container images](./images/container_image.png)
+![Container images](/img/screenshots/add_page.png)
 
 ### 3.2 — Configurer le déploiement
 
@@ -167,7 +174,7 @@ C'est un peu comme une URL qui pointe vers un fichier téléchargeable.
 
 6. Laissez toutes les valeurs par défaut et cliquez sur **"Create"** en bas de la page.
 
-![Create application](./images/create_application.png)
+![Create application](/img/screenshots/container_images_form.png)
 
 :::note Que se passe-t-il en coulisses ?
 En cliquant sur "Create", OpenShift crée automatiquement **plusieurs ressources Kubernetes** pour vous :
@@ -197,14 +204,14 @@ Vous avez réussi cette étape si :
 1. Sur la page **Topology**, repérez le cercle représentant `hello-openshift`.
 2. Cliquez dessus pour ouvrir le **panneau de détails** à droite.
 
-![Topology view](./images/topology_view.png)
+![Topology view](/img/screenshots/topology_active.png)
 
 ### 4.2 — Ouvrir l'application
 
 3. Dans le panneau de détails, cherchez la section **"Routes"**.
 4. Cliquez sur l'URL affichée (elle ressemble à `http://hello-openshift-console-exploration-<CITY>.apps.neutron-sno-office.neutron-it.fr`).
 
-![Get route](./images/get_route.png)
+![Get route](/img/screenshots/topology_sidebar_resources.png)
 
 ```
 Sortie attendue :
@@ -242,7 +249,7 @@ Vous avez réussi cette étape si :
 3. Dans le menu de gauche, allez dans **"Home" > "Projects"**.
 4. Cliquez sur votre projet `console-exploration-<CITY>`.
 
-![Global](./images/administrator_global_view.png)
+![Global](/img/screenshots/dashboard.png)
 
 :::info Que voyez-vous ?
 La page du projet affiche un tableau de bord avec :
@@ -258,7 +265,7 @@ La page du projet affiche un tableau de bord avec :
 5. Dans le menu de gauche, allez dans **"Workloads" > "Pods"**.
 6. Vérifiez que le projet sélectionné est bien `console-exploration-<CITY>`.
 
-![pod](./images/pod_view.png)
+![pod](/img/screenshots/admin_pods_list.png)
 
 ```
 Sortie attendue :
@@ -284,9 +291,7 @@ Vous avez réussi cette étape si :
 
 **Qu'est-ce qu'un Deployment ?** C'est une ressource qui décrit l'état souhaité de votre application : quelle image utiliser, combien de réplicas (copies) lancer, comment effectuer les mises à jour. Kubernetes s'assure en permanence que l'état réel correspond à l'état souhaité.
 
-7. Dans le menu de gauche, allez dans **"Workloads" > "Deployments"**.
-
-![deployment](./images/deployments_view.png)
+![deployment](/img/screenshots/admin_events.png)
 
 ```
 Sortie attendue :
@@ -307,7 +312,7 @@ Vous avez réussi cette étape si :
 
 8. Dans le menu de gauche, allez dans **"Networking" > "Services"**.
 
-![service](./images/service_view.png)
+![service](/img/screenshots/admin_services_list.png)
 
 ```
 Sortie attendue :
