@@ -99,7 +99,7 @@ Le RBAC repose sur trois concepts imbriqués :
 2. **Les rôles (Roles / ClusterRoles)** : regroupent un ensemble de règles en une unité cohérente.
 3. **Les bindings (RoleBindings / ClusterRoleBindings)** : associent un rôle à un ou plusieurs sujets (utilisateurs, groupes, comptes de service).
 
-![Diagramme RBAC dans OpenShift](./images/RBAC-in-Openshift.svg)
+![Diagramme RBAC dans OpenShift](./images/slide-rbac.png)
 
 *Vue d'ensemble de l'architecture RBAC dans OpenShift : les sujets (utilisateurs, groupes, service accounts) obtiennent des permissions via des bindings qui les associent à des rôles.*
 

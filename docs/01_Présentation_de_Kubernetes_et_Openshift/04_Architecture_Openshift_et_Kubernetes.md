@@ -17,7 +17,7 @@ Comprendre l'architecture interne d'un cluster OpenShift est essentiel pour diag
 
 Un cluster Kubernetes (et donc OpenShift) est constitué d'un ensemble de **nœuds** (nodes). Un nœud est une machine, physique ou virtuelle, qui exécute des charges de travail sous la supervision de Kubernetes. Ces nœuds sont regroupés en deux catégories fonctionnelles aux rôles bien distincts.
 
-![Architecture complète Kubernetes/OpenShift](./images/kubernetes-architecture.svg)
+![Architecture complète Kubernetes/OpenShift](./images/slide-kubernetes-architecture.png)
 
 *Architecture d'un cluster Kubernetes : plan de contrôle avec ses 4 composants et nœuds de calcul avec kubelet, CRI-O et les pods applicatifs*
 
@@ -36,7 +36,7 @@ Dans un cluster de production OpenShift, les nœuds du plan de contrôle et les 
 
 Le plan de contrôle est le cerveau du cluster. Il prend toutes les décisions de gestion : où placer un pod, comment réagir à la défaillance d'un nœud, comment faire évoluer le nombre de réplicas. Il ne fait tourner aucune application utilisateur.
 
-![Plan de contrôle hautement disponible — 3 nœuds masters](./images/control-plane-ha.svg)
+![Plan de contrôle hautement disponible — 3 nœuds masters](./images/slide-control-plane-ha.png)
 
 *En production, OpenShift déploie 3 nœuds de contrôle en haute disponibilité — etcd utilise le consensus Raft pour tolérer la perte d'un master*
 
@@ -161,7 +161,7 @@ Tous les nœuds d'un cluster OpenShift standard s'exécutent sur **Red Hat Enter
 
 RHCOS est fondamentalement différent d'un Linux classique :
 
-![Comparaison des systèmes d'exploitation Linux pour OpenShift](./images/os-comparison.svg)
+![Comparaison des systèmes d'exploitation Linux pour OpenShift](./images/slide-os-comparison.png)
 
 *RHCOS se distingue des distributions Linux classiques par son caractère immuable et son intégration native avec OpenShift*
 
@@ -231,7 +231,7 @@ OpenShift peut être installé de deux manières principales, selon le niveau de
 
 Dans le mode IPI, l'installateur OpenShift crée et gère lui-même toute l'infrastructure (VMs, réseau, stockage) en interagissant avec l'API du fournisseur cloud ou de virtualisation.
 
-![Installation IPI — Installer Provisioned Infrastructure](./images/install-ipi.svg)
+![Installation IPI — Installer Provisioned Infrastructure](./images/slide-install-ipi.png)
 
 *IPI : l'installateur crée automatiquement toute l'infrastructure — adapté aux environnements cloud (AWS, Azure, GCP, vSphere)*
 
@@ -239,7 +239,7 @@ Dans le mode IPI, l'installateur OpenShift crée et gère lui-même toute l'infr
 
 Dans le mode UPI, l'opérateur crée et configure manuellement l'infrastructure avant de lancer l'installation d'OpenShift. C'est la méthode utilisée pour les environnements bare-metal ou les infrastructures existantes avec des contraintes réseau spécifiques.
 
-![Installation UPI — User Provisioned Infrastructure](./images/install-upi.svg)
+![Installation UPI — User Provisioned Infrastructure](./images/slide-install-upi.png)
 
 *UPI : l'opérateur prépare l'infrastructure en amont — requis pour bare-metal ou réseaux avec contraintes fortes*
 

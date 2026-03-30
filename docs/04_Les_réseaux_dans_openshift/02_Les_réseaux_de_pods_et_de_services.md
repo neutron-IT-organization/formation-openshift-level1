@@ -57,7 +57,7 @@ Kubernetes maintient un objet `Endpoints` (ou `EndpointSlice` depuis Kubernetes 
 
 ## 2. Types de Services
 
-![Comparaison ClusterIP, NodePort, LoadBalancer](./images/clusterIP-vs-NodePort-vs-Loadbalancer.svg)
+![Comparaison ClusterIP, NodePort, LoadBalancer](./images/slide-service-types.png)
 
 *Les trois types de Services Kubernetes et leurs périmètres d'accessibilité*
 
@@ -344,13 +344,9 @@ oc get route webapp-route -n production
 
 Lorsqu'une application doit être exposée en HTTPS, OpenShift propose trois modes de terminaison TLS, chacun répondant à des besoins de sécurité différents.
 
-![Modes de terminaison TLS dans OpenShift](./images/tls-termination.svg)
+![Modes de terminaison TLS dans OpenShift](./images/slide-tls-routes.png)
 
-*Les trois modes de terminaison TLS : Edge, Re-encrypt, et Passthrough*
-
-![Schéma de flux TLS d'une Route](./images/tls-route.svg)
-
-*Flux de données chiffré entre le client, l'Ingress Controller, et les pods selon le mode TLS*
+*Les trois modes de terminaison TLS : Edge (déchiffrement au router), Re-encrypt (re-chiffrement vers le pod), Passthrough (TLS de bout en bout)*
 
 ### Tableau comparatif des modes TLS
 

@@ -28,9 +28,9 @@ Ce chapitre se concentre sur les **métriques** et l'**alerting**, qui constitue
 
 OpenShift déploie automatiquement une stack de monitoring complète dans le namespace `openshift-monitoring`. Cette stack est entièrement gérée par l'opérateur **Cluster Monitoring Operator (CMO)**, qui assure sa configuration, sa mise à jour et sa haute disponibilité.
 
-![Architecture de monitoring OpenShift](./images/Openshift-Monitoring.svg)
+![Architecture de monitoring OpenShift](./images/slide-monitoring.png)
 
-*Architecture de la stack de monitoring OpenShift : Prometheus collecte les métriques, Alertmanager gère les notifications, et Thanos Querier agrège les données pour une vue globale.*
+*Architecture de la stack de monitoring OpenShift : Prometheus collecte les métriques, Alertmanager gère les notifications, et la console affiche les dashboards.*
 
 ### Les composants principaux
 

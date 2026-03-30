@@ -1,38 +1,25 @@
 // @ts-check
-// `@type` JSDoc annotations allow editor autocompletion and type checking
-// (when paired with `@ts-check`).
-// There are various equivalent ways to declare your Docusaurus config.
-// See: https://docusaurus.io/docs/api/docusaurus-config
-
 import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "NEUTRON IT",
-  tagline: "Nos formations par Neutron IT",
+  title: "Formation OpenShift — Neutron IT",
+  tagline: "Exploitation d'un cluster OpenShift",
   favicon: "img/logo.png",
 
-  // Set the production url of your site here
-  url: "https://github.com",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/docusaurus/",
+  url: "https://neutron-IT-organization.github.io",
+  baseUrl: "/formation-openshift-1/",
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "neutron-IT-organization", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
+  organizationName: "neutron-IT-organization",
+  projectName: "formation-openshift-1",
   deploymentBranch: "gh-pages",
 
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
+    defaultLocale: "fr",
+    locales: ["fr"],
   },
 
   presets: [
@@ -42,10 +29,7 @@ const config = {
       ({
         docs: {
           sidebarPath: "./sidebars.js",
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/neutron-IT-organization/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          routeBasePath: "/",
         },
         blog: false,
         theme: {
@@ -58,10 +42,9 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: "img/docusaurus-social-card.jpg",
+      image: "img/logo.png",
       navbar: {
-        title: "NEUTRON IT",
+        title: "Formation OpenShift",
         logo: {
           alt: "Neutron IT logo",
           src: "img/logo.png",
@@ -71,61 +54,47 @@ const config = {
             type: "docSidebar",
             sidebarId: "tutorialSidebar",
             position: "left",
-            label: "Formation",
+            label: "Cours",
           },
-          // //{ to: "/blog", label: "Blog", position: "left" },
-          // { to: "/docs", label: "docs", position: "left" },
-          // {
-          //   href: "https://github.com/neutron-IT-organization/docusaurus",
-          //   label: "GitHub",
-          //   position: "right",
-          // },
+          {
+            href: "https://github.com/neutron-IT-organization/formation-openshift-1",
+            label: "GitHub",
+            position: "right",
+          },
         ],
       },
       footer: {
         style: "dark",
         links: [
           {
-            title: "Docs",
+            title: "Formation",
             items: [
               {
-                label: "Formation",
-                to: "/docs/intro",
+                label: "Introduction",
+                to: "/intro",
+              },
+              {
+                label: "Référence commandes",
+                to: "/Annexe/Commandes_OpenShift",
               },
             ],
           },
           {
-            title: "Community",
+            title: "Neutron IT",
             items: [
               {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
-              },
-              {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
-              },
-              {
-                label: "Twitter",
-                href: "https://twitter.com/docusaurus",
-              },
-            ],
-          },
-          {
-            title: "More",
-            items: [
-              {
-                label: "GitHub",
-                href: "https://github.com/facebook/docusaurus",
+                label: "Site web",
+                href: "https://neutron-it.fr",
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Neutron IT. Formation OpenShift.`,
       },
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
+        additionalLanguages: ["bash", "yaml", "json"],
       },
     }),
 };

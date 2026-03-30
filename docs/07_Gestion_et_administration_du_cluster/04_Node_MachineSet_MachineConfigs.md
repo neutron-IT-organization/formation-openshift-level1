@@ -8,7 +8,7 @@ La gestion de l'infrastructure physique et virtuelle d'un cluster OpenShift pass
 - Les **MachineSets** gèrent le cycle de vie des machines sous-jacentes (provisionnement, scaling, remplacement).
 - Les **MachineConfigs** standardisent et appliquent la configuration système des nœuds (OS, services, fichiers de configuration).
 
-![Nœuds, MachineSets et MachineConfigs dans OpenShift](./images/Machine-in-openshift.svg)
+![Nœuds, MachineSets et MachineConfigs dans OpenShift](./images/slide-machineset.png)
 
 *Relation entre les trois niveaux d'abstraction : le MachineSet provisionne des Machines qui deviennent des Nœuds Kubernetes. Le MachineConfig configure le système d'exploitation de ces nœuds via le Machine Config Operator.*
 

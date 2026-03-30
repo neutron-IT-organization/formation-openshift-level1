@@ -23,7 +23,7 @@ Avant d'aborder l'automatisation, il est important de comprendre les deux strat�
 
 Dans la grande majorité des cas de production, **le scaling horizontal est privilégié** car il améliore simultanément les performances et la résilience. Une application correctement conçue (stateless, sans affinité de session serveur) bénéficie naturellement de la multiplication des réplicas.
 
-![HPA vs VPA — Comparaison des approches d'autoscaling](./images/hpa-vpa-diagram.svg)
+![HPA vs VPA — Comparaison des approches d'autoscaling](./images/slide-hpa-vpa.png)
 
 *HPA ajoute des réplicas (copies du pod) — VPA augmente les ressources d'un pod existant*
 

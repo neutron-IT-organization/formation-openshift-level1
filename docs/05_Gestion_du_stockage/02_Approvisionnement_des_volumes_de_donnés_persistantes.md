@@ -74,6 +74,10 @@ Le PVC est la solution recommandée pour tout stockage qui doit survivre au cycl
 
 Ces trois ressources forment une chaîne d'abstraction :
 
+![PV, PVC et StorageClass](./images/slide-pvc-pv-storageclass.png)
+
+*Le pod demande du stockage via un PVC, qui se lie à un PV provisionné depuis une StorageClass*
+
 ```
 [ Application / Pod ]
         |

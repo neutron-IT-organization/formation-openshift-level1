@@ -105,6 +105,10 @@ Contrairement au Deployment, chaque pod d'un StatefulSet possède :
 
 ## Tableau comparatif des workloads
 
+![Deployment vs StatefulSet vs DaemonSet](./images/slide-workload-types.png)
+
+*Deployment (sans état), StatefulSet (avec identité et PVC par pod), DaemonSet (un pod par nœud)*
+
 | Ressource | Type d'application | Identité stable | Stockage persistant par pod | Déploiement séquentiel | Nœud cible |
 |---|---|---|---|---|---|
 | **Pod** | Toutes (usage ponctuel) | Non | Non | N/A | Quelconque |

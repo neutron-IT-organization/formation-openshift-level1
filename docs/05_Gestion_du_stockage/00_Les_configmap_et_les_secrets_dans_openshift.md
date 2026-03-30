@@ -30,6 +30,10 @@ A la fin de cette section, vous serez capable de :
 
 ## Comparaison rapide : ConfigMap vs Secret
 
+![Secret vs ConfigMap](./images/slide-secret-configmap.png)
+
+*Secret → données sensibles chiffrées (credentials, tokens). ConfigMap → configuration non sensible (variables d'environnement, fichiers de config)*
+
 | Caracteristique | ConfigMap | Secret |
 |---|---|---|
 | Type de données | Non sensibles | Sensibles |

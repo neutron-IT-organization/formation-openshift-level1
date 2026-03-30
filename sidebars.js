@@ -95,8 +95,7 @@ const sidebars = {
       type: 'category',
       label: 'Configuration de la fiabilité des applications',
       items: [
-        'Configuration_de_la_fiabilité_des_applications/Utilisation_des_probes_dans_Kubernetes',
-        'Configuration_de_la_fiabilité_des_applications/Exercice_guidé_Utilisation_des_probes_dans_Kubernetes',
+        'Configuration_de_la_fiabilité_des_applications/Taints_Tolerations_et_Affinité_des_noeuds',
         'Configuration_de_la_fiabilité_des_applications/Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications',
         'Configuration_de_la_fiabilité_des_applications/Exercice_guidé_Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications',
         'Configuration_de_la_fiabilité_des_applications/Mise_a_l\'echelle_automatique_des_applications',
@@ -118,7 +117,14 @@ const sidebars = {
         'Gestion_et_administration_du_cluster/Résumé',
       ],
     },
-  ],   
+    {
+      type: 'category',
+      label: 'Annexe',
+      items: [
+        'Annexe/Commandes_OpenShift',
+      ],
+    },
+  ],
 };
 
 export default sidebars;
