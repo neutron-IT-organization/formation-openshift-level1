@@ -104,12 +104,7 @@ Chaque module de la formation suit le même enchaînement :
 ```
 
 :::note Quiz interactifs
-Les quiz sont réalisés avec **Rahoot**. Ils sont accessibles depuis votre navigateur et permettent de vérifier votre compréhension de manière ludique et collaborative.
-:::
-
-:::info Pour le formateur
-Accédez à **[https://rahoot.apps.neutron-sno-office.neutron-it.fr/manager](https://rahoot.apps.neutron-sno-office.neutron-it.fr/manager)**  
-Mot de passe : `formation-openshift`
+Les quiz sont réalisés avec Quizizz. Ils sont accessibles depuis votre navigateur et permettent de vérifier votre compréhension de manière ludique et collaborative.
 :::
 
 ### Outils disponibles pour les exercices
