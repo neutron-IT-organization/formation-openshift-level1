@@ -19,9 +19,6 @@ OpenShift propose deux outils principaux pour interagir avec un cluster depuis u
 
 ### kubectl et oc : différences et complémentarités
 
-![Comparaison oc vs kubectl](./images/oc-vs-kubectl.svg)
-
-*Diagramme comparatif entre `kubectl` (outil standard Kubernetes) et `oc` (extension OpenShift)*
 
 `kubectl` est l'outil de ligne de commande officiel de Kubernetes. Il communique directement avec l'API Kubernetes et permet de gérer n'importe quel cluster compatible (GKE, AKS, EKS, OpenShift, etc.).
 

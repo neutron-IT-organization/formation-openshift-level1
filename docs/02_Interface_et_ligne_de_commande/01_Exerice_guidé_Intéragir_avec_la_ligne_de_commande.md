@@ -4,9 +4,6 @@
 
 Dans cet exercice, vous allez découvrir comment **piloter un cluster OpenShift depuis la ligne de commande**. Vous partirez de zéro : connexion au cluster, exploration des commandes, déploiement d'une application, consultation des logs, et nettoyage. Chaque étape est détaillée pas à pas pour que vous puissiez suivre même si c'est votre première fois sur OpenShift.
 
-![oc vs kubectl](./images/oc-vs-kubectl.svg)
-
-![Déroulement](./images/exercise-flow-cli.svg)
 
 ---
 
