@@ -253,7 +253,18 @@ La commande `oc new-app` est l'une des grandes forces d'OpenShift. Elle permet d
 
 ### Instructions
 
-Déployez l'application avec la commande suivante :
+1. Basculez d'abord vers votre namespace de travail `<CITY>-user` :
+
+```bash
+oc project <CITY>-user
+```
+
+**Sortie attendue :**
+```
+Now using project "paris-user" on server "https://api.neutron-sno-office.neutron-it.fr:6443".
+```
+
+2. Déployez l'application avec la commande suivante :
 
 ```bash
 oc new-app --image=quay.io/neutron-it/p02l01-go-app
