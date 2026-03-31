@@ -72,6 +72,11 @@ const config = {
             label: "GitHub",
             position: "right",
           },
+          {
+            to: "/Guide_Formateur",
+            label: "Accès Formateur",
+            position: "right",
+          },
         ],
       },
       footer: {
