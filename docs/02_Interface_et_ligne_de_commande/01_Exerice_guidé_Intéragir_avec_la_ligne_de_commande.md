@@ -52,8 +52,6 @@ Le menu se trouve tout en haut à droite de l'interface. Si vous ne voyez pas vo
 
 4. Une nouvelle page s'ouvre. Cliquez sur **"Display Token"** pour révéler votre token de connexion.
 
-    ![Display Token](./images/display-token.png)
-
 5. **Copiez la commande `oc login`** affichée sur la page (elle contient votre token unique).
 
 6. Ouvrez le **terminal web OpenShift** en cliquant sur l'icône de terminal en haut à droite de la console.
@@ -296,7 +294,7 @@ oc status
 
 **Sortie attendue :**
 ```
-In project paris-user-ns on server https://api.neutron-sno-office.neutron-it.fr:6443
+In project paris-user on server https://api.neutron-sno-office.neutron-it.fr:6443
 
 svc/p02l01-go-app - 172.30.x.x ports 8080
   deployment/p02l01-go-app deploys istag/p02l01-go-app:latest
