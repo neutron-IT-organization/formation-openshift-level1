@@ -150,7 +150,7 @@ Une image de conteneur est un **modèle en lecture seule** qui sert à créer de
 3. Cliquez sur **"Create Deployment"** en haut à droite.
 4. La console ouvre un **éditeur YAML** avec un modèle de déploiement pré-rempli.
 
-![Création d'un Deployment](./images/console-create-deployment.svg)
+![Création d'un Deployment](./images/create_deployment_yaml.png)
 
 ### 3.2 — Saisir le manifeste YAML
 
@@ -192,6 +192,8 @@ En cliquant sur "Create", OpenShift crée un **Deployment** qui décrit comment 
 Vous avez réussi cette étape si :
 - La console affiche la page de détails du Deployment `hello-openshift`
 - Le statut indique **1 of 1 pods** disponible après quelques secondes
+
+![Statut du Deployment](./images/deployment_status.png)
 
 ---
 
@@ -235,8 +237,11 @@ Le **Service** utilise le champ `selector` pour trouver les pods correspondants 
    - **Name** : `hello-openshift`
    - **Service** : sélectionnez `hello-openshift`
    - **Target port** : `8080 -> 8080 (TCP)`
-   - Laissez les autres options par défaut (pas de TLS pour cet exercice)
+   - Cochez la case **Secure Route**
+   - Sélectionnez **Edge** dans le champ **TLS termination**
 8. Cliquez sur **"Create"**.
+
+![Sécurisation de la Route](./images/route_security.png)
 
 ### Vérification
 

@@ -45,10 +45,6 @@ Les sessions OpenShift expirent après un certain délai d'inactivité. Si vous 
 
 Une fois connecté, vous arrivez sur le tableau de bord principal de la console OpenShift.
 
-![Vue d'ensemble de la console OpenShift](/img/screenshots/dashboard.png)
-
-*Tableau de bord principal : accès rapide aux ressources, alertes et état du cluster.*
-
 :::info Depuis OpenShift 4.17, la console ne propose plus qu'une seule perspective unifiée : **Administrator**. L'ancienne perspective Developer a été supprimée.
 :::
 
