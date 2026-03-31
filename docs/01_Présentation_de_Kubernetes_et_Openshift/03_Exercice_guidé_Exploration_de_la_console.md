@@ -50,7 +50,7 @@ Ajoutez cette URL à vos favoris, vous en aurez besoin tout au long de la format
 ![Sélection de l'Identity Provider](/img/screenshots/login_selector.png)
 
 4. Saisissez vos identifiants :
-   - **Utilisateur** : `<CITY>-user` (par exemple : `prague-user`)
+   - **Utilisateur** : `<CITY>-user` (par exemple : `paris-user`)
 
 ![Formulaire de connexion](/img/screenshots/login_form.png)
 
@@ -111,7 +111,7 @@ Pensez au projet comme à un **dossier** sur votre ordinateur : il vous permet d
 ![Create Project](/img/screenshots/create_project_form.png)
 
 3. Remplissez le formulaire :
-   - **Name** : `console-exploration-<CITY>` (par exemple : `console-exploration-prague`)
+   - **Name** : `console-exploration-<CITY>` (par exemple : `console-exploration-paris`)
    - **Display Name** : `Exploration Console` (optionnel)
    - **Description** : `Mon premier projet OpenShift` (optionnel)
 
@@ -121,7 +121,7 @@ Le nom du projet doit :
 - Ne contenir que des lettres, chiffres et tirets (`-`)
 - Commencer par une lettre
 
-Exemple valide : `console-exploration-prague`
+Exemple valide : `console-exploration-paris`
 Exemple invalide : `Console_Exploration_Prague`
 :::
 

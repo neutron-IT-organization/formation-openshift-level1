@@ -26,9 +26,9 @@ A la fin de cet exercice, vous serez capable de :
 
 :::info Informations de connexion
 - **URL de l'API OpenShift** : `https://api.neutron-sno-office.neutron-it.fr:6443`
-- **Utilisateur** : `<CITY>-user` (remplacez `<CITY>` par le nom de votre ville, par exemple `prague-user`)
+- **Utilisateur** : `<CITY>-user` (remplacez `<CITY>` par le nom de votre ville, par exemple `paris-user`)
 - **Mot de passe** : `OpenShift4formation!`
-- **Projet** : `<CITY>-user-ns` (par exemple `prague-user-ns`)
+- **Projet** : `<CITY>-user-ns` (par exemple `paris-user-ns`)
 :::
 
 ---
@@ -89,9 +89,9 @@ Login successful.
 
 You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-  * prague-user-ns
+  * paris-user-ns
 
-Using project "prague-user-ns".
+Using project "paris-user-ns".
 ```
 
 ### Vérification
@@ -104,7 +104,7 @@ oc whoami
 
 **Sortie attendue :**
 ```
-prague-user
+paris-user
 ```
 
 Si vous voyez votre nom d'utilisateur, vous êtes prêt pour la suite.
@@ -214,7 +214,7 @@ oc project
 
 **Sortie attendue :**
 ```
-Using project "prague-user-ns" from context named "prague-user-ns/api-neutron-sno-office-neutron-it-fr:6443/prague-user" on server "https://api.neutron-sno-office.neutron-it.fr:6443".
+Using project "paris-user-ns" from context named "paris-user-ns/api-neutron-sno-office-neutron-it-fr:6443/paris-user" on server "https://api.neutron-sno-office.neutron-it.fr:6443".
 ```
 
 :::tip Astuce
@@ -241,9 +241,9 @@ oc projects
 ```
 You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-  * prague-user-ns
+  * paris-user-ns
 
-Using project "prague-user-ns" on server "https://api.neutron-sno-office.neutron-it.fr:6443".
+Using project "paris-user-ns" on server "https://api.neutron-sno-office.neutron-it.fr:6443".
 ```
 
 Vous devriez voir votre projet `<CITY>-user-ns` dans la liste.
@@ -299,7 +299,7 @@ oc status
 
 **Sortie attendue :**
 ```
-In project prague-user-ns on server https://api.neutron-sno-office.neutron-it.fr:6443
+In project paris-user-ns on server https://api.neutron-sno-office.neutron-it.fr:6443
 
 svc/p02l01-go-app - 172.30.x.x ports 8080
   deployment/p02l01-go-app deploys istag/p02l01-go-app:latest
@@ -352,7 +352,7 @@ oc describe deployment/p02l01-go-app
 **Sortie attendue (extrait) :**
 ```
 Name:                   p02l01-go-app
-Namespace:              prague-user-ns
+Namespace:              paris-user-ns
 Selector:               deployment=p02l01-go-app
 Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
 ...
@@ -545,7 +545,7 @@ oc get all
 
 **Sortie attendue :**
 ```
-No resources found in prague-user-ns namespace.
+No resources found in paris-user-ns namespace.
 ```
 
 :::tip

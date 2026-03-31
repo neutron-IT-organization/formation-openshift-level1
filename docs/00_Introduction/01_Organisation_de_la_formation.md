@@ -15,11 +15,7 @@ Chaque participant se voit attribuer un namespace identifié par un nom de ville
 La liste complète des villes disponibles est la suivante :
 
 ```
-Tokyo, Paris, Londres, Rome, Sydney, Rio, Istanbul, Berlin, Nairobi, Madrid,
-Toronto, Singapour, Stockholm, Athènes, Varsovie, Oslo, Helsinki, Lisbonne,
-Vienne, Brasilia, Canberra, Ottawa, Séoul, Le Cap, Budapest, Dublin, Zurich,
-Cardiff, Nicosie, Sofia, Suva, Riga, Vilnius, Alger, Abou Dabi, Bagdad,
-Bangkok, Le Caire, Freetown, Kaboul, Kinshasa, Libreville, Mexico, Reykjavik, Prague
+Tokyo, Paris, Londres, Rome, Sydney, Rio, Istanbul, Berlin, Nairobi, Madrid
 ```
 
 ### Droits et permissions
@@ -55,7 +51,6 @@ Votre nom d'utilisateur est dérivé du nom de votre ville. Par exemple :
 
 Le mot de passe vous sera communiqué par le formateur au début de la session.
 
-![Exemple de compte utilisateur](./images/prague-user.png)
 
 :::tip Fournisseur d'identité
 Sur la page de connexion, sélectionnez le fournisseur **"Neutron Guest Identity Management"** pour vous authentifier avec les identifiants fournis.

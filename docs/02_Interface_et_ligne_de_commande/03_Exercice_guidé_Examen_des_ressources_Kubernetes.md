@@ -42,11 +42,11 @@ Il existe aussi un champ `status` que Kubernetes remplit automatiquement -- vous
 |---|---|
 | Namespace partagé (lecture seule) | `shared-workloads` |
 | Application de démonstration | `shared-app` |
-| Votre namespace personnel | `<CITY>-user-ns` (ex: `prague-user-ns`) |
-| Votre déploiement | `<CITY>-demo-app` (ex: `prague-demo-app`) |
+| Votre namespace personnel | `<CITY>-user-ns` (ex: `paris-user-ns`) |
+| Votre déploiement | `<CITY>-demo-app` (ex: `paris-demo-app`) |
 
 :::warning Remplacez les valeurs
-Tout au long de cet exercice, remplacez **`<CITY>`** par le nom de votre ville (en minuscules, sans accents). Par exemple, si votre ville est Prague, utilisez `prague`.
+Tout au long de cet exercice, remplacez **`<CITY>`** par le nom de votre ville (en minuscules, sans accents). Par exemple, si votre ville est Prague, utilisez `paris`.
 :::
 
 ---
@@ -256,14 +256,14 @@ Par :
 
 ### Résultat final
 
-Votre fichier `deployment.yaml` doit ressembler a ceci (exemple pour la ville **prague**) :
+Votre fichier `deployment.yaml` doit ressembler a ceci (exemple pour la ville **paris**) :
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prague-demo-app
-  namespace: prague-user-ns
+  name: paris-demo-app
+  namespace: paris-user-ns
 spec:
   replicas: 1
   selector:
@@ -315,7 +315,7 @@ oc apply -f deployment.yaml
 
 **Sortie attendue :**
 ```
-deployment.apps/prague-demo-app created
+deployment.apps/paris-demo-app created
 ```
 
 :::tip apply vs create
@@ -334,7 +334,7 @@ oc get deployment -n <CITY>-user-ns
 **Sortie attendue :**
 ```
 NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
-prague-demo-app       1/1     1            1           30s
+paris-demo-app       1/1     1            1           30s
 ```
 
 Vérifiez que le pod associé tourne correctement :
@@ -346,12 +346,11 @@ oc get pods -n <CITY>-user-ns
 **Sortie attendue :**
 ```
 NAME                                 READY   STATUS    RESTARTS   AGE
-prague-demo-app-75bb5d5698-x9kml     1/1     Running   0          45s
+paris-demo-app-75bb5d5698-x9kml     1/1     Running   0          45s
 ```
 
 Voici a quoi ressemble un déploiement réussi dans la console web OpenShift :
 
-![Application déployée](./images/prague-l03p02-app.png)
 
 :::warning Si le pod n'est pas en status Running
 Si votre pod est en status `CrashLoopBackOff`, `Error` ou `Pending`, vérifiez :
@@ -385,7 +384,7 @@ oc delete -f deployment.yaml
 
 **Sortie attendue :**
 ```
-deployment.apps/prague-demo-app deleted
+deployment.apps/paris-demo-app deleted
 ```
 
 Vérifiez que le déploiement a bien été supprimé :
@@ -396,12 +395,12 @@ oc get deployment -n <CITY>-user-ns
 
 **Sortie attendue :**
 ```
-No resources found in prague-user-ns namespace.
+No resources found in paris-user-ns namespace.
 ```
 
 :::tip Supprimer avec le fichier vs par le nom
 - `oc delete -f deployment.yaml` : supprime toutes les ressources décrites dans le fichier
-- `oc delete deployment prague-demo-app -n prague-user-ns` : supprime une ressource spécifique par son nom
+- `oc delete deployment paris-demo-app -n paris-user-ns` : supprime une ressource spécifique par son nom
 
 Les deux méthodes fonctionnent, mais utiliser le fichier est pratique quand vous avez plusieurs ressources a supprimer en meme temps.
 :::

@@ -27,7 +27,7 @@ Le fournisseur **htpasswd** est le plus simple à configurer. Il repose sur un f
 htpasswd -c -B -b /tmp/htpasswd paris-user MonMotDePasse!
 
 # Ajouter d'autres utilisateurs
-htpasswd -B -b /tmp/htpasswd prague-user AutreMotDePasse!
+htpasswd -B -b /tmp/htpasswd paris-user AutreMotDePasse!
 htpasswd -B -b /tmp/htpasswd admin AdminPassword!
 ```
 
@@ -192,8 +192,8 @@ oc adm policy remove-cluster-role-from-user cluster-admin admin
 # Syntaxe générale
 oc policy add-role-to-user <role> <username> -n <namespace>
 
-# Exemple : donner le rôle "edit" à prague-user dans le projet "webapp"
-oc policy add-role-to-user edit prague-user -n webapp
+# Exemple : donner le rôle "edit" à paris-user dans le projet "webapp"
+oc policy add-role-to-user edit paris-user -n webapp
 ```
 
 ### Vérifier qui peut effectuer une action
@@ -250,10 +250,10 @@ oc apply -f rolebinding-paris-user.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: cluster-reader-prague-user
+  name: cluster-reader-paris-user
 subjects:
   - kind: User
-    name: prague-user
+    name: paris-user
     apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
