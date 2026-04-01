@@ -32,15 +32,15 @@ Toutes les commandes `oc` de cet exercice sont à exécuter dans le **terminal w
 Un **Deployment** est un objet Kubernetes qui gère le cycle de vie de vos pods. Il garantit que le nombre souhaité de réplicas est toujours en cours d'exécution. Si un pod tombe en panne, le Deployment en crée automatiquement un nouveau. C'est la manière standard de déployer des applications **sans état** (stateless) sur OpenShift.
 :::
 
-Nous allons déployer une application web PHP dont chaque version affiche une **page de couleur différente** : la version 1 affiche une page **bleue**, la version 2 affiche une page **verte**. Cela nous permettra de voir visuellement la transition lors du Rolling Update.
+Nous allons déployer une application web dont chaque version affiche une **page de couleur différente** : la version 1 affiche une page **bleue**, la version 2 affiche une page **verte**. Cela nous permettra de voir visuellement la transition lors du Rolling Update.
 
 | Paramètre | Valeur | Explication |
 |---|---|---|
 | **Nom** | `my-deployment` | Le nom de notre déploiement |
 | **Réplicas** | `2` | 2 copies du pod pour la haute disponibilité |
-| **Image v1** | `quay.io/redhatworkshops/welcome-php:ffcd15` | Page d'accueil bleue |
-| **Image v2** | `quay.io/redhatworkshops/welcome-php:8b052ea` | Page d'accueil verte |
-| **Port** | `8080` | Port d'écoute de l'application PHP |
+| **Image v1** | `quay.io/redhatworkshops/web-blue-green:blue` | Page d'accueil bleue |
+| **Image v2** | `quay.io/redhatworkshops/web-blue-green:green` | Page d'accueil verte |
+| **Port** | `8080` | Port d'écoute de l'application |
 | **CPU request** | `10m` | Le minimum de CPU garanti |
 | **CPU limit** | `100m` | Le maximum de CPU autorisé |
 | **Mémoire request** | `64Mi` | Le minimum de mémoire garanti |
@@ -98,7 +98,7 @@ spec:
     spec:
       containers:
       - name: my-container
-        image: quay.io/redhatworkshops/welcome-php:ffcd15
+        image: quay.io/redhatworkshops/web-blue-green:blue
         ports:
         - containerPort: 8080
         resources:
@@ -132,6 +132,9 @@ spec:
     name: my-deployment
   port:
     targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
 ```
 
 :::info Décryptage du YAML
@@ -142,9 +145,11 @@ Voici les sections clés à comprendre :
 - **`strategy.type: RollingUpdate`** : lors d'une mise à jour, les pods sont remplacés progressivement (et non tous en même temps).
 - **`maxSurge: 1`** : pendant la mise à jour, au maximum 1 pod supplémentaire peut être créé (donc 3 pods temporairement).
 - **`maxUnavailable: 1`** : pendant la mise à jour, au maximum 1 pod peut être indisponible (donc minimum 1 pod actif).
-- **`containerPort: 8080`** : le port sur lequel l'application PHP écoute dans le container.
+- **`containerPort: 8080`** : le port sur lequel l'application écoute dans le container.
 - **`Service`** : expose les pods à l'intérieur du cluster sur le port 8080.
 - **`Route`** : génère une URL publique pour accéder au Service depuis l'extérieur du cluster.
+- **`tls.termination: edge`** : le chiffrement TLS est géré par le router OpenShift. Le trafic est chiffré entre le navigateur et le router, puis circule en HTTP à l'intérieur du cluster.
+- **`insecureEdgeTerminationPolicy: Redirect`** : toute tentative d'accès en HTTP est automatiquement redirigée vers HTTPS.
 :::
 
 ---
@@ -240,7 +245,7 @@ oc get route my-deployment
 
 ```
 NAME            HOST/PORT                                                    PATH   SERVICES        PORT   TERMINATION   WILDCARD
-my-deployment   my-deployment-<CITY>-user-ns.apps.<cluster-domain>                 my-deployment   8080                 None
+my-deployment   my-deployment-<CITY>-user-ns.apps.<cluster-domain>                 my-deployment   8080   edge/Redirect  None
 ```
 
 Pour extraire uniquement l'URL :
@@ -251,10 +256,10 @@ oc get route my-deployment -o jsonpath='{.spec.host}'
 
 ### 4.4 : Ouvrir l'application dans le navigateur
 
-Copiez l'URL affichée et ouvrez-la dans votre navigateur en préfixant avec `http://` :
+Copiez l'URL affichée et ouvrez-la dans votre navigateur en préfixant avec `https://` :
 
 ```
-http://my-deployment-<CITY>-user-ns.apps.<cluster-domain>
+https://my-deployment-<CITY>-user-ns.apps.<cluster-domain>
 ```
 
 Vous devriez voir une **page bleue** affichant un message de bienvenue avec le numéro de version.
@@ -281,7 +286,7 @@ RollingUpdateStrategy:  1 max unavailable, 1 max surge
 Pod Template:
   Containers:
    my-container:
-    Image:      quay.io/redhatworkshops/welcome-php:ffcd15
+    Image:      quay.io/redhatworkshops/web-blue-green:blue
     Port:       8080/TCP
     Limits:
       cpu:     100m
@@ -345,10 +350,10 @@ Le flag `-w` (watch) affiche les changements en temps réel. Appuyez sur `Ctrl+C
 
 ### 5.3 : Lancer la mise à jour vers la version 2 (page verte)
 
-Nous allons passer du tag `ffcd15` (page bleue) au tag `8b052ea` (page verte) :
+Nous allons passer du tag `blue` (page bleue) au tag `green` (page verte) :
 
 ```bash
-oc set image deployment/my-deployment my-container=quay.io/redhatworkshops/welcome-php:8b052ea
+oc set image deployment/my-deployment my-container=quay.io/redhatworkshops/web-blue-green:green
 ```
 
 **Sortie attendue :**
@@ -378,7 +383,7 @@ Retournez dans votre navigateur et **rafraîchissez la page** (F5 ou Ctrl+R).
 La page doit maintenant afficher une **couleur verte**, confirmant que vous êtes sur la version 2 de l'application.
 
 :::note Pourquoi le changement de couleur ?
-Les deux tags d'image (`ffcd15` et `8b052ea`) correspondent à deux versions du code PHP avec des feuilles de style différentes. C'est un exemple typique de ce qui se passe lors d'une mise à jour : les utilisateurs voient la nouvelle interface dès que leurs pods sont migrés.
+Les deux tags d'image (`blue` et `green`) correspondent à deux versions de l'application avec des pages d'accueil différentes. C'est un exemple typique de ce qui se passe lors d'une mise à jour : les utilisateurs voient la nouvelle interface dès que leurs pods sont migrés.
 :::
 
 ### Vérification
@@ -392,7 +397,7 @@ oc get deployment my-deployment -o jsonpath='{.spec.template.spec.containers[0].
 **Sortie attendue :**
 
 ```
-quay.io/redhatworkshops/welcome-php:8b052ea
+quay.io/redhatworkshops/web-blue-green:green
 ```
 
 Vérifiez que tous les pods sont en cours d'exécution :
@@ -433,12 +438,12 @@ REVISION  CHANGE-CAUSE
 ```
 
 :::info Lecture de l'historique
-- **Revision 1** : notre premier déploiement avec l'image `welcome-php:ffcd15` (page bleue)
-- **Revision 2** : la mise à jour avec l'image `welcome-php:8b052ea` (page verte)
+- **Revision 1** : notre premier déploiement avec l'image `web-blue-green:blue` (page bleue)
+- **Revision 2** : la mise à jour avec l'image `web-blue-green:green` (page verte)
 - **CHANGE-CAUSE** est vide car nous n'avons pas annoté nos déploiements. Vous pouvez ajouter une cause avec :
 
 ```bash
-oc annotate deployment/my-deployment kubernetes.io/change-cause="Mise à jour vers la page verte (8b052ea)"
+oc annotate deployment/my-deployment kubernetes.io/change-cause="Mise à jour vers la page verte (green)"
 ```
 :::
 
@@ -457,7 +462,7 @@ Pod Template:
                 pod-template-hash=5d8f6b7c4a
   Containers:
    my-container:
-    Image:      quay.io/redhatworkshops/welcome-php:ffcd15
+    Image:      quay.io/redhatworkshops/web-blue-green:blue
     Port:       8080/TCP
     Limits:
       cpu:     100m
@@ -469,7 +474,7 @@ Pod Template:
 
 ### Vérification
 
-Confirmez que vous avez bien 2 révisions dans l'historique. La révision 1 doit contenir l'image `welcome-php:ffcd15` (page bleue) et la révision 2 l'image `welcome-php:8b052ea` (page verte).
+Confirmez que vous avez bien 2 révisions dans l'historique. La révision 1 doit contenir l'image `web-blue-green:blue` (page bleue) et la révision 2 l'image `web-blue-green:green` (page verte).
 
 ---
 
@@ -478,7 +483,7 @@ Confirmez que vous avez bien 2 révisions dans l'historique. La révision 1 doit
 **Pourquoi cette étape ?** En production, si une mise à jour introduit un bug ou un comportement inattendu, vous devez pouvoir **revenir rapidement** à la version précédente. C'est le principe du rollback.
 
 :::warning Scénario
-Imaginons que la version verte (`8b052ea`) de notre application pose un problème (erreurs, mauvaise lisibilité, régression...). Nous devons revenir à la version bleue (`ffcd15`) qui fonctionnait correctement.
+Imaginons que la version verte (`green`) de notre application pose un problème (erreurs, mauvaise lisibilité, régression...). Nous devons revenir à la version bleue (`blue`) qui fonctionnait correctement.
 :::
 
 ### 7.1 : Lancer le rollback
@@ -549,11 +554,11 @@ oc get deployment my-deployment -o jsonpath='{.spec.template.spec.containers[0].
 **Sortie attendue :**
 
 ```
-quay.io/redhatworkshops/welcome-php:ffcd15
+quay.io/redhatworkshops/web-blue-green:blue
 ```
 
 :::tip Succès !
-L'image est bien revenue à `welcome-php:ffcd15`. La page bleue est de retour. Le rollback a fonctionné correctement.
+L'image est bien revenue à `web-blue-green:blue`. La page bleue est de retour. Le rollback a fonctionné correctement.
 :::
 
 #### Vérifier l'historique après le rollback
@@ -624,7 +629,7 @@ Voici un résumé visuel de toutes les commandes et concepts vus dans cet exerci
 | Lister les pods | `oc get pods` | Affiche les pods en cours d'exécution |
 | Obtenir l'URL | `oc get route my-deployment` | Affiche l'URL publique de l'application |
 | Détails du déploiement | `oc describe deployment my-deployment` | Affiche les détails complets |
-| Mettre à jour l'image | `oc set image deployment/my-deployment my-container=<image>` | Lance un Rolling Update |
+| Mettre à jour l'image | `oc set image deployment/my-deployment my-container=quay.io/redhatworkshops/web-blue-green:green` | Lance un Rolling Update |
 | Suivre la mise à jour | `oc rollout status deployment/my-deployment` | Affiche la progression du rollout |
 | Voir l'historique | `oc rollout history deployment/my-deployment` | Liste les révisions |
 | Rollback | `oc rollout undo deployment/my-deployment` | Revient à la version précédente |
