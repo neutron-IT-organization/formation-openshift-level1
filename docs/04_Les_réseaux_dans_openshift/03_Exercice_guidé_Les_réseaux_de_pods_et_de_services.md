@@ -1,4 +1,4 @@
-# Exercice Guidé : Les Services et les Routes (Version HTTPS)
+# Exercice Guidé : Les Services et les Routes
 
 ## Ce que vous allez apprendre
 
@@ -106,7 +106,7 @@ spec:
     kind: Service
     name: welcome-svc
   port:
-    targetPort: 80
+    targetPort: 8080
   tls:
     termination: edge                        # HTTPS sécurisé
     insecureEdgeTerminationPolicy: Redirect  # Redirection HTTP -> HTTPS
