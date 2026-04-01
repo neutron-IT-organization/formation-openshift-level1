@@ -49,9 +49,14 @@ Nous allons utiliser l'application de démo **Rollouts Demo** (version Go/React 
 | **Image (V1)** | `docker.io/argoproj/rollouts-demo:blue` | Affiche des carrés **bleus** |
 | **Image (V2)** | `docker.io/argoproj/rollouts-demo:green` | Affiche des carrés **verts** |
 | **Port** | `8080` | Port d'écoute de l'application |
-| **CPU request** | `10m` | Minimum CPU garanti |
-| **CPU limit** | `100m` | Maximum CPU autorisé |
-| **Mémoire limit** | `128Mi` | Maximum mémoire autorisé |
+| **CPU request** | `5m` | Minimum CPU garanti |
+| **CPU limit** | `50m` | Maximum CPU autorisé |
+| **Mémoire request** | `16Mi` | Minimum mémoire garanti |
+| **Mémoire limit** | `64Mi` | Maximum mémoire autorisé |
+
+:::warning Attention aux Quotas
+Dans un environnement de formation avec des ressources limitées (comme un cluster SNO), il est possible que votre projet ait un **ResourceQuota**. Si le quota est plein, OpenShift ne pourra pas créer de pods supplémentaires pendant la mise à jour. C'est pourquoi nous allons configurer une stratégie qui ne demande pas de ressources additionnelles.
+:::
 
 ---
 
@@ -82,8 +87,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+      maxSurge: 0
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -97,11 +102,11 @@ spec:
         - containerPort: 8080
         resources:
           requests:
-            memory: "32Mi"
-            cpu: "10m"
+            memory: "16Mi"
+            cpu: "5m"
           limits:
-            memory: "128Mi"
-            cpu: "100m"
+            memory: "64Mi"
+            cpu: "50m"
 ---
 apiVersion: v1
 kind: Service
@@ -211,7 +216,14 @@ oc delete -f my-app.yaml
 | Mise à jour | `oc set image ...=...:green` | Transition progressive **Bleu -> Vert** |
 | Rollback | `oc rollout undo ...` | Transition de retour **Vert -> Bleu** |
 
-### Pourquoi cette méthode est moderne ?
-*   **Zero Downtime** : L'utilisation de `maxUnavailable: 0` garantit que l'utilisateur n'a jamais d'erreur pendant la mise à jour.
+:::info Pourquoi maxSurge: 0 ?
+Par défaut, Kubernetes utilise `maxSurge: 25%`, ce qui signifie qu'il crée de nouveaux pods **avant** de supprimer les anciens. Si votre quota de ressources est plein, cela échouera. Avec **`maxSurge: 0`** et **`maxUnavailable: 1`**, OpenShift va :
+1. Arrêter un ancien pod (libérant ainsi de la place dans le quota).
+2. Créer un nouveau pod.
+3. Répéter l'opération pour le second pod.
+Cela permet de mettre à jour l'application même quand les ressources sont au maximum !
+:::
+
+*   **Zero Downtime** : Bien qu'un pod soit temporairement arrêté, le second pod continue de répondre aux requêtes, garantissant la continuité de service.
 *   **Visibilité** : Le changement de couleur par pod/requête permet de comprendre immédiatement le concept de répartition de charge (Load Balancing) et de mise à jour progressive.
 *   **Sécurité** : La route utilise une terminaison **TLS Edge**, standard de l'industrie pour sécuriser l'accès aux microservices.
