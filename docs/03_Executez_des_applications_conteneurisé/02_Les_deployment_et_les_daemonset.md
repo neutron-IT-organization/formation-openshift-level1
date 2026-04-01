@@ -23,12 +23,7 @@ Les **Deployments** et les **DaemonSets** sont les deux workloads les plus fréq
 
 Un **Deployment** est un objet déclaratif qui délègue la gestion des pods à une chaîne de contrôleurs. Lorsque vous créez ou modifiez un Deployment, le contrôleur de déploiement crée un nouveau **ReplicaSet**, qui prend en charge la création et le maintien des **pods**.
 
-```
-Deployment  (gère)►  ReplicaSet (actif)   (crée)►  Pod-1
-                                                          ►  Pod-2
-                                                          ►  Pod-3
-            (conserve)►  ReplicaSet (précédent, 0 replicas)
-```
+![Architecture Deployment → ReplicaSet → Pods](./images/deployment-replicaset-pods.svg)
 
 Cette architecture en deux niveaux est ce qui rend les rollbacks instantanés : il suffit de réactiver un ReplicaSet précédent.
 
