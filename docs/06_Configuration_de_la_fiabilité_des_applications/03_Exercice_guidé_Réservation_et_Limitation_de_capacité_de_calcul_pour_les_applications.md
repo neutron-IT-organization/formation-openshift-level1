@@ -436,7 +436,8 @@ resourcequota "quota-formation" deleted
 Vérifiez que tout est bien supprimé :
 
 ```bash
-oc get deployment,resourcequota
+oc get deployment -l app=quota-demo-app
+oc get resourcequota
 ```
 
 **Sortie attendue :**

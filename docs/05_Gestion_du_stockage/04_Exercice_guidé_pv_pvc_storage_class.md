@@ -48,7 +48,7 @@ Une application **Todo App** connectée à PostgreSQL est **déjà déployée** 
 Commencez par vérifier que les déploiements sont bien présents :
 
 ```bash
-oc get deployment
+oc get deployment todo-app postgres
 ```
 
 **Sortie attendue :**

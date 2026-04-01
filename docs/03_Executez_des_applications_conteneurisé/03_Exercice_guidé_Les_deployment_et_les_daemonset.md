@@ -195,7 +195,7 @@ Utilisez toujours `oc apply -f` plutôt que `oc create -f`. La commande `apply` 
 ### 4.1 : Vérifier l'état du Deployment
 
 ```bash
-oc get deployments
+oc get deployments -l app=my-app
 ```
 
 **Sortie attendue :**
@@ -598,7 +598,7 @@ route.route.openshift.io "my-deployment" deleted
 Vérifiez que le déploiement, le service, la route et les pods ont bien été supprimés :
 
 ```bash
-oc get deployments,services,routes,pods
+oc get deployments,services,routes,pods -l app=my-app
 ```
 
 **Sortie attendue :**
@@ -620,7 +620,7 @@ Voici un résumé visuel de toutes les commandes et concepts vus dans cet exerci
 | Étape | Commande | Description |
 |---|---|---|
 | Créer les ressources | `oc apply -f my-deployment.yaml` | Crée le Deployment, Service et Route |
-| Vérifier le déploiement | `oc get deployments` | Affiche l'état des déploiements |
+| Vérifier le déploiement | `oc get deployments -l app=my-app` | Affiche l'état des déploiements |
 | Lister les pods | `oc get pods` | Affiche les pods en cours d'exécution |
 | Obtenir l'URL | `oc get route my-deployment` | Affiche l'URL publique de l'application |
 | Détails du déploiement | `oc describe deployment my-deployment` | Affiche les détails complets |
