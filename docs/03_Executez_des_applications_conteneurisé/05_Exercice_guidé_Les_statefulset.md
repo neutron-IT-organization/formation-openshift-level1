@@ -1,4 +1,4 @@
-# Exercice Guidé : Les StatefulSets (Version Visuelle avec Apache)
+# Exercice Guidé : Les StatefulSets
 
 ## Ce que vous allez apprendre
 
@@ -156,13 +156,13 @@ oc get route web-route
 
 Ouvrez l'URL et actualisez plusieurs fois. 
 
-:::tip Pourquoi je vois toujours le même pod ?
-Par défaut, OpenShift utilise des **sessions collantes** (Sticky Sessions) pour que vous restiez sur le même serveur. Nous avons ajouté une annotation dans le YAML pour désactiver cela. Si vous voyez toujours le même pod, essayez de **rafraîchir la page vigoureusement** ou ouvrez l'URL dans un **onglet de navigation privée**.
-:::
 
 Vous verrez alterner :
 - La page du **Pod 0** (Bleue)
 - La page du **Pod 1** (Verte)
+
+![Aperçu Pod 0](/img/screenshots/stateful_pod0.png)
+![Aperçu Pod 1](/img/screenshots/stateful_pod1.png)
 
 ---
 
