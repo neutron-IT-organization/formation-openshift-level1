@@ -175,6 +175,10 @@ Si les deux paramètres sont à `0`, Kubernetes ne peut ni créer de nouveaux po
 
 La stratégie **Recreate** arrête tous les pods existants avant de créer les nouveaux. Cela provoque une interruption de service, mais garantit qu'aucune ancienne et nouvelle version de l'application ne coexistent.
 
+![Déroulement d'une recréation complète (recreate)](./images/recreate-diagram.svg)
+
+*Lors d'un recreate, tous les pods v1 sont supprimés simultanément avant que les pods v2 ne soient créés, entraînant une interruption de service.*
+
 ```yaml
 strategy:
   type: Recreate
