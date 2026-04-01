@@ -161,6 +161,8 @@ Copiez l'URL (HOST/PORT) et ouvrez-la dans votre navigateur (utilisez `https://`
 
 Vous devriez voir une interface moderne affichant une matrice de petits carrés **bleus** qui clignotent. 
 
+![Aperçu de l'application Rollouts Demo (Bleu)](/img/screenshots/rollouts_demo_blue.png)
+
 :::info Que visualisez-vous ?
 Chaque carré clignotant est une requête envoyée par votre navigateur au Service, qui la transmet à l'un de vos deux pods. Comme les deux pods utilisent actuellement l'image `blue`, tous les carrés sont bleus. C'est la preuve que votre **Load Balancer** (le Service OpenShift) répartit bien le trafic entre vos pods.
 :::
