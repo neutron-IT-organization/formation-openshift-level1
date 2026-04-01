@@ -133,7 +133,24 @@ Voici les sections clés à comprendre :
 
 ## Étape 3 : Appliquer le déploiement
 
-**Pourquoi cette étape ?** La commande `oc apply` envoie notre fichier YAML au serveur OpenShift, qui va créer toutes les ressources décrites (Deployment, Service, Route).
+**Pourquoi cette étape ?** Nous allons envoyer notre fichier YAML à OpenShift pour créer les trois ressources (Deployment, Service, Route). Deux méthodes sont possibles : via la console web ou via le terminal.
+
+### Méthode 1 : Via la console web (bouton +)
+
+La console OpenShift propose un bouton **+** en haut à droite qui permet de coller directement du YAML et de créer les ressources sans quitter le navigateur.
+
+![Bouton + pour importer du YAML dans la console OpenShift](./images/console-add-button.png)
+
+**Procédure :**
+
+1. Cliquez sur le bouton **+** en haut à droite de la console
+2. Copiez-collez l'intégralité du contenu de votre fichier `my-deployment.yaml`
+3. Remplacez `<CITY>` par votre ville dans les trois champs `namespace`
+4. Cliquez sur **Create**
+
+Les trois ressources (Deployment, Service, Route) sont créées en une seule opération.
+
+### Méthode 2 : Via le terminal (`oc apply`)
 
 ```bash
 oc apply -f my-deployment.yaml
@@ -147,7 +164,7 @@ service/my-deployment created
 route.route.openshift.io/my-deployment created
 ```
 
-:::tip Bonne pratique
+:::tip Bonne pratique CLI
 Utilisez toujours `oc apply -f` plutôt que `oc create -f`. La commande `apply` est **idempotente** : elle crée la ressource si elle n'existe pas, ou la met à jour si elle existe déjà. Cela vous permet de relancer la commande sans erreur.
 :::
 
