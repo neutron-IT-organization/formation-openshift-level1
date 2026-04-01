@@ -73,11 +73,11 @@ oc get pods -o wide
 *Notez l'IP affichée dans la colonne `IP` (ex: `10.128.x.y`).*
 
 ### 2.2 Tester la connexion
-Même sans service, vous pouvez joindre le pod directement depuis n'importe quel conteneur du cluster. Utilisons `oc exec` pour lancer un `curl` :
+Même sans service, vous pouvez joindre le pod directement depuis votre terminal web (car il est lui-même dans le cluster). Lancez un `curl` :
 
 ```bash
 # Remplacez <POD_IP> par l'IP notée précédemment
-oc exec deployment/welcome-app -- curl -s <POD_IP>:8080 | grep "Bienvenue"
+curl -s <POD_IP>:8080 | grep "Bienvenue"
 ```
 
 ---
@@ -118,7 +118,8 @@ oc get svc welcome-svc-clusterip
 
 Testez la connexion (sur le port 80 cette fois) :
 ```bash
-oc exec deployment/welcome-app -- curl -s <CLUSTER_IP>:80 | grep "Bienvenue"
+# Remplacez <CLUSTER_IP> par l'IP notée précédemment
+curl -s <CLUSTER_IP>:80 | grep "Bienvenue"
 ```
 
 ---
