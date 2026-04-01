@@ -152,21 +152,49 @@ spec:
 oc apply -f welcome-nodeport.yaml
 ```
 
-### 4.2 Tester via l'IP du Noeud
-Récupérez l'IP du noeud (le serveur OpenShift) :
-```bash
-oc get nodes -o wide
-```
-*Notez l'IP dans la colonne `INTERNAL-IP` (ou utilisez le nom du cluster).*
+### 4.2 Autoriser le trafic (NetworkPolicy)
+Par défaut, OpenShift peut bloquer le trafic entrant vers vos pods pour des raisons de sécurité. Pour que le NodePort fonctionne depuis l'extérieur, nous devons explicitement autoriser le trafic vers notre application.
 
-Testez depuis le terminal en utilisant l'IP de votre noeud (**192.168.0.251**) :
+Créez le fichier `welcome-policy.yaml` :
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-welcome
+  namespace: <CITY>-user-ns
+spec:
+  podSelector:
+    matchLabels:
+      app: welcome-app
+  ingress:
+  - {} # Autorise tout le trafic entrant vers cette application
+  policyTypes:
+  - Ingress
+```
+
 ```bash
-curl -s http://192.168.0.251:30080 | grep "Bienvenue"
+oc apply -f welcome-policy.yaml
 ```
 
 ---
 
-## Étape 5 : Créer la Route HTTPS (Exposition Publique)
+## Étape 5 : Tester via le navigateur (Mode NodePort)
+
+Contrairement aux étapes précédentes, nous allons tester l'accès depuis **votre propre navigateur** (Chrome/Edge/Firefox) sur votre ordinateur.
+
+1.  Assurez-vous d'être connecté au réseau de la formation (VPN ou réseau local).
+2.  Dans votre barre d'adresse, entrez l'URL suivante :
+    `http://192.168.0.251:30080`
+3.  **Observation** : Vous accédez à l'application directement via l'adresse du serveur OpenShift, sans passer par la Route !
+
+:::warning Attention au port
+Si vous rafraîchissez trop vite ou si le réseau est saturé, cet accès peut être moins stable qu'une Route. Le NodePort est principalement utilisé pour des flux techniques.
+:::
+
+---
+
+## Étape 6 : Créer la Route HTTPS (Exposition Publique)
 
 C'est la méthode recommandée pour exposer des applications web.
 
@@ -208,15 +236,16 @@ Ouvrez l'URL en `https://`. Vous êtes maintenant sur le réseau public sécuris
 |---|---|---|---|
 | **Pod IP** | Interne uniquement | **Instable** | Debugging uniquement |
 | **ClusterIP** | Interne uniquement | **Stable** | Communication entre micro-services |
-| **NodePort** | Interne + IP Noeuds | **Stable** | Accès technique sans Router |
+| **NodePort** | Interne + Bureau local | **Stable** | Accès technique sans Router |
 | **Route HTTPS** | **Internet (Public)** | **Stable** | Production, accès utilisateurs |
 
 ---
 
-## Étape 6 : Nettoyage
+## Étape 7 : Nettoyage
 
 ```bash
 oc delete deployment welcome-app
 oc delete svc welcome-svc-clusterip welcome-svc-nodeport
 oc delete route welcome-route
+oc delete networkpolicy allow-ingress-welcome
 ```
