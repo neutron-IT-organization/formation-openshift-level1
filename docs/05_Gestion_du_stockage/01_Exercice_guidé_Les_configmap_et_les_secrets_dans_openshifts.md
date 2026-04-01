@@ -66,6 +66,18 @@ Pensez à un ConfigMap comme un **fichier de configuration** (type `.env` ou `.p
 
 Créez un fichier nommé `welcome-config.yaml` avec le contenu suivant :
 
+```bash
+vi welcome-config.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano welcome-config.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -190,6 +202,18 @@ L'option `-n` de la commande `echo` évite d'ajouter un retour à la ligne (`\n`
 
 Créez un fichier nommé `welcome-secret.yaml` :
 
+```bash
+vi welcome-secret.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano welcome-secret.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
+
 ```yaml
 apiVersion: v1
 kind: Secret
@@ -283,6 +307,18 @@ Dans cet exercice, nous utilisons la méthode par variables d'environnement car 
 ### Modifier le Deployment
 
 Créez un fichier `welcome-app-updated.yaml` avec le contenu suivant. Les parties importantes sont les blocs `env` qui référencent notre ConfigMap et notre Secret :
+
+```bash
+vi welcome-app-updated.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano welcome-app-updated.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
 
 ```yaml
 apiVersion: apps/v1

@@ -61,6 +61,18 @@ Toujours définir des requests et limits est une **bonne pratique** pour éviter
 
 Créez un fichier nommé `my-deployment.yaml` avec le contenu suivant :
 
+```bash
+vi my-deployment.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano my-deployment.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment

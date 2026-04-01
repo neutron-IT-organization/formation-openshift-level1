@@ -62,6 +62,18 @@ Une base de données a besoin de **conserver ses données** même si le pod red�
 
 Créez un fichier nommé `mysql-statefulset.yaml` avec le contenu suivant :
 
+```bash
+vi mysql-statefulset.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano mysql-statefulset.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
+
 ```yaml
 apiVersion: apps/v1
 kind: StatefulSet

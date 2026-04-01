@@ -99,6 +99,18 @@ Un service de type `ClusterIP` est le type par défaut. Il rend l'application ac
 
 Créez un fichier nommé `clusterip-service.yaml` avec le contenu suivant :
 
+```bash
+vi clusterip-service.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano clusterip-service.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -211,6 +223,18 @@ La Route crée une URL publique (par exemple `olympic-medals-http-votre-namespac
 ### Créer le fichier YAML
 
 Créez un fichier nommé `http-route.yaml` :
+
+```bash
+vi http-route.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano http-route.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
 
 ```yaml
 apiVersion: route.openshift.io/v1
@@ -325,6 +349,18 @@ Pour cet exercice, nous utilisons le mode **edge** car c'est le plus simple : Op
 ### Créer le fichier YAML
 
 Créez un fichier nommé `https-route.yaml` :
+
+```bash
+vi https-route.yaml
+```
+
+:::tip Préférez nano ?
+Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
+```bash
+nano https-route.yaml
+```
+Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
+:::
 
 ```yaml
 apiVersion: route.openshift.io/v1
