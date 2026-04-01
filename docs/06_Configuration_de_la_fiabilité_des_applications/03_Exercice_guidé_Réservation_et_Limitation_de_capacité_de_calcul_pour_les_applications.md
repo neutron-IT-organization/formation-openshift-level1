@@ -18,6 +18,12 @@ A la fin de cet exercice, vous serez capable de :
 
 ---
 
+:::tip Terminal web OpenShift
+Toutes les commandes `oc` de cet exercice sont à exécuter dans le **terminal web OpenShift**. Cliquez sur l'icône de terminal en haut à droite de la console pour l'ouvrir.
+
+![Icône du terminal web](/img/screenshots/web_terminal_icon.png)
+:::
+
 ## Rappel visuel : Requests vs Limites
 
 ![Understanding Kubernetes Limits and Requests](./images/Understanding_Kubernetes_Limits_and_Requests.png)
@@ -44,16 +50,16 @@ Créez un fichier nommé `deployment-limite.yaml` :
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-limite
+  name: quota-demo-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: test-limite
+      app: quota-demo-app
   template:
     metadata:
       labels:
-        app: test-limite
+        app: quota-demo-app
     spec:
       containers:
       - name: limite-container
@@ -79,6 +85,14 @@ L'unité `m` signifie **millicores**. 1000m = 1 CPU complet.
 
 Appliquez le déploiement :
 
+#### Méthode 1 : Via la console web (bouton +)
+
+Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `deployment-limite.yaml` et cliquez sur **Create**.
+
+![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
+
+#### Méthode 2 : Via le terminal
+
 ```bash
 oc apply -f deployment-limite.yaml
 ```
@@ -86,26 +100,26 @@ oc apply -f deployment-limite.yaml
 **Sortie attendue :**
 
 ```
-deployment.apps/test-limite created
+deployment.apps/quota-demo-app created
 ```
 
 Vérifiez que le pod est en état `Running` :
 
 ```bash
-oc get pods -l app=test-limite
+oc get pods -l app=quota-demo-app
 ```
 
 **Sortie attendue :**
 
 ```
-NAME                           READY   STATUS    RESTARTS   AGE
-test-limite-5d4f7b8c9-x7k2p   1/1     Running   0          15s
+NAME                              READY   STATUS    RESTARTS   AGE
+quota-demo-app-5d4f7b8c9-x7k2p   1/1     Running   0          15s
 ```
 
 Consultez les requests et limites appliquées au pod :
 
 ```bash
-oc describe pod -l app=test-limite | grep -A 6 "Limits:"
+oc describe pod -l app=quota-demo-app | grep -A 6 "Limits:"
 ```
 
 **Sortie attendue :**
@@ -123,7 +137,7 @@ oc describe pod -l app=test-limite | grep -A 6 "Limits:"
 
 :::note Checklist de vérification - Etape 1
 Avant de passer à l'étape suivante, assurez-vous que :
-- Le pod `test-limite-xxx` est en état **Running** (colonne `STATUS`)
+- Le pod `quota-demo-app-xxx` est en état **Running** (colonne `STATUS`)
 - La colonne `READY` affiche **1/1**
 - Les requests et limites correspondent bien aux valeurs du YAML (300m / 600m pour le CPU, 128Mi / 256Mi pour la mémoire)
 :::
@@ -172,6 +186,14 @@ Le 4eme pod nécessiterait 1200m au total, ce qui dépasse les 900m autorisés.
 :::
 
 Appliquez le quota :
+
+#### Méthode 1 : Via la console web (bouton +)
+
+Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `quota.yaml` et cliquez sur **Create**.
+
+![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
+
+#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f quota.yaml
@@ -231,13 +253,13 @@ C'est le coeur de l'exercice. Nous allons demander à OpenShift de créer **4 r�
 Scalez le déploiement à 4 réplicas :
 
 ```bash
-oc scale deployment/test-limite --replicas=4
+oc scale deployment/quota-demo-app --replicas=4
 ```
 
 **Sortie attendue :**
 
 ```
-deployment.apps/test-limite scaled
+deployment.apps/quota-demo-app scaled
 ```
 
 :::warning La commande ne retourne pas d'erreur !
@@ -247,16 +269,16 @@ La commande `oc scale` met à jour l'objet Deployment (qui demande 4 réplicas),
 Vérifiez combien de pods sont effectivement en cours d'exécution :
 
 ```bash
-oc get pods -l app=test-limite
+oc get pods -l app=quota-demo-app
 ```
 
 **Sortie attendue :**
 
 ```
 NAME                           READY   STATUS    RESTARTS   AGE
-test-limite-5d4f7b8c9-x7k2p   1/1     Running   0          5m
-test-limite-5d4f7b8c9-ab3cd   1/1     Running   0          30s
-test-limite-5d4f7b8c9-ef4gh   1/1     Running   0          30s
+quota-demo-app-5d4f7b8c9-x7k2p   1/1     Running   0          5m
+quota-demo-app-5d4f7b8c9-ab3cd   1/1     Running   0          30s
+quota-demo-app-5d4f7b8c9-ef4gh   1/1     Running   0          30s
 ```
 
 Seulement **3 pods** sur les 4 demandés sont en état Running. Le 4eme n'a jamais été créé.
@@ -271,8 +293,8 @@ oc get events --sort-by='.lastTimestamp' | tail -5
 
 ```
 LAST SEEN   TYPE      REASON          OBJECT                              MESSAGE
-30s         Normal    ScalingReplicaSet   deployment/test-limite          Scaled up replica set test-limite-5d4f7b8c9 to 4
-30s         Warning   FailedCreate        replicaset/test-limite-5d4f7b8c9   Error creating: pods "test-limite-5d4f7b8c9-ij5kl" is forbidden: exceeded quota: quota-formation, requested: requests.cpu=300m, used: requests.cpu=900m, limited: requests.cpu=900m
+30s         Normal    ScalingReplicaSet   deployment/quota-demo-app          Scaled up replica set quota-demo-app-5d4f7b8c9 to 4
+30s         Warning   FailedCreate        replicaset/quota-demo-app-5d4f7b8c9   Error creating: pods "quota-demo-app-5d4f7b8c9-ij5kl" is forbidden: exceeded quota: quota-formation, requested: requests.cpu=300m, used: requests.cpu=900m, limited: requests.cpu=900m
 ```
 
 :::info Décryptage du message d'erreur
@@ -292,14 +314,14 @@ En résumé : les 3 premiers pods ont déjà consommé la totalité du budget CP
 Vérifiez le nombre de réplicas souhaité vs disponible sur le déploiement :
 
 ```bash
-oc get deployment test-limite
+oc get deployment quota-demo-app
 ```
 
 **Sortie attendue :**
 
 ```
 NAME          READY   UP-TO-DATE   AVAILABLE   AGE
-test-limite   3/4     3            3           6m
+quota-demo-app   3/4     3            3           6m
 ```
 
 :::tip Lire la colonne READY
@@ -362,16 +384,16 @@ On voit clairement que c'est le **requests.cpu** qui bloque : Used = Hard = 900m
 Pour surveiller la consommation réelle de CPU et mémoire de chaque pod (et non pas les requests/limites, mais l'utilisation effective) :
 
 ```bash
-oc adm top pod -l app=test-limite
+oc adm top pod -l app=quota-demo-app
 ```
 
 **Sortie attendue :**
 
 ```
 NAME                           CPU(cores)   MEMORY(bytes)
-test-limite-5d4f7b8c9-x7k2p   1m           12Mi
-test-limite-5d4f7b8c9-ab3cd   1m           11Mi
-test-limite-5d4f7b8c9-ef4gh   1m           12Mi
+quota-demo-app-5d4f7b8c9-x7k2p   1m           12Mi
+quota-demo-app-5d4f7b8c9-ab3cd   1m           11Mi
+quota-demo-app-5d4f7b8c9-ef4gh   1m           12Mi
 ```
 
 :::tip Différence entre request et usage réel
@@ -400,14 +422,14 @@ Il est important de supprimer les ressources créées pendant l'exercice pour ne
 Supprimez le déploiement et le quota :
 
 ```bash
-oc delete deployment test-limite
+oc delete deployment quota-demo-app
 oc delete resourcequota quota-formation
 ```
 
 **Sortie attendue :**
 
 ```
-deployment.apps "test-limite" deleted
+deployment.apps "quota-demo-app" deleted
 resourcequota "quota-formation" deleted
 ```
 
@@ -427,7 +449,7 @@ No resources found in votre-namespace namespace.
 
 :::note Checklist de vérification - Etape 5
 Assurez-vous que :
-- Plus aucun pod `test-limite` ne tourne (`oc get pods`)
+- Plus aucun pod `quota-demo-app` ne tourne (`oc get pods`)
 - Le quota `quota-formation` n'existe plus (`oc get resourcequota`)
 :::
 
@@ -441,7 +463,7 @@ Le tableau ci-dessous résume les actions réalisées et les concepts clés de c
 |:-:|---|---|---|
 | 1 | Créer un déploiement avec requests et limites | Les **requests** réservent un minimum, les **limites** imposent un maximum | `oc apply -f deployment-limite.yaml` |
 | 2 | Créer un ResourceQuota | Le quota définit un **budget global** pour le namespace | `oc apply -f quota.yaml` |
-| 3 | Scaler au-delà du quota | OpenShift **refuse** de créer des pods si le quota est atteint | `oc scale deployment/test-limite --replicas=4` |
+| 3 | Scaler au-delà du quota | OpenShift **refuse** de créer des pods si le quota est atteint | `oc scale deployment/quota-demo-app --replicas=4` |
 | 4 | Analyser Used vs Hard | Le diagnostic se fait en comparant **Used** et **Hard** dans le quota | `oc describe resourcequota` |
 | 5 | Nettoyer | Toujours supprimer les ressources de test | `oc delete deployment` / `oc delete resourcequota` |
 

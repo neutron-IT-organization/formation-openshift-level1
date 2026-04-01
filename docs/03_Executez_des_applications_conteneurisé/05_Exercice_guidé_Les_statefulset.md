@@ -21,6 +21,12 @@ A la fin de cet exercice, vous serez capable de :
 
 ---
 
+:::tip Terminal web OpenShift
+Toutes les commandes `oc` de cet exercice sont à exécuter dans le **terminal web OpenShift**. Cliquez sur l'icône de terminal en haut à droite de la console pour l'ouvrir.
+
+![Icône du terminal web](/img/screenshots/web_terminal_icon.png)
+:::
+
 ## Prérequis
 
 :::info Avant de commencer
@@ -161,26 +167,6 @@ statefulset.apps/mysql created
 Contrairement a un Deployment où tous les pods démarrent en même temps, le StatefulSet démarre les pods **un par un, dans l'ordre**. Le pod `mysql-1` ne sera créé qu'après que `mysql-0` soit en état `Running`. Vous pouvez observer ce comportement en temps réel avec la commande suivante.
 :::
 
-Observez le démarrage séquentiel des pods en temps réel :
-
-```bash
-oc get pods -l app=mysql -w
-```
-
-**Sortie attendue (progressive) :**
-
-```
-NAME      READY   STATUS    RESTARTS   AGE
-mysql-0   0/1     Pending   0          0s
-mysql-0   0/1     ContainerCreating   0   2s
-mysql-0   1/1     Running   0          15s
-mysql-1   0/1     Pending   0          0s
-mysql-1   0/1     ContainerCreating   0   2s
-mysql-1   1/1     Running   0          12s
-```
-
-Appuyez sur `Ctrl+C` pour quitter le mode watch une fois que les deux pods sont `Running`.
-
 ---
 
 ## Étape 3 : Vérifier les Pods
@@ -239,22 +225,6 @@ Le nom du PVC suit le format : `<nom-du-volume>-<nom-du-pod>`. Ici :
 
 Le statut `Bound` signifie que le stockage a bien été alloué et attaché au pod.
 :::
-
-### Vérification
-
-Vérifiez que vous avez bien **2 PVCs**, un pour chaque pod, et que leur statut est `Bound` :
-
-```bash
-oc get pvc -l app=mysql -o custom-columns=NOM:.metadata.name,STATUT:.status.phase,TAILLE:.spec.resources.requests.storage
-```
-
-**Sortie attendue :**
-
-```
-NOM                  STATUT   TAILLE
-mysql-data-mysql-0   Bound    1Gi
-mysql-data-mysql-1   Bound    1Gi
-```
 
 ![pvc section](./images/pvc-ui.png)
 

@@ -29,6 +29,12 @@ A la fin de cet exercice, vous serez capables de :
 
 ---
 
+:::tip Terminal web OpenShift
+Toutes les commandes `oc` de cet exercice sont à exécuter dans le **terminal web OpenShift**. Cliquez sur l'icône de terminal en haut à droite de la console pour l'ouvrir.
+
+![Icône du terminal web](/img/screenshots/web_terminal_icon.png)
+:::
+
 ## Prerequis
 
 - Un cluster OpenShift operationnel avec des droits administratifs.

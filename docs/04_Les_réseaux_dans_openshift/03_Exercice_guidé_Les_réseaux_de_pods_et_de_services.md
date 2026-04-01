@@ -18,6 +18,12 @@ A la fin de cet exercice, vous serez capable de :
 
 ---
 
+:::tip Terminal web OpenShift
+Toutes les commandes `oc` de cet exercice sont à exécuter dans le **terminal web OpenShift**. Cliquez sur l'icône de terminal en haut à droite de la console pour l'ouvrir.
+
+![Icône du terminal web](/img/screenshots/web_terminal_icon.png)
+:::
+
 ## Vue d'ensemble : le chemin d'une requête
 
 Avant de commencer, comprenons le trajet d'une requête depuis votre navigateur jusqu'à l'application :
@@ -114,6 +120,14 @@ spec:
 :::
 
 ### Appliquer le service
+
+#### Méthode 1 : Via la console web (bouton +)
+
+Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `clusterip-service.yaml` et cliquez sur **Create**.
+
+![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
+
+#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f clusterip-service.yaml
@@ -216,6 +230,14 @@ Dans Kubernetes standard, on utilise un **Ingress**. OpenShift propose les **Rou
 :::
 
 ### Appliquer la route
+
+#### Méthode 1 : Via la console web (bouton +)
+
+Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `http-route.yaml` et cliquez sur **Create**.
+
+![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
+
+#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f http-route.yaml
@@ -325,6 +347,14 @@ Cette option est très importante. Elle fait en sorte que si quelqu'un essaie d'
 :::
 
 ### Appliquer la route
+
+#### Méthode 1 : Via la console web (bouton +)
+
+Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `https-route.yaml` et cliquez sur **Create**.
+
+![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
+
+#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f https-route.yaml

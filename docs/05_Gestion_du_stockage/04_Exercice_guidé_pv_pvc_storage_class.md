@@ -11,6 +11,14 @@ A la fin de cet exercice, vous serez capable de :
 - [ ] Vérifier que les données **survivent** à la suppression d'un pod
 - [ ] Inspecter les **Storage Classes** disponibles dans le cluster
 
+---
+
+:::tip Terminal web OpenShift
+Toutes les commandes `oc` de cet exercice sont à exécuter dans le **terminal web OpenShift**. Cliquez sur l'icône de terminal en haut à droite de la console pour l'ouvrir.
+
+![Icône du terminal web](/img/screenshots/web_terminal_icon.png)
+:::
+
 ## Ce que vous allez apprendre
 
 Dans cet exercice, vous allez travailler avec une application **Todo App** connectée à une base de données **PostgreSQL**. Au départ, PostgreSQL utilise un volume éphémère (`emptyDir`) : cela signifie que les données sont **perdues** à chaque fois que le pod est supprimé ou redémarré. Vous allez constater ce problème par vous-même, puis le résoudre en passant à un stockage persistant grâce à un **PVC** (PersistentVolumeClaim). Enfin, vous vérifierez que vos données survivent désormais aux redémarrages.
@@ -202,6 +210,14 @@ spec:
 
 ### 2.2 - Appliquer le PVC
 
+#### Méthode 1 : Via la console web (bouton +)
+
+Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `postgres-pvc.yaml` et cliquez sur **Create**.
+
+![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
+
+#### Méthode 2 : Via le terminal
+
 ```bash
 oc apply -f postgres-pvc.yaml
 ```
@@ -209,7 +225,7 @@ oc apply -f postgres-pvc.yaml
 **Sortie attendue :**
 
 ```
-![PVC List](/img/screenshots/admin_pvcs_list.png)
+persistentvolumeclaim/postgres-pvc created
 ```
 
 ### 2.3 - Vérifier que le PVC est lié
@@ -314,6 +330,14 @@ Tout le reste (container, ports, variables d'environnement, volumeMounts) est **
 :::
 
 ### 3.2 - Appliquer le nouveau déploiement
+
+#### Méthode 1 : Via la console web (bouton +)
+
+Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `postgres-pvc-deployment.yaml` et cliquez sur **Create**.
+
+![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
+
+#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f postgres-pvc-deployment.yaml
