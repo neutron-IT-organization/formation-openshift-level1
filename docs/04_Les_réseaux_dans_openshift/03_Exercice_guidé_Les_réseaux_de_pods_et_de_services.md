@@ -158,9 +158,9 @@ oc get nodes -o wide
 ```
 *Notez l'IP dans la colonne `INTERNAL-IP` (ou utilisez le nom du cluster).*
 
-Testez depuis le terminal (si le réseau le permet) :
+Testez depuis le terminal en utilisant l'IP de votre noeud (**192.168.0.251**) :
 ```bash
-curl -s http://<NODE_IP>:30080 | grep "Bienvenue"
+curl -s http://192.168.0.251:30080 | grep "Bienvenue"
 ```
 
 ---
