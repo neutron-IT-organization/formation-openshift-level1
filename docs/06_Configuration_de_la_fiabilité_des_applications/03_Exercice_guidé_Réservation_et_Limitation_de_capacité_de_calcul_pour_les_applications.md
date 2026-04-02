@@ -51,6 +51,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: quota-demo-app
+  namespace: <CITY>-user-ns
 spec:
   replicas: 1
   selector:
