@@ -85,14 +85,6 @@ L'unité `m` signifie **millicores**. 1000m = 1 CPU complet.
 
 Appliquez le déploiement :
 
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `deployment-limite.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
-
 ```bash
 oc apply -f deployment-limite.yaml
 ```
@@ -186,14 +178,6 @@ Le 4eme pod nécessiterait 1200m au total, ce qui dépasse les 900m autorisés.
 :::
 
 Appliquez le quota :
-
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `quota.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f quota.yaml

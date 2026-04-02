@@ -73,14 +73,6 @@ spec:
             memory: "128Mi"
 ```
 
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-deployment.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
-
 ```bash
 oc apply -f welcome-deployment.yaml
 ```
@@ -137,14 +129,6 @@ spec:
   policyTypes:
   - Ingress
 ```
-
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-policy.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f welcome-policy.yaml
@@ -218,14 +202,6 @@ spec:
   type: ClusterIP
 ```
 
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-clusterip.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
-
 ```bash
 oc apply -f welcome-clusterip.yaml
 ```
@@ -291,14 +267,6 @@ spec:
   type: NodePort
 ```
 
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-nodeport.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
-
 ```bash
 oc apply -f welcome-nodeport.yaml
 ```
@@ -350,14 +318,6 @@ spec:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
 ```
-
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-route.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f welcome-route.yaml

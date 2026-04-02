@@ -97,14 +97,6 @@ data:
 
 ### Appliquer le ConfigMap
 
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-config.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
-
 ```bash
 oc apply -f welcome-config.yaml
 ```
@@ -230,14 +222,6 @@ data:
 :::
 
 ### Appliquer le Secret
-
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-secret.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f welcome-secret.yaml
@@ -367,14 +351,6 @@ Chaque variable d'environnement est définie par :
 
 ### Appliquer la modification
 
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu du fichier `welcome-app-updated.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
-
 ```bash
 oc apply -f welcome-app-updated.yaml
 ```
@@ -463,14 +439,6 @@ data:
 ```
 
 Appliquez la modification :
-
-#### Méthode 1 : Via la console web (bouton +)
-
-Cliquez sur le bouton **+** en haut à droite de la console, collez le contenu modifié du fichier `welcome-config.yaml` et cliquez sur **Create**.
-
-![Bouton + pour importer du YAML dans la console OpenShift](/img/screenshots/console-add-button.png)
-
-#### Méthode 2 : Via le terminal
 
 ```bash
 oc apply -f welcome-config.yaml
