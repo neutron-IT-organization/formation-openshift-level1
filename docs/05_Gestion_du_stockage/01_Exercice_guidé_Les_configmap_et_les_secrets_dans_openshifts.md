@@ -43,12 +43,9 @@ oc get deployment welcome-app
 
 ```
 NAME          READY   UP-TO-DATE   AVAILABLE   AGE
-welcome-app   2/2     2            2           5m
+welcome-app   1/1     1            1           5m
 ```
 
-:::warning Si la colonne READY n'affiche pas 2/2
-Attendez quelques instants et relancez la commande. Si le problème persiste, demandez de l'aide au formateur.
-:::
 
 ---
 
