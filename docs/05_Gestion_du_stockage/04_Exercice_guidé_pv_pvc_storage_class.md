@@ -280,37 +280,7 @@ Vous pouvez lire les informations clés sur la page de détail :
 - **Volume** — L'identifiant du PV créé automatiquement
 :::
 
-### 5.2 - Lister les Storage Classes
 
-Naviguez vers **Storage** → **StorageClasses**.
-
-Vous voyez les classes de stockage disponibles. Celle marquée **(default)** est celle que votre PVC a utilisée automatiquement.
-
-![StorageClass List](/img/screenshots/admin_storageclasses_list.png)
-
-:::note Storage Class par défaut
-La Storage Class marquée `(default)` est utilisée automatiquement quand vous ne spécifiez pas de `storageClassName` dans votre PVC. C'est pour cela que notre PVC a fonctionné sans préciser de classe de stockage.
-:::
-
-### 5.3 - Voir le PV associé
-
-Naviguez vers **Storage** → **PersistentVolumes**.
-
-Repérez le PV dont la colonne **Claim** affiche `votre-namespace/postgres-pvc`. Cliquez dessus pour voir ses détails.
-
-:::info Approvisionnement dynamique
-Le PV a été créé **automatiquement** par la Storage Class. C'est ce qu'on appelle l'**approvisionnement dynamique** (dynamic provisioning). Vous n'avez pas eu besoin de demander à un administrateur de créer un PV manuellement — la Storage Class s'en est chargée.
-:::
-
-### Vérification de l'étape 5
-
-Avant de passer à la suite, assurez-vous que :
-
-- [x] Vous avez consulté les détails du PVC dans la console
-- [x] Vous avez identifié la Storage Class par défaut du cluster
-- [x] Vous comprenez le lien entre PVC, PV et Storage Class
-
----
 
 ## Étape 6 : Nettoyage
 
