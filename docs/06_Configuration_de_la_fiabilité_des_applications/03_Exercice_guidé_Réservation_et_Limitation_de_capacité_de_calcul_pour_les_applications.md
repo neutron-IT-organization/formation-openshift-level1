@@ -395,13 +395,13 @@ oc adm top pod -l app=quota-demo-app
 
 ```
 NAME                           CPU(cores)   MEMORY(bytes)
-quota-demo-app-5d4f7b8c9-x7k2p   1m           12Mi
-quota-demo-app-5d4f7b8c9-ab3cd   1m           11Mi
-quota-demo-app-5d4f7b8c9-ef4gh   1m           12Mi
+quota-demo-app-5d4f7b8c9-x7k2p   1m           0Mi
+quota-demo-app-5d4f7b8c9-ab3cd   1m           0Mi
+quota-demo-app-5d4f7b8c9-ef4gh   1m           0Mi
 ```
 
 :::tip Différence entre request et usage réel
-Remarquez que chaque pod utilise seulement **1m de CPU** en réalité, alors qu'il en **réserve 300m**. C'est normal : notre application ne fait qu'afficher "Hello OpenShift" toutes les 5 secondes, elle consomme très peu. Mais le quota se base sur les **requests** (les réservations), pas sur l'utilisation réelle.
+Remarquez que chaque pod utilise seulement **1m de CPU** et **0Mi de mémoire** en réalité, alors qu'il réserve **300m de CPU** et **128Mi de mémoire**. C'est normal : notre application ne fait qu'afficher "Hello OpenShift" toutes les 5 secondes, elle est quasi inactive. Mais le quota se base sur les **requests** (les réservations), pas sur l'utilisation réelle.
 :::
 
 ### Vérification
