@@ -64,7 +64,7 @@ Il faut saisir :
 
 Dans notre cas, nous nous connectons en tant qu'administrateur du cluster.
 
-![Console OpenShift Overview](./images/console-overview.png)
+<!-- ![Console OpenShift Overview](./images/console-overview.png) -->
 
 Cette interface permet d'administrer le cluster et de gérer les ressources telles que :
 
