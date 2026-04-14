@@ -72,11 +72,6 @@ const config = {
             label: "GitHub",
             position: "right",
           },
-          {
-            to: "/Guide_Formateur",
-            label: "Accès Formateur",
-            position: "right",
-          },
         ],
       },
       footer: {
@@ -88,10 +83,6 @@ const config = {
               {
                 label: "Introduction",
                 to: "/",
-              },
-              {
-                label: "Référence commandes",
-                to: "/Annexe/Commandes_OpenShift",
               },
             ],
           },

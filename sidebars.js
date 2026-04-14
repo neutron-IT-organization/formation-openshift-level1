@@ -5,10 +5,6 @@ const sidebars = {
   // Formation complète — tout le contenu du cours
   formationSidebar: [
     {
-      type: 'doc',
-      id: 'intro',
-    },
-    {
       type: 'category',
       label: 'Introduction',
       items: [
@@ -104,11 +100,18 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Annexe',
+      label: 'Maîtriser les ressources de base',
       items: [
-        'Annexe/Commandes_OpenShift',
-        'Annexe/Lexique',
-        'Annexe/Ressources_OpenShift',
+        'Chapitre2_Ressources_de_base/00_Introduction_aux_workloads',
+        'Chapitre2_Ressources_de_base/01_Les_ressources_principales',
+        'Chapitre2_Ressources_de_base/02_Exercice_guidé_Déployer_une_application',
+        'Chapitre2_Ressources_de_base/03_Gestion_de_la_configuration',
+        'Chapitre2_Ressources_de_base/04_Exercice_guidé_Configurer_une_application',
+        'Chapitre2_Ressources_de_base/05_Gestion_des_tâches',
+        'Chapitre2_Ressources_de_base/06_Exercice_guidé_Automatiser_une_tâche',
+        'Chapitre2_Ressources_de_base/07_Gestion_des_contrôleurs',
+        'Chapitre2_Ressources_de_base/08_Exercice_guidé_Gestion_des_pods',
+        'Chapitre2_Ressources_de_base/09_Résumé',
       ],
     },
   ],
@@ -184,11 +187,28 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Ressources utiles',
+      label: 'Exercices — Ressources de base',
       items: [
-        'Annexe/Commandes_OpenShift',
-        'Annexe/Lexique',
-        'Annexe/Ressources_OpenShift',
+        {
+          type: 'doc',
+          id: 'Chapitre2_Ressources_de_base/02_Exercice_guidé_Déployer_une_application',
+          label: 'Exercice — Déployer une application',
+        },
+        {
+          type: 'doc',
+          id: 'Chapitre2_Ressources_de_base/04_Exercice_guidé_Configurer_une_application',
+          label: 'Exercice — Configurer une application',
+        },
+        {
+          type: 'doc',
+          id: 'Chapitre2_Ressources_de_base/06_Exercice_guidé_Automatiser_une_tâche',
+          label: 'Exercice — Automatiser une tâche',
+        },
+        {
+          type: 'doc',
+          id: 'Chapitre2_Ressources_de_base/08_Exercice_guidé_Gestion_des_pods',
+          label: 'Exercice — Gestion des pods',
+        },
       ],
     },
   ],
