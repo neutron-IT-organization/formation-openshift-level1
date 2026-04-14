@@ -98,22 +98,6 @@ const sidebars = {
         'Gestion_et_administration_du_cluster/Résumé',
       ],
     },
-    {
-      type: 'category',
-      label: 'Maîtriser les ressources de base',
-      items: [
-        'Chapitre2_Ressources_de_base/Introduction_aux_workloads',
-        'Chapitre2_Ressources_de_base/Les_ressources_principales',
-        'Chapitre2_Ressources_de_base/Exercice_guidé_Déployer_une_application',
-        'Chapitre2_Ressources_de_base/Gestion_de_la_configuration',
-        'Chapitre2_Ressources_de_base/Exercice_guidé_Configurer_une_application',
-        'Chapitre2_Ressources_de_base/Gestion_des_tâches',
-        'Chapitre2_Ressources_de_base/Exercice_guidé_Automatiser_une_tâche',
-        'Chapitre2_Ressources_de_base/Gestion_des_contrôleurs',
-        'Chapitre2_Ressources_de_base/Exercice_guidé_Gestion_des_pods',
-        'Chapitre2_Ressources_de_base/Résumé',
-      ],
-    },
   ],
 
   // Exercices uniquement — accès rapide aux travaux pratiques
@@ -182,32 +166,6 @@ const sidebars = {
           type: 'doc',
           id: 'Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs',
           label: 'Exercice 12 — MachineSet et MachineConfigs',
-        },
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Exercices — Ressources de base',
-      items: [
-        {
-          type: 'doc',
-          id: 'Chapitre2_Ressources_de_base/Exercice_guidé_Déployer_une_application',
-          label: 'Exercice — Déployer une application',
-        },
-        {
-          type: 'doc',
-          id: 'Chapitre2_Ressources_de_base/Exercice_guidé_Configurer_une_application',
-          label: 'Exercice — Configurer une application',
-        },
-        {
-          type: 'doc',
-          id: 'Chapitre2_Ressources_de_base/Exercice_guidé_Automatiser_une_tâche',
-          label: 'Exercice — Automatiser une tâche',
-        },
-        {
-          type: 'doc',
-          id: 'Chapitre2_Ressources_de_base/Exercice_guidé_Gestion_des_pods',
-          label: 'Exercice — Gestion des pods',
         },
       ],
     },
