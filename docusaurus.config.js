@@ -1,31 +1,24 @@
 // @ts-check
 import { themes as prismThemes } from "prism-react-renderer";
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Formation OpenShift — Neutron IT",
   tagline: "Exploitation d'un cluster OpenShift",
   favicon: "img/logo.png",
-
   url: "https://neutron-IT-organization.github.io",
-  baseUrl: "/formation-openshift-1/",
-
+  baseUrl: "/formation-openshift-level1/",
   organizationName: "neutron-IT-organization",
-  projectName: "formation-openshift-1",
+  projectName: "formation-openshift-level1",
   deploymentBranch: "gh-pages",
-
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
-
   i18n: {
     defaultLocale: "fr",
     locales: ["fr"],
   },
-
   presets: [
     [
       "classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
           sidebarPath: "./sidebars.js",
@@ -38,9 +31,7 @@ const config = {
       }),
     ],
   ],
-
   themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       image: "img/logo.png",
       navbar: {
@@ -68,7 +59,7 @@ const config = {
             position: "left",
           },
           {
-            href: "https://github.com/neutron-IT-organization/formation-openshift-1",
+            href: "https://github.com/neutron-IT-organization/formation-openshift-level1",
             label: "GitHub",
             position: "right",
           },
@@ -105,5 +96,4 @@ const config = {
       },
     }),
 };
-
 export default config;
