@@ -92,7 +92,7 @@ const sidebars = {
         'Gestion_et_administration_du_cluster/Observabilité_du_cluster',
         'Gestion_et_administration_du_cluster/Exercice_guidé_Observabilité_du_cluster',
         'Gestion_et_administration_du_cluster/Node_MachineSet_MachineConfigs',
-        'Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs.md',
+        'Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs',
         'Gestion_et_administration_du_cluster/Gestion_des_mises_a_jours',
         'Gestion_et_administration_du_cluster/Quiz_gestion',
         'Gestion_et_administration_du_cluster/Résumé',
@@ -180,7 +180,7 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs.md',
+          id: 'Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs',
           label: 'Exercice 12 — MachineSet et MachineConfigs',
         },
       ],
