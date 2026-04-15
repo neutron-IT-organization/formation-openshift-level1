@@ -6,629 +6,247 @@ Dans cet exercice, vous allez découvrir comment **séparer la configuration de 
 
 ![ConfigMap et Secret](./images/configmap-secret-injection.svg)
 
-## Objectifs
+## Objectif de l'exercice
 
-A la fin de cet exercice, vous serez capable de :
-
-- [ ] Comprendre la différence entre un **ConfigMap** et un **Secret**
-- [ ] Créer un **ConfigMap** pour stocker des données de configuration non sensibles
-- [ ] Créer un **Secret** pour stocker des données sensibles (tokens, mots de passe)
-- [ ] Injecter un ConfigMap et un Secret dans un pod via des **variables d'environnement**
-- [ ] Mettre à jour un ConfigMap et **observer l'impact** sur l'application
-- [ ] Comprendre pourquoi un **redémarrage des pods** est nécessaire après une mise à jour
-
----
-
-:::tip Terminal web OpenShift
-Toutes les commandes `oc` de cet exercice sont à exécuter dans le **terminal web OpenShift**. Cliquez sur l'icône de terminal en haut à droite de la console pour l'ouvrir.
-
-![Icône du terminal web](/img/screenshots/web_terminal_icon.png)
+:::info Objectif
+Créer un ConfigMap et un Secret puis les utiliser pour configurer une application déjà
+déployée dans le cluster (nginx).
 :::
 
-## Prérequis
+À l'issue de cet exercice, vous serez capable de :
 
-Une application **welcome-app** est déjà déployée dans votre namespace. Cette application affiche un message de bienvenue que l'on peut configurer via des variables d'environnement.
+- ✅ Créer un **ConfigMap** depuis la console OpenShift
+- ✅ Créer un **Secret** depuis la console OpenShift
+- ✅ Injecter un ConfigMap comme **variable d'environnement** dans un Pod
+- ✅ Injecter un Secret comme **variable d'environnement** dans un Pod
+- ✅ Vérifier que la configuration est bien prise en compte par l'application
 
-:::info Qu'est-ce que welcome-app ?
-`welcome-app` est une application web simple (image : `quay.io/neutron-it/welcome-app:latest`) qui écoute sur le port **8080**. Elle lit des variables d'environnement pour personnaliser son comportement. C'est l'application idéale pour apprendre à manipuler la configuration externe.
+## Étape 1 — Créer le ConfigMap
+
+Aller dans **Workloads → ConfigMaps**
+![ConfigMaps - Liste](./images/configmaps-liste.png)
+Cliquer sur **Create ConfigMap**
+
+Remplir :
+
+- **Name** : `nginx-config`
+- **Key** : `APP_MESSAGE`
+- **Value** : `Bienvenue dans nginx avec ConfigMap`
+
+![Create ConfigMap - Formulaire](./images/create-configmap-form.png)
+
+Cliquer sur **Create**
+
+Le ConfigMap **nginx-config** apparaît maintenant dans la liste.
+
+![ConfigMap nginx-config créé](./images/configmap-created.png)
+
+:::tip
+Le ConfigMap **nginx-config** est maintenant créé avec la clé `APP_MESSAGE` et la valeur
+`Bienvenue dans nginx avec ConfigMap`.
+:::
+## Étape 2 — Créer le Secret
+
+Aller dans **Workloads → Secrets**
+
+Cliquer **Create → Key/Value Secret**
+
+![Secrets - Liste](./images/secrets-liste.png)
+
+Remplir :
+
+- **Name** : `nginx-secret`
+- **Key** : `USERNAME` / **Value** : `admin`
+- **Key** : `PASSWORD` / **Value** : `admin123`
+
+:::info Pourquoi deux clés ?
+Un Secret peut contenir plusieurs paires clé/valeur. Ici on stocke à la fois le nom
+d'utilisateur et le mot de passe dans le même Secret **nginx-secret**.
+:::
+![Create Secret - Formulaire](./images/create-secret-form.png)
+
+Cliquer sur **Create**
+
+Le Secret **nginx-secret** apparaît maintenant dans la liste.
+
+![Secret nginx-secret créé](./images/secret-created.png)
+
+:::tip
+Les valeurs du Secret sont automatiquement **encodées en base64** par OpenShift.
+Elles ne sont jamais affichées en clair dans la console.
+:::
+## Étape 3 — Ajouter ConfigMap et Secret dans le Deployment
+
+Aller dans **Workloads → Deployments**
+
+- Cliquer sur **nginx-unprivileged**
+- Cliquer sur **Actions → Edit Deployment**
+
+![Deployment Details - nginx-unprivileged](./images/deployment-details-configmap.png)
+
+Dans la section **Environment Variables**, clique sur :
+
+**Add from ConfigMap or Secret**
+
+Remplir pour le ConfigMap :
+
+- **Environment Variable Name** : `APP_MESSAGE`
+- **Select Resource** : choisir `ConfigMap`
+- **ConfigMap Name** : `nginx-config`
+- **Key** : `APP_MESSAGE`
+
+Cliquer encore sur **Add from ConfigMap or Secret**
+
+Remplir pour le Secret (USERNAME) :
+
+- **Environment Variable Name** : `USERNAME`
+- **Select Resource** : choisir `Secret`
+- **Secret Name** : `nginx-secret`
+- **Key** : `USERNAME`
+
+Cliquer encore sur **Add from ConfigMap or Secret**
+
+Remplir pour le Secret (PASSWORD) :
+
+- **Environment Variable Name** : `PASSWORD`
+- **Select Resource** : choisir `Secret`
+- **Secret Name** : `nginx-secret`
+- **Key** : `PASSWORD`
+
+![Environment Variables - ConfigMap et Secret](./images/env-variables-configmap-secret.png)
+
+:::tip
+Tu peux voir dans la section **Environment Variables** :
+- `APP_MESSAGE` provenant du **ConfigMap** `nginx-config` (icône violette CM)
+- `USERNAME` provenant du **Secret** `nginx-secret` (icône orange S)
+- `PASSWORD` provenant du **Secret** `nginx-secret` (icône orange S)
 :::
 
-Vérifiez que l'application est bien en cours d'exécution :
+Cliquer sur **Save**
+OpenShift va redémarrer automatiquement les Pods.
+
+## Étape 4 — Vérifier les variables d'environnement
+
+**Workloads → Pods**
+
+- Cliquer sur un pod **nginx**
+- Puis **Environment**
+
+![Environment Variables - Pod](./images/pod-environment-variables.png)
+
+Vous pouvez voir les 3 variables d'environnement injectées :
+
+- `APP_MESSAGE` → provenant du **ConfigMap** `nginx-config`
+- `USERNAME` → provenant du **Secret** `nginx-secret`
+- `PASSWORD` → provenant du **Secret** `nginx-secret`
+
+:::info Ce que vous avez fait
+Vous avez créé un ConfigMap `nginx-config` pour stocker la variable `APP_MESSAGE` et un Secret
+`nginx-secret` pour les données sensibles `USERNAME` et `PASSWORD`. Ces valeurs ont ensuite été
+injectées dans le Deployment comme variables d'environnement, permettant aux Pods d'y accéder
+sans hardcoder les valeurs dans l'image.
+## Étape 5 — Vérifier depuis le Terminal du Pod
+
+Aller dans **Workloads → Pods**, cliquer sur un pod nginx puis **Terminal**
+
+Taper les commandes suivantes :
 
 ```bash
-oc get deployment welcome-app
+$ echo $APP_MESSAGE
+Bienvenue dans nginx avec ConfigMap
+
+$ echo $USERNAME
+admin
+
+$ echo $PASSWORD
+admin123
 ```
 
-**Sortie attendue :**
+![Terminal Pod - Variables d'environnement](./images/pod-terminal-env.png)
 
-```
-NAME          READY   UP-TO-DATE   AVAILABLE   AGE
-welcome-app   1/1     1            1           5m
-```
-
-
----
-
-## Etape 1 : Créer un ConfigMap
-
-### Pourquoi cette étape ?
-
-Un **ConfigMap** est un objet Kubernetes qui permet de stocker des paires **clé/valeur** de configuration. L'idée est simple : plutôt que d'écrire vos paramètres directement dans le code de votre application, vous les externalisez dans un ConfigMap. Cela permet de **modifier la configuration sans reconstruire l'image** de votre conteneur.
-
-:::tip Analogie
-Pensez à un ConfigMap comme un **fichier de configuration** (type `.env` ou `.properties`) que Kubernetes gère pour vous et peut injecter automatiquement dans vos conteneurs.
-:::
-
-### Création du fichier YAML
-
-Créez un fichier nommé `welcome-config.yaml` avec le contenu suivant :
-
-```bash
-vi welcome-config.yaml
-```
-
-:::tip Préférez nano ?
-Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
-```bash
-nano welcome-config.yaml
-```
-Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
-:::
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: welcome-config
-data:
-  welcome_message: "Bienvenue sur notre site de démonstration !"
-  app_mode: "production"
-```
-
-:::info Comprendre le fichier
-- **`apiVersion: v1`** : les ConfigMaps font partie de l'API de base de Kubernetes.
-- **`kind: ConfigMap`** : le type d'objet que l'on crée.
-- **`metadata.name`** : le nom de notre ConfigMap. On l'utilisera plus tard pour le référencer.
-- **`data`** : la section qui contient les paires clé/valeur. Ici, on définit deux clés : `welcome_message` et `app_mode`.
-:::
-
-### Appliquer le ConfigMap
-
-```bash
-oc apply -f welcome-config.yaml
-```
-
-**Sortie attendue :**
-
-```
-configmap/welcome-config created
-```
-
-### Vérifier la création
-
-Affichez le contenu du ConfigMap pour confirmer que les données sont correctes :
-
-```bash
-oc get configmap welcome-config -o yaml
-```
-
-**Sortie attendue :**
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: welcome-config
-  namespace: votre-namespace
-data:
-  app_mode: production
-  welcome_message: Bienvenue sur notre site de démonstration !
-```
-
-Vous pouvez aussi utiliser la commande `describe` pour un affichage plus lisible :
-
-```bash
-oc describe configmap welcome-config
-```
-
-**Sortie attendue :**
-
-```
-Name:         welcome-config
-Namespace:    votre-namespace
-Labels:       <none>
-Annotations:  <none>
-
-Data
-====
-app_mode:
-----
-production
-welcome_message:
-----
-Bienvenue sur notre site de démonstration !
-```
-
-### Vérification
-
-:::tip Checklist de vérification
-- [ ] La commande `oc get configmap welcome-config` ne retourne pas d'erreur
-- [ ] Les deux clés `welcome_message` et `app_mode` apparaissent dans la sortie
-- [ ] Les valeurs correspondent à ce que vous avez mis dans le fichier YAML
-:::
-
----
-
-## Etape 2 : Créer un Secret
-
-### Pourquoi cette étape ?
-
-Un **Secret** fonctionne comme un ConfigMap, mais il est conçu pour stocker des **données sensibles** : mots de passe, tokens d'API, certificats, etc. La principale différence est que les valeurs sont **encodées en base64** dans le fichier YAML et que Kubernetes les traite avec des précautions supplémentaires (accès restreint, non affichées dans les logs...).
-
-:::warning Encodage base64 ne veut pas dire chiffrement !
-L'encodage base64 n'est **pas un mécanisme de sécurité**. C'est simplement un format de représentation. N'importe qui peut décoder une valeur base64. La sécurité des Secrets repose sur les **contrôles d'accès (RBAC)** d'OpenShift, pas sur l'encodage.
-:::
-
-### Encoder une valeur en base64
-
-Avant de créer le Secret, il faut encoder nos valeurs. Encodons le token `welcomeToken123` :
-
-```bash
-echo -n "welcomeToken123" | base64
-```
-
-**Sortie attendue :**
-
-```
-d2VsY29tZVRva2VuMTIz
-```
-
-:::note Pourquoi l'option -n ?
-L'option `-n` de la commande `echo` évite d'ajouter un retour à la ligne (`\n`) à la fin de la chaîne. Sans cette option, le retour à la ligne serait encodé avec la valeur, ce qui causerait des erreurs difficiles à diagnostiquer.
-:::
-
-### Création du fichier YAML
-
-Créez un fichier nommé `welcome-secret.yaml` :
-
-```bash
-vi welcome-secret.yaml
-```
-
-:::tip Préférez nano ?
-Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
-```bash
-nano welcome-secret.yaml
-```
-Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
-:::
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: welcome-secret
-type: Opaque
-data:
-  api_token: d2VsY29tZVRva2VuMTIz
-```
-
-:::info Comprendre le fichier
-- **`type: Opaque`** : c'est le type par défaut pour un Secret générique. Il existe d'autres types (`kubernetes.io/dockerconfigjson` pour les registres d'images, `kubernetes.io/tls` pour les certificats, etc.).
-- **`data`** : les valeurs doivent être encodées en base64. Si vous préférez écrire les valeurs en clair, vous pouvez utiliser `stringData` à la place de `data` et Kubernetes se chargera de l'encodage.
-:::
-
-### Appliquer le Secret
-
-```bash
-oc apply -f welcome-secret.yaml
-```
-
-**Sortie attendue :**
-
-```
-secret/welcome-secret created
-```
-
-### Vérifier la création
-
-```bash
-oc get secret welcome-secret -o yaml
-```
-
-**Sortie attendue :**
-
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: welcome-secret
-  namespace: votre-namespace
-type: Opaque
-data:
-  api_token: d2VsY29tZVRva2VuMTIz
-```
-
-Pour décoder et vérifier la valeur stockée :
-
-```bash
-oc get secret welcome-secret -o jsonpath='{.data.api_token}' | base64 -d
-```
-
-**Sortie attendue :**
-
-```
-welcomeToken123
-```
-
-### Vérification
-
-:::tip Checklist de vérification
-- [ ] La commande `oc get secret welcome-secret` ne retourne pas d'erreur
-- [ ] La clé `api_token` est présente dans le Secret
-- [ ] Le décodage base64 retourne bien `welcomeToken123`
+:::tip Félicitations ! 🎉
+Les variables d'environnement sont bien injectées dans le Pod depuis le ConfigMap et le Secret.
 :::
 
 ---
 
-## Etape 3 : Injecter le ConfigMap et le Secret dans l'application
+## Étape 6 — Vérifier depuis le navigateur
 
-### Pourquoi cette étape ?
+Pour accéder à la route, ouvre ton navigateur et tape cette URL en **http** (pas https) :
+http://nginx-route-2-formation-openshift.apps.neutron-sno-gpu.neutron-it.fr/
 
-Nous avons créé nos objets de configuration, mais pour l'instant **l'application ne les utilise pas**. Il faut dire à OpenShift d'injecter les valeurs du ConfigMap et du Secret dans les conteneurs sous forme de **variables d'environnement**. Ainsi, l'application pourra lire ces valeurs comme n'importe quelle variable d'environnement classique.
+Le Dashboard affiche toutes les variables injectées :
 
-:::info Deux méthodes d'injection
-Kubernetes propose deux façons d'injecter des ConfigMaps et des Secrets :
-1. **Variables d'environnement** (ce que nous faisons ici) : chaque clé devient une variable d'environnement dans le conteneur.
-2. **Montage en volume** : les clés deviennent des fichiers dans un répertoire du conteneur.
-
-Dans cet exercice, nous utilisons la méthode par variables d'environnement car elle est la plus simple pour débuter.
+- **ConfigMap** `nginx-config-2` → `APP_MESSAGE` : `Bienvenue dans NGINX avec ConfigMap`
+- **Secret** `nginx-secret-2` → `USERNAME` : `admin` / `PASSWORD` : `admin123`
+![Dashboard Configuration - ConfigMap & Secret](./images/dashboard-configmap-secret.png)
+:::tip
+Le Dashboard confirme que le ConfigMap et le Secret sont bien injectés dans l'application
+et que les valeurs sont correctement affichées.
 :::
 
-### Modifier le Deployment
-
-Créez un fichier `welcome-app-updated.yaml` avec le contenu suivant. Les parties importantes sont les blocs `env` qui référencent notre ConfigMap et notre Secret :
-
-```bash
-vi welcome-app-updated.yaml
-```
-
-:::tip Préférez nano ?
-Si vous n'êtes pas à l'aise avec `vi`, utilisez `nano` à la place :
-```bash
-nano welcome-app-updated.yaml
-```
-Dans `nano` : collez le contenu avec **Ctrl+Shift+V**, sauvegardez avec **Ctrl+O** et quittez avec **Ctrl+X**.
-:::
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: welcome-app
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: welcome-app
-  template:
-    metadata:
-      labels:
-        app: welcome-app
-    spec:
-      containers:
-        - name: welcome-app-container
-          image: quay.io/neutron-it/welcome-app:latest
-          ports:
-            - containerPort: 8080
-          env:
-            - name: WELCOME_MESSAGE
-              valueFrom:
-                configMapKeyRef:
-                  name: welcome-config
-                  key: welcome_message
-            - name: APP_MODE
-              valueFrom:
-                configMapKeyRef:
-                  name: welcome-config
-                  key: app_mode
-            - name: API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: welcome-secret
-                  key: api_token
-```
-
-:::info Comprendre les blocs env
-Chaque variable d'environnement est définie par :
-- **`name`** : le nom de la variable telle que l'application la verra (ex : `WELCOME_MESSAGE`).
-- **`valueFrom.configMapKeyRef`** : indique que la valeur provient d'un ConfigMap. On précise le **nom** du ConfigMap et la **clé** à lire.
-- **`valueFrom.secretKeyRef`** : même principe, mais pour un Secret. Kubernetes décodera automatiquement la valeur base64 avant de l'injecter.
-:::
-
-### Appliquer la modification
-
-```bash
-oc apply -f welcome-app-updated.yaml
-```
-
-**Sortie attendue :**
-
-```
-deployment.apps/welcome-app configured
-```
-
-:::note "configured" et non "created"
-La sortie indique `configured` car le Deployment existait déjà. La commande `oc apply` a mis à jour sa définition. OpenShift va automatiquement créer de nouveaux pods avec la nouvelle configuration.
-:::
-
-### Vérifier que les pods redémarrent
-
-Attendez que les nouveaux pods soient prêts :
-
-```bash
-oc get pods -l app=welcome-app
-```
-
-**Sortie attendue :**
-
-```
-NAME                           READY   STATUS    RESTARTS   AGE
-welcome-app-6d4f7b8c9a-abc12   1/1     Running   0          30s
-welcome-app-6d4f7b8c9a-def34   1/1     Running   0          28s
-```
-
-:::tip Les noms de pods changent
-Notez que les noms des pods ont changé (nouveau suffixe aléatoire). C'est normal : OpenShift a créé de nouveaux pods avec la configuration mise à jour et a supprimé les anciens.
-:::
-
-### Vérifier l'injection des variables d'environnement
-
-Connectez-vous à un pod pour vérifier que les variables sont bien présentes :
-
-```bash
-oc exec deployment/welcome-app -- env | grep -E "WELCOME|APP_MODE|API_TOKEN"
-```
-
-**Sortie attendue :**
-
-```
-WELCOME_MESSAGE=Bienvenue sur notre site de démonstration !
-APP_MODE=production
-API_TOKEN=welcomeToken123
-```
-
-:::info Remarques importantes
-- La variable `WELCOME_MESSAGE` contient la valeur définie dans le ConfigMap.
-- La variable `APP_MODE` contient `production`, aussi depuis le ConfigMap.
-- La variable `API_TOKEN` contient `welcomeToken123` (et non la valeur base64). Kubernetes a **automatiquement décodé** la valeur du Secret avant de l'injecter.
-:::
-
-### Vérification
-
-:::tip Checklist de vérification
-- [ ] Tous les pods sont en statut `Running` et `READY 1/1`
-- [ ] La variable `WELCOME_MESSAGE` contient le bon message
-- [ ] La variable `APP_MODE` vaut `production`
-- [ ] La variable `API_TOKEN` contient `welcomeToken123` (en clair, pas en base64)
-:::
-
----
-
-## Etape 4 : Mettre à jour le ConfigMap et observer l'impact
-
-### Pourquoi cette étape ?
-
-L'un des grands avantages des ConfigMaps est de pouvoir **modifier la configuration sans toucher au code ni à l'image** de l'application. Mais attention : la mise à jour n'est pas toujours automatique. C'est un piège classique que nous allons explorer.
-
+## Étape 7 — Tester la mise à jour du ConfigMap et du Secret
 ### Modifier le ConfigMap
 
-Modifiez le fichier `welcome-config.yaml` pour changer le message et le mode :
+Aller dans **Workloads → ConfigMaps → nginx-config-2**
 
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: welcome-config
-data:
-  welcome_message: "Bienvenue à notre nouvelle application déployée avec OpenShift !"
-  app_mode: "development"
-```
+Modifier la valeur :
 
-Appliquez la modification :
+- **Key** : `APP_MESSAGE`
+- **Value** : `Bienvenue dans NGINX`
 
-```bash
-oc apply -f welcome-config.yaml
-```
+![Modifier ConfigMap](./images/configmap-edit.png)
 
-**Sortie attendue :**
+Cliquer sur **Save**
+### Modifier le Secret
 
-```
-configmap/welcome-config configured
-```
+Aller dans **Workloads → Secrets → nginx-secret-2**
 
-### Vérifier que le ConfigMap a bien été modifié
+Modifier les valeurs :
 
-```bash
-oc describe configmap welcome-config
-```
+- **Key** : `USERNAME` / **Value** : `admin`
+- **Key** : `PASSWORD` / **Value** : `admin2026`
 
-**Sortie attendue :**
+![Modifier Secret](./images/secret-edit.png)
 
-```
-Name:         welcome-config
-Namespace:    votre-namespace
-Labels:       <none>
-Annotations:  <none>
+Cliquer sur **Save**
+### Redémarrer le Deployment
 
-Data
-====
-app_mode:
-----
-development
-welcome_message:
-----
-Bienvenue à notre nouvelle application déployée avec OpenShift !
-```
+Pour que les modifications soient prises en compte, aller dans **Workloads → Deployments → nginx-unprivileged-2**
 
-### Vérifier l'état de l'application AVANT le redémarrage
+Cliquer sur **Actions → Restart rollout**
 
-Regardons si l'application a détecté les changements automatiquement :
+![Restart Rollout](./images/restart-rollout.png)
 
-```bash
-oc exec deployment/welcome-app -- env | grep WELCOME_MESSAGE
-```
+### Vérifier le résultat
 
-**Sortie attendue :**
+Accéder à la route depuis le navigateur, le dashboard affiche maintenant les nouvelles valeurs :
 
-```
-WELCOME_MESSAGE=Bienvenue sur notre site de démonstration !
-```
+- **ConfigMap** `nginx-config-2` → `APP_MESSAGE` : `Bienvenue dans NGINX`
+- **Secret** `nginx-secret-2` → `USERNAME` : `admin` / `PASSWORD` : `admin2026`
 
-:::warning L'ancien message est toujours affiché !
-Les variables d'environnement ne se mettent **pas** à jour automatiquement quand un ConfigMap change. Les valeurs sont lues **une seule fois**, au démarrage du conteneur. Pour que les nouvelles valeurs soient prises en compte, il faut **redémarrer les pods**.
+![Dashboard - Nouvelles valeurs](./images/dashboard-updated.png)
 
-C'est une différence importante avec le montage en volume, qui lui peut se mettre à jour automatiquement (avec un délai).
+:::tip Félicitations ! 🎉
+Vous avez modifié un ConfigMap et un Secret puis redémarré le Deployment pour appliquer
+les changements. Les nouvelles valeurs sont bien visibles dans le dashboard.
 :::
+## Résumé de l'exercice
 
-### Redémarrer les pods
+| Étape | Action | Résultat |
+|-------|--------|---------|
+| 1 | Créer le ConfigMap **nginx-config** | Variable `APP_MESSAGE` stockée |
+| 2 | Créer le Secret **nginx-secret** | Variables `USERNAME` et `PASSWORD` stockées |
+| 3 | Injecter dans le Deployment | Variables disponibles dans les Pods |
+| 4 | Vérifier depuis le Terminal | Variables affichées correctement |
+| 5 | Modifier le ConfigMap et le Secret | Nouvelles valeurs mises à jour |
+| 6 | Redémarrer le Deployment | Pods relancés avec les nouvelles valeurs |
+| ✅ | Accéder à la route | Dashboard affiche la configuration mise à jour |
 
-Utilisez la commande `rollout restart` pour forcer le redémarrage des pods :
-
-```bash
-oc rollout restart deployment welcome-app
-```
-
-**Sortie attendue :**
-
-```
-deployment.apps/welcome-app restarted
-```
-
-Attendez que le rollout soit terminé :
-
-```bash
-oc rollout status deployment welcome-app
-```
-
-**Sortie attendue :**
-
-```
-deployment "welcome-app" successfully rolled out
-```
-
-### Vérifier la mise à jour APRÈS le redémarrage
-
-```bash
-oc exec deployment/welcome-app -- env | grep -E "WELCOME|APP_MODE"
-```
-
-**Sortie attendue :**
-
-```
-WELCOME_MESSAGE=Bienvenue à notre nouvelle application déployée avec OpenShift !
-APP_MODE=development
-```
-
-Les nouvelles valeurs sont maintenant injectées dans l'application.
-
-### Vérification
-
-:::tip Checklist de vérification
-- [ ] Le ConfigMap contient les nouvelles valeurs (`development` et le nouveau message)
-- [ ] Avant le redémarrage, les pods affichaient encore l'ancien message
-- [ ] Après le `rollout restart`, les pods affichent le nouveau message
-- [ ] La variable `APP_MODE` vaut maintenant `development`
-:::
-
----
-
-## Etape 5 : Nettoyage
-
-### Pourquoi cette étape ?
-
-Il est important de nettoyer les ressources après un exercice pour ne pas encombrer le cluster et éviter les conflits lors d'exercices futurs.
-
-Supprimez les ressources créées :
-
-```bash
-oc delete configmap welcome-config
-```
-
-**Sortie attendue :**
-
-```
-configmap "welcome-config" deleted
-```
-
-```bash
-oc delete secret welcome-secret
-```
-
-**Sortie attendue :**
-
-```
-secret "welcome-secret" deleted
-```
-
-```bash
-oc delete deployment welcome-app
-```
-
-**Sortie attendue :**
-
-```
-deployment.apps "welcome-app" deleted
-```
-
-Vérifiez que tout a été supprimé :
-
-```bash
-oc get configmap welcome-config 2>/dev/null; oc get secret welcome-secret 2>/dev/null; oc get deployment welcome-app 2>/dev/null
-```
-
-**Sortie attendue :**
-
-```
-Error from server (NotFound): configmaps "welcome-config" not found
-Error from server (NotFound): secrets "welcome-secret" not found
-Error from server (NotFound): deployments.apps "welcome-app" not found
-```
-
-### Vérification
-
-:::tip Checklist de vérification
-- [ ] Le ConfigMap `welcome-config` a été supprimé
-- [ ] Le Secret `welcome-secret` a été supprimé
-- [ ] Le Deployment `welcome-app` a été supprimé
-:::
-
----
-
-## Récapitulatif
-
-| Concept | Objet Kubernetes | Usage | Encodage | Mise à jour auto (env vars) |
-|---|---|---|---|---|
-| Configuration non sensible | **ConfigMap** | Messages, modes, URLs, paramètres | Texte clair | Non - redémarrage nécessaire |
-| Données sensibles | **Secret** | Mots de passe, tokens, certificats | Base64 | Non - redémarrage nécessaire |
-
-| Commande | Description |
-|---|---|
-| `oc apply -f fichier.yaml` | Créer ou mettre à jour une ressource |
-| `oc get configmap <nom> -o yaml` | Afficher le contenu d'un ConfigMap |
-| `oc get secret <nom> -o yaml` | Afficher le contenu d'un Secret |
-| `oc describe configmap <nom>` | Afficher les détails d'un ConfigMap |
-| `oc exec deployment/<nom> -- env` | Voir les variables d'environnement d'un pod |
-| `oc rollout restart deployment <nom>` | Redémarrer les pods d'un Deployment |
-| `echo -n "valeur" \| base64` | Encoder une valeur en base64 |
-| `echo "valeur" \| base64 -d` | Décoder une valeur base64 |
-
-## Conclusion
-
-:::note Ce qu'il faut retenir
-1. **ConfigMap** = configuration non sensible, **Secret** = données sensibles.
-2. On injecte ces objets dans les conteneurs via des **variables d'environnement** ou des **volumes**.
-3. Quand on utilise des variables d'environnement, les changements de ConfigMap/Secret ne sont **pas automatiques** : il faut redémarrer les pods.
-4. Les Secrets sont encodés en base64 mais **pas chiffrés** : la sécurité repose sur le RBAC.
-5. Cette approche permet de **découpler la configuration du code**, une bonne pratique essentielle dans le monde des conteneurs.
+:::tip Ce que vous avez appris
+- Créer un **ConfigMap** pour stocker des données de configuration non sensibles
+- Créer un **Secret** pour stocker des données sensibles
+- Injecter des variables d'environnement dans un **Deployment**
+- Vérifier les variables depuis le **Terminal** du Pod
+- Modifier un ConfigMap et un Secret et **redémarrer le Deployment** pour appliquer les changements
 :::
