@@ -29,7 +29,7 @@ Cliquer sur **Create ConfigMap**
 
 Remplir :
 
-- **Name** : `nginx-config`
+- **Name** : `nginx-config-2`
 - **Key** : `APP_MESSAGE`
 - **Value** : `Bienvenue dans nginx avec ConfigMap`
 
@@ -55,7 +55,7 @@ Cliquer **Create → Key/Value Secret**
 
 Remplir :
 
-- **Name** : `nginx-secret`
+- **Name** : `nginx-secret-2`
 - **Key** : `USERNAME` / **Value** : `admin`
 - **Key** : `PASSWORD` / **Value** : `admin123`
 
