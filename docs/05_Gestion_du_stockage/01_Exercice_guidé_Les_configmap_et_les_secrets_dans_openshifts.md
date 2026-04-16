@@ -79,7 +79,7 @@ Elles ne sont jamais affichées en clair dans la console.
 
 Aller dans **Workloads → Deployments**
 
-- Cliquer sur **nginx-unprivileged**
+- Cliquer sur **nginx-unprivileged-2**
 - Cliquer sur **Actions → Edit Deployment**
 
 ![Deployment Details - nginx-unprivileged](./images/deployment-details-configmap.png)
