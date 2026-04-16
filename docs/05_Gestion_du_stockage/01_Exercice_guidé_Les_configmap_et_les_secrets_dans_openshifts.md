@@ -145,6 +145,7 @@ Vous avez créé un ConfigMap `nginx-config` pour stocker la variable `APP_MESSA
 `nginx-secret` pour les données sensibles `USERNAME` et `PASSWORD`. Ces valeurs ont ensuite été
 injectées dans le Deployment comme variables d'environnement, permettant aux Pods d'y accéder
 sans hardcoder les valeurs dans l'image.
+:::
 ## Étape 5 — Vérifier depuis le Terminal du Pod
 
 Aller dans **Workloads → Pods**, cliquer sur un pod nginx puis **Terminal**
@@ -241,7 +242,7 @@ les changements. Les nouvelles valeurs sont bien visibles dans le dashboard.
 | 4 | Vérifier depuis le Terminal | Variables affichées correctement |
 | 5 | Modifier le ConfigMap et le Secret | Nouvelles valeurs mises à jour |
 | 6 | Redémarrer le Deployment | Pods relancés avec les nouvelles valeurs |
-| ✅ | Accéder à la route | Dashboard affiche la configuration mise à jour |
+| 7 | Accéder à la route | Dashboard affiche la configuration mise à jour |
 
 :::tip Ce que vous avez appris
 - Créer un **ConfigMap** pour stocker des données de configuration non sensibles
