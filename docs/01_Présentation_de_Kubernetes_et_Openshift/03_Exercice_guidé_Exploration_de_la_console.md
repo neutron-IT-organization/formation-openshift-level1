@@ -1,3 +1,6 @@
+---
+slug: /Présentation_de_Kubernetes_et_Openshift/Exercice_guidé_Exploration_de_la_console
+---
 # Exercice Guidé : Exploration de la console OpenShift
 
 ## Ce que vous allez apprendre

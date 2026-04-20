@@ -1,3 +1,6 @@
+---
+slug: /Gestion_du_stockage/Résumé
+---
 # Résumé
 
 Dans cette partie, le formateur fera une synthèse de tout ce qui a été vu dans les parties précédentes. Ce sera l'occasion de revoir les points clés, de clarifier les concepts abordés et de s'assurer que tous les participants ont bien assimilé le contenu.

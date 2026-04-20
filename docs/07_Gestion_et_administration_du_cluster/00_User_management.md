@@ -1,3 +1,6 @@
+---
+slug: /Gestion_et_administration_du_cluster/User_management
+---
 # Gestion des Autorisations avec RBAC et les Service Accounts
 
 ## Introduction

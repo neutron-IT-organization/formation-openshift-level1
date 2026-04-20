@@ -1,4 +1,7 @@
-# Objectif du cours
+---
+slug: /Introduction/Objectif_du_cours
+---
+
 
 Bienvenue dans cette formation OpenShift. Ce cours vous accompagne pas à pas dans la découverte et la maîtrise d'OpenShift, la plateforme de conteneurs d'entreprise de Red Hat. Que vous soyez administrateur système, développeur ou ingénieur DevOps, ce programme est conçu pour vous donner des compétences concrètes et immédiatement applicables.
 

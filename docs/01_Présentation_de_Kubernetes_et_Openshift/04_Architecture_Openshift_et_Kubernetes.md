@@ -1,3 +1,6 @@
+---
+slug: /Présentation_de_Kubernetes_et_Openshift/Architecture_Openshift_et_Kubernetes
+---
 # Architecture d'OpenShift et Kubernetes
 
 ## Objectif

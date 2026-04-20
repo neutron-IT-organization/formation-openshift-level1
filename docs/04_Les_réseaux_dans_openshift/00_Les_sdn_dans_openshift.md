@@ -1,3 +1,6 @@
+---
+slug: /Les_réseaux_dans_openshift/Les_sdn_dans_openshift
+---
 # Les réseaux dans OpenShift
 
 Dans un environnement OpenShift, la gestion du réseau est essentielle pour garantir une communication efficace et sécurisée entre les différents composants des applications déployées. Kubernetes implémente un **Réseau Défini par Logiciel** (SDN - Software Defined Networking) pour orchestrer cette infrastructure réseau. Le SDN permet de créer un réseau virtuel englobant tous les nœuds du cluster, facilitant la communication inter-pods tout en maintenant un niveau élevé de sécurité et de gestion centralisée.

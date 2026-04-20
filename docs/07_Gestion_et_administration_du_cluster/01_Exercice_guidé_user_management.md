@@ -1,3 +1,6 @@
+---
+slug: /Gestion_et_administration_du_cluster/Exercice_guidé_user_management
+---
 # Exercice Guidé : RBAC et Service Accounts
 
 ## Ce que vous allez apprendre

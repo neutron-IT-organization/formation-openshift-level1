@@ -1,3 +1,6 @@
+---
+slug: /Executez_des_applications_conteneurisé/Les_Workloads_dans_Openshift
+---
 # Les Workloads dans OpenShift
 
 Dans cette section, nous allons explorer les différents types de workloads disponibles dans OpenShift. Ces ressources, appelées **workloads**, constituent la base de l'orchestration des applications conteneurisées. Comprendre leurs différences et leurs cas d'usage respectifs est indispensable pour concevoir des architectures robustes et évolutives.

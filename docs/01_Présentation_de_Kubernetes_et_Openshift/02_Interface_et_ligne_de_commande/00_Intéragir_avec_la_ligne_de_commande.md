@@ -1,3 +1,6 @@
+---
+slug: /Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Intéragir_avec_la_ligne_de_commande
+---
 # Interagir avec la Ligne de Commande sur OpenShift
 
 ## Objectifs de la section

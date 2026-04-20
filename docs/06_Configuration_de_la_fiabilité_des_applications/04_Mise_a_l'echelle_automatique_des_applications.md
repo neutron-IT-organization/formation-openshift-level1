@@ -1,3 +1,6 @@
+---
+slug: /Configuration_de_la_fiabilité_des_applications/Mise_a_l'echelle_automatique_des_applications
+---
 # Mise à l'échelle automatique des applications dans OpenShift
 
 ## Introduction

@@ -1,3 +1,6 @@
+---
+slug: /Gestion_du_stockage/Selection_d_une_classe_de_stockage
+---
 # Sélection d'une classe de stockage
 
 ## Introduction

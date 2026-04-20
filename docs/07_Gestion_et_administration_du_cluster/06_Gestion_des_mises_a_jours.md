@@ -1,3 +1,6 @@
+---
+slug: /Gestion_et_administration_du_cluster/Gestion_des_mises_a_jours
+---
 # Gestion des Mises à Jour du Cluster OpenShift
 
 ## Introduction

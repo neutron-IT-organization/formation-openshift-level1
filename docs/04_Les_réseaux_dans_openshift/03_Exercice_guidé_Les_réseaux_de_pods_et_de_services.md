@@ -1,3 +1,6 @@
+---
+slug: /Les_réseaux_dans_openshift/Exercice_guidé_Les_réseaux_de_pods_et_de_services
+---
 # Exercice Guidé : Les Réseaux de Pods et de Services
 
 ## Ce que vous allez apprendre

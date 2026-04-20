@@ -1,3 +1,6 @@
+---
+slug: /Executez_des_applications_conteneurisé/Les_statefulset
+---
 # Les StatefulSets dans OpenShift
 
 Les **StatefulSets** constituent le mécanisme de référence pour déployer des applications **stateful** dans Kubernetes et OpenShift. Contrairement aux Deployments, où les pods sont interchangeables et éphémères, un StatefulSet garantit à chaque pod une identité stable, un stockage persistant dédié et un cycle de vie ordonné. Ces propriétés sont indispensables pour les bases de données, les clusters distribués et tous les systèmes dont le comportement dépend de l'identité de chaque instance.

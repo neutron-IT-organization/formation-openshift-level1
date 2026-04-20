@@ -1,3 +1,6 @@
+---
+slug: /Les_réseaux_dans_openshift/Les_réseaux_de_pods_et_de_services
+---
 # Services et Routes dans OpenShift
 
 Dans OpenShift, exposer une application de façon fiable et sécurisée nécessite de maîtriser deux abstractions fondamentales : les **Services** et les **Routes**. Les Services assurent l'équilibrage de charge interne entre les pods, tandis que les Routes (ou Ingress) permettent d'accéder aux applications depuis l'extérieur du cluster. Cette section détaille leur fonctionnement, leurs types, et les bonnes pratiques de configuration.

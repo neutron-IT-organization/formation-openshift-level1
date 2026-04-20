@@ -1,3 +1,6 @@
+---
+slug: /Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs
+---
 # Exercice Guidé : Exploration des Nœuds et MachineConfigs dans OpenShift
 
 Dans cet exercice, vous allez apprendre à explorer les nœuds et leurs configurations système dans OpenShift. Vous utiliserez la commande `oc debug` pour récupérer des informations détaillées sur un nœud et consulterez les MachineConfigs associées via la console OpenShift, sans les modifier.

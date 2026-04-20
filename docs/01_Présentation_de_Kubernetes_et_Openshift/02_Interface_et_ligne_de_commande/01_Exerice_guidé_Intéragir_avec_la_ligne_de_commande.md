@@ -1,3 +1,6 @@
+---
+slug: /Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Exerice_guidé_Intéragir_avec_la_ligne_de_commande
+---
 # Exercice Guidé : Interaction avec OpenShift via la Ligne de Commande
 
 ## Ce que vous allez apprendre

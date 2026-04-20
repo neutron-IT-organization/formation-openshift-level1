@@ -1,3 +1,6 @@
+---
+slug: /Executez_des_applications_conteneurisé/Les_deployment_et_les_daemonset
+---
 # Deployments et DaemonSets dans OpenShift
 
 Les **Deployments** et les **DaemonSets** sont les deux workloads les plus fréquemment utilisés dans un cluster OpenShift. Bien qu'ils partagent des mécanismes communs (sélecteurs de pods, templates de pods, stratégies de mise à jour), ils répondent à des besoins fondamentalement différents : le Deployment orchestre les applications stateless avec un nombre variable de réplicas, tandis que le DaemonSet garantit la présence d'un agent sur chaque nœud du cluster.

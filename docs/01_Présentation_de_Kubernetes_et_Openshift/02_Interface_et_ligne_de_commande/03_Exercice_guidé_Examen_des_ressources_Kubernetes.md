@@ -1,3 +1,6 @@
+---
+slug: /Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Exercice_guidé_Examen_des_ressources_Kubernetes
+---
 # Exercice Guidé : Examen des Ressources Kubernetes
 
 ## Ce que vous allez apprendre

@@ -1,3 +1,6 @@
+---
+slug: /Executez_des_applications_conteneurisé/Exercice_guidé_Les_statefulset
+---
 # Exercice Guidé : Les StatefulSets
 
 ## Ce que vous allez apprendre

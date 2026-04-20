@@ -1,3 +1,6 @@
+---
+slug: /Présentation_de_Kubernetes_et_Openshift/Presentation_d_Openshift
+---
 # Présentation d'OpenShift
 
 ## Objectif

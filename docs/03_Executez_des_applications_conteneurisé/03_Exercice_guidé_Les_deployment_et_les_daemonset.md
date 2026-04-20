@@ -1,3 +1,6 @@
+---
+slug: /Executez_des_applications_conteneurisé/Exercice_guidé_Les_deployment_et_les_daemonset
+---
 # Exercice Guidé : Les Déploiements et Rolling Updates dans OpenShift
 
 ## Ce que vous allez apprendre
