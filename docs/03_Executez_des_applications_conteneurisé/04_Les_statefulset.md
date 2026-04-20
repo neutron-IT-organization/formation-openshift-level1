@@ -1,5 +1,5 @@
 ---
-id: Executez_des_applications_conteneurisé/Les_statefulset
+id: Les_statefulset
 
 slug: /Executez_des_applications_conteneurisé/Les_statefulset
 ---

@@ -1,5 +1,5 @@
 ---
-id: Configuration_de_la_fiabilité_des_applications/Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications
+id: Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications
 
 slug: /Configuration_de_la_fiabilité_des_applications/Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications
 ---

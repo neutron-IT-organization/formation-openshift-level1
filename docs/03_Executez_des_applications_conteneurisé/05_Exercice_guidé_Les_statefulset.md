@@ -1,5 +1,5 @@
 ---
-id: Executez_des_applications_conteneurisé/Exercice_guidé_Les_statefulset
+id: Exercice_guidé_Les_statefulset
 
 slug: /Executez_des_applications_conteneurisé/Exercice_guidé_Les_statefulset
 ---

@@ -1,5 +1,5 @@
 ---
-id: Configuration_de_la_fiabilité_des_applications/Taints_Tolerations_et_Affinité_des_noeuds
+id: Taints_Tolerations_et_Affinité_des_noeuds
 
 slug: /Configuration_de_la_fiabilité_des_applications/Taints_Tolerations_et_Affinité_des_noeuds
 ---

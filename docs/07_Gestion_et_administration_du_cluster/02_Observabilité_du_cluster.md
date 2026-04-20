@@ -1,5 +1,5 @@
 ---
-id: Gestion_et_administration_du_cluster/Observabilité_du_cluster
+id: Observabilité_du_cluster
 
 slug: /Gestion_et_administration_du_cluster/Observabilité_du_cluster
 ---

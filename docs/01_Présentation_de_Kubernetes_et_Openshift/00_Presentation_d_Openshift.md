@@ -1,5 +1,5 @@
 ---
-id: Présentation_de_Kubernetes_et_Openshift/Presentation_d_Openshift
+id: Presentation_d_Openshift
 
 slug: /Présentation_de_Kubernetes_et_Openshift/Presentation_d_Openshift
 ---

@@ -1,5 +1,5 @@
 ---
-id: Configuration_de_la_fiabilité_des_applications/Mise_a_l'echelle_automatique_des_applications
+id: Mise_a_l'echelle_automatique_des_applications
 
 slug: /Configuration_de_la_fiabilité_des_applications/Mise_a_l'echelle_automatique_des_applications
 ---

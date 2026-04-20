@@ -1,5 +1,5 @@
 ---
-id: Les_réseaux_dans_openshift/Les_réseaux_de_pods_et_de_services
+id: Les_réseaux_de_pods_et_de_services
 
 slug: /Les_réseaux_dans_openshift/Les_réseaux_de_pods_et_de_services
 ---

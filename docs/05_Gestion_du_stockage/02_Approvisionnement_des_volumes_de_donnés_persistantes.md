@@ -1,5 +1,5 @@
 ---
-id: Gestion_du_stockage/Approvisionnement_des_volumes_de_donnés_persistantes
+id: Approvisionnement_des_volumes_de_donnés_persistantes
 
 slug: /Gestion_du_stockage/Approvisionnement_des_volumes_de_donnés_persistantes
 ---

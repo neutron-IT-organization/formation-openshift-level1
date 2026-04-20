@@ -1,5 +1,5 @@
 ---
-id: Gestion_et_administration_du_cluster/Exercice_guidé_user_management
+id: Exercice_guidé_user_management
 
 slug: /Gestion_et_administration_du_cluster/Exercice_guidé_user_management
 ---

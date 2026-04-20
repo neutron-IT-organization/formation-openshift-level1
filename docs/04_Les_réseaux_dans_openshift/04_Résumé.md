@@ -1,5 +1,5 @@
 ---
-id: Les_réseaux_dans_openshift/Résumé
+id: Résumé
 
 slug: /Les_réseaux_dans_openshift/Résumé
 ---

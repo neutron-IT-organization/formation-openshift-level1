@@ -1,5 +1,5 @@
 ---
-id: Gestion_et_administration_du_cluster/User_management
+id: User_management
 
 slug: /Gestion_et_administration_du_cluster/User_management
 ---

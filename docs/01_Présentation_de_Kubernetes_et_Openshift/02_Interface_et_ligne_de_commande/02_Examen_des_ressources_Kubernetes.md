@@ -1,5 +1,5 @@
 ---
-id: Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Examen_des_ressources_Kubernetes
+id: Examen_des_ressources_Kubernetes
 
 slug: /Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Examen_des_ressources_Kubernetes
 ---

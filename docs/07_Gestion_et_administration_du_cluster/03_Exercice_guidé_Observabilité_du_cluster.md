@@ -1,5 +1,5 @@
 ---
-id: Gestion_et_administration_du_cluster/Exercice_guidé_Observabilité_du_cluster
+id: Exercice_guidé_Observabilité_du_cluster
 
 slug: /Gestion_et_administration_du_cluster/Exercice_guidé_Observabilité_du_cluster
 ---

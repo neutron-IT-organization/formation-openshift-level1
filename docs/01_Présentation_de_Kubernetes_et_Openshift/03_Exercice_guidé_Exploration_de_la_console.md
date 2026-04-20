@@ -1,5 +1,5 @@
 ---
-id: Présentation_de_Kubernetes_et_Openshift/Exercice_guidé_Exploration_de_la_console
+id: Exercice_guidé_Exploration_de_la_console
 
 slug: /Présentation_de_Kubernetes_et_Openshift/Exercice_guidé_Exploration_de_la_console
 ---

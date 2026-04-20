@@ -1,5 +1,5 @@
 ---
-id: Gestion_et_administration_du_cluster/Gestion_des_mises_a_jours
+id: Gestion_des_mises_a_jours
 
 slug: /Gestion_et_administration_du_cluster/Gestion_des_mises_a_jours
 ---

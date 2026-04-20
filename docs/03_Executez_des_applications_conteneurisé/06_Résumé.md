@@ -1,5 +1,5 @@
 ---
-id: Executez_des_applications_conteneurisé/Résumé
+id: Résumé
 
 slug: /Executez_des_applications_conteneurisé/Résumé
 ---

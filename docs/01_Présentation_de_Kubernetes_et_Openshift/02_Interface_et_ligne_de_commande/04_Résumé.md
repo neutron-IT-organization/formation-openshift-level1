@@ -1,5 +1,5 @@
 ---
-id: Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Résumé
+id: Résumé
 
 slug: /Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Résumé
 ---

@@ -1,5 +1,5 @@
 ---
-id: Gestion_du_stockage/Selection_d_une_classe_de_stockage
+id: Selection_d_une_classe_de_stockage
 
 slug: /Gestion_du_stockage/Selection_d_une_classe_de_stockage
 ---

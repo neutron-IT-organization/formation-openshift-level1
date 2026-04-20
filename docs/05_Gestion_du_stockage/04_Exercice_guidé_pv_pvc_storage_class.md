@@ -1,5 +1,5 @@
 ---
-id: Gestion_du_stockage/Exercice_guidé_pv_pvc_storage_class
+id: Exercice_guidé_pv_pvc_storage_class
 
 slug: /Gestion_du_stockage/Exercice_guidé_pv_pvc_storage_class
 ---

@@ -1,5 +1,5 @@
 ---
-id: Gestion_du_stockage/Les_configmap_et_les_secrets_dans_openshift
+id: Les_configmap_et_les_secrets_dans_openshift
 
 slug: /Gestion_du_stockage/Les_configmap_et_les_secrets_dans_openshift
 ---
