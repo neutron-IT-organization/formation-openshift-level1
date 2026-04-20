@@ -1,4 +1,6 @@
 ---
+id: Introduction/Objectif_du_cours
+
 slug: /Introduction/Objectif_du_cours
 ---
 

@@ -1,4 +1,6 @@
 ---
+id: Introduction/Organisation_de_la_formation
+
 slug: /Introduction/Organisation_de_la_formation
 ---
 

@@ -1,4 +1,6 @@
 ---
+id: Gestion_et_administration_du_cluster/Observabilité_du_cluster
+
 slug: /Gestion_et_administration_du_cluster/Observabilité_du_cluster
 ---
 # Observabilité du Cluster OpenShift

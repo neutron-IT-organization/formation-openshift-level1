@@ -1,4 +1,6 @@
 ---
+id: Executez_des_applications_conteneurisé/Les_Workloads_dans_Openshift
+
 slug: /Executez_des_applications_conteneurisé/Les_Workloads_dans_Openshift
 ---
 # Les Workloads dans OpenShift

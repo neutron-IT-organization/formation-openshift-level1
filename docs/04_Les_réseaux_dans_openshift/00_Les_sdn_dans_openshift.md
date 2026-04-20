@@ -1,4 +1,6 @@
 ---
+id: Les_réseaux_dans_openshift/Les_sdn_dans_openshift
+
 slug: /Les_réseaux_dans_openshift/Les_sdn_dans_openshift
 ---
 # Les réseaux dans OpenShift

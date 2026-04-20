@@ -1,4 +1,6 @@
 ---
+id: Gestion_du_stockage/Résumé
+
 slug: /Gestion_du_stockage/Résumé
 ---
 # Résumé

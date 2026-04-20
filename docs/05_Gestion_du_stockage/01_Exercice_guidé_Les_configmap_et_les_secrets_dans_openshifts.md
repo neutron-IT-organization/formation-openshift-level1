@@ -1,4 +1,6 @@
 ---
+id: Gestion_du_stockage/Exercice_guidé_Les_configmap_et_les_secrets_dans_openshifts
+
 slug: /Gestion_du_stockage/Exercice_guidé_Les_configmap_et_les_secrets_dans_openshifts
 ---
 # Exercice Guidé : Les ConfigMaps et les Secrets dans OpenShift

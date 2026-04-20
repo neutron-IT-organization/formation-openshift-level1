@@ -1,4 +1,6 @@
 ---
+id: Présentation_de_Kubernetes_et_Openshift/Résumé
+
 slug: /Présentation_de_Kubernetes_et_Openshift/Résumé
 ---
 # Résumé

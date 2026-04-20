@@ -1,4 +1,6 @@
 ---
+id: Executez_des_applications_conteneurisé/Les_statefulset
+
 slug: /Executez_des_applications_conteneurisé/Les_statefulset
 ---
 # Les StatefulSets dans OpenShift

@@ -1,4 +1,6 @@
 ---
+id: Configuration_de_la_fiabilité_des_applications/Résumé
+
 slug: /Configuration_de_la_fiabilité_des_applications/Résumé
 ---
 # Résumé

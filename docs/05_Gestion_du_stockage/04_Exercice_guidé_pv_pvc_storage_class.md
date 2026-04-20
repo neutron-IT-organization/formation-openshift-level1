@@ -1,4 +1,6 @@
 ---
+id: Gestion_du_stockage/Exercice_guidé_pv_pvc_storage_class
+
 slug: /Gestion_du_stockage/Exercice_guidé_pv_pvc_storage_class
 ---
 # Exercice Guidé : Persistent Volumes (PV), PVC et Storage Class

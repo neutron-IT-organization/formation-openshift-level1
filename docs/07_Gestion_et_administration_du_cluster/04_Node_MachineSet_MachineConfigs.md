@@ -1,4 +1,6 @@
 ---
+id: Gestion_et_administration_du_cluster/Node_MachineSet_MachineConfigs
+
 slug: /Gestion_et_administration_du_cluster/Node_MachineSet_MachineConfigs
 ---
 # Nœuds, MachineSets et MachineConfigs

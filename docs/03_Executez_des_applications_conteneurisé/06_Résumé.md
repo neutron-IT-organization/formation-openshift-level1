@@ -1,4 +1,6 @@
 ---
+id: Executez_des_applications_conteneurisé/Résumé
+
 slug: /Executez_des_applications_conteneurisé/Résumé
 ---
 # Résumé

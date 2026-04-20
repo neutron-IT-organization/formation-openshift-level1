@@ -1,4 +1,6 @@
 ---
+id: Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs
+
 slug: /Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs
 ---
 # Exercice Guidé : Exploration des Nœuds et MachineConfigs dans OpenShift

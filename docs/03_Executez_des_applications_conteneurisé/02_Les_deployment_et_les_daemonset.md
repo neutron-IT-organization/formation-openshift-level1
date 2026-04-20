@@ -1,4 +1,6 @@
 ---
+id: Executez_des_applications_conteneurisé/Les_deployment_et_les_daemonset
+
 slug: /Executez_des_applications_conteneurisé/Les_deployment_et_les_daemonset
 ---
 # Deployments et DaemonSets dans OpenShift

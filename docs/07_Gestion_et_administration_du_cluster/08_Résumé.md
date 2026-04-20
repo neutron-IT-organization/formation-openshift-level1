@@ -1,4 +1,6 @@
 ---
+id: Gestion_et_administration_du_cluster/Résumé
+
 slug: /Gestion_et_administration_du_cluster/Résumé
 ---
 # Résumé

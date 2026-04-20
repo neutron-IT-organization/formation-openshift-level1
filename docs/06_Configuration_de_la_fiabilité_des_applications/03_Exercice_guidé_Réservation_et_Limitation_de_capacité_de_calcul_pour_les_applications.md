@@ -1,4 +1,6 @@
 ---
+id: Configuration_de_la_fiabilité_des_applications/Exercice_guidé_Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications
+
 slug: /Configuration_de_la_fiabilité_des_applications/Exercice_guidé_Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications
 ---
 # Exercice Guidé : Gestion des Requests, Limites et Quotas dans OpenShift
