@@ -98,6 +98,75 @@ const sidebars = {
       ],
     },
   ],
+  exercicesSidebar: [
+    {
+      type: 'category',
+      label: 'Exercices guidés',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'Présentation_de_Kubernetes_et_Openshift/Exercice_guidé_Exploration_de_la_console',
+          label: 'Exercice 1 — Exploration de la console',
+        },
+        {
+          type: 'doc',
+          id: 'Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Exerice_guidé_Intéragir_avec_la_ligne_de_commande',
+          label: 'Exercice 2 — Intéragir avec la ligne de commande',
+        },
+        {
+          type: 'doc',
+          id: 'Présentation_de_Kubernetes_et_Openshift/Interface_et_ligne_de_commande/Exercice_guidé_Examen_des_ressources_Kubernetes',
+          label: 'Exercice 3 — Examen des ressources Kubernetes',
+        },
+        {
+          type: 'doc',
+          id: 'Executez_des_applications_conteneurisé/Exercice_guidé_Les_deployment_et_les_daemonset',
+          label: 'Exercice 4 — Deployments et DaemonSets',
+        },
+        {
+          type: 'doc',
+          id: 'Executez_des_applications_conteneurisé/Exercice_guidé_Les_statefulset',
+          label: 'Exercice 5 — StatefulSets',
+        },
+        {
+          type: 'doc',
+          id: 'Les_réseaux_dans_openshift/Exercice_guidé_Les_réseaux_de_pods_et_de_services',
+          label: 'Exercice 6 — Réseaux de pods et services',
+        },
+        {
+          type: 'doc',
+          id: 'Gestion_du_stockage/Exercice_guidé_Les_configmap_et_les_secrets_dans_openshifts',
+          label: 'Exercice 7 — ConfigMaps et Secrets',
+        },
+        {
+          type: 'doc',
+          id: 'Gestion_du_stockage/Exercice_guidé_pv_pvc_storage_class',
+          label: 'Exercice 8 — PV, PVC et StorageClass',
+        },
+        {
+          type: 'doc',
+          id: 'Configuration_de_la_fiabilité_des_applications/Exercice_guidé_Réservation_et_Limitation_de_capacité_de_calcul_pour_les_applications',
+          label: 'Exercice 9 — Réservation et limitation de ressources',
+        },
+        {
+          type: 'doc',
+          id: 'Gestion_et_administration_du_cluster/Exercice_guidé_user_management',
+          label: 'Exercice 10 — Gestion des utilisateurs',
+        },
+        {
+          type: 'doc',
+          id: 'Gestion_et_administration_du_cluster/Exercice_guidé_Observabilité_du_cluster',
+          label: 'Exercice 11 — Observabilité du cluster',
+        },
+        {
+          type: 'doc',
+          id: 'Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs',
+          label: 'Exercice 12 — MachineSet et MachineConfigs',
+        },
+      ],
+    },
+  ],
 };
 
 module.exports = sidebars;
