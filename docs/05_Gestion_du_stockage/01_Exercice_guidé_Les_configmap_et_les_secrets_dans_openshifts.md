@@ -38,16 +38,16 @@ Remplir :
 - **Key** : `APP_MESSAGE`
 - **Value** : `Bienvenue dans nginx avec ConfigMap`
 
-![Create ConfigMap - Formulaire](./images/create-configmap-form.png)
+![Create ConfigMap - Formulaire](./images/create-configmap-form-2.png)
 
 Cliquer sur **Create**
 
-Le ConfigMap **nginx-config** apparaît maintenant dans la liste.
+Le ConfigMap **nginx-config-2** apparaît maintenant dans la liste.
 
-![ConfigMap nginx-config créé](./images/configmap-created.png)
+![ConfigMap nginx-config créé](./images/configmap-created-2.png)
 
 :::tip
-Le ConfigMap **nginx-config** est maintenant créé avec la clé `APP_MESSAGE` et la valeur
+Le ConfigMap **nginx-config-2** est maintenant créé avec la clé `APP_MESSAGE` et la valeur
 `Bienvenue dans nginx avec ConfigMap`.
 :::
 ## Étape 2 — Créer le Secret
@@ -68,13 +68,13 @@ Remplir :
 Un Secret peut contenir plusieurs paires clé/valeur. Ici on stocke à la fois le nom
 d'utilisateur et le mot de passe dans le même Secret **nginx-secret**.
 :::
-![Create Secret - Formulaire](./images/create-secret-form.png)
+![Create Secret - Formulaire](./images/create-secret-2.png)
 
 Cliquer sur **Create**
 
-Le Secret **nginx-secret** apparaît maintenant dans la liste.
+Le Secret **nginx-secret-2** apparaît maintenant dans la liste.
 
-![Secret nginx-secret créé](./images/secret-created.png)
+![Secret nginx-secret créé](./images/secret-created-2.png)
 
 :::tip
 Les valeurs du Secret sont automatiquement **encodées en base64** par OpenShift.
@@ -97,7 +97,7 @@ Remplir pour le ConfigMap :
 
 - **Environment Variable Name** : `APP_MESSAGE`
 - **Select Resource** : choisir `ConfigMap`
-- **ConfigMap Name** : `nginx-config`
+- **ConfigMap Name** : `nginx-config-2`
 - **Key** : `APP_MESSAGE`
 
 Cliquer encore sur **Add from ConfigMap or Secret**
@@ -106,7 +106,7 @@ Remplir pour le Secret (USERNAME) :
 
 - **Environment Variable Name** : `USERNAME`
 - **Select Resource** : choisir `Secret`
-- **Secret Name** : `nginx-secret`
+- **Secret Name** : `nginx-secret-2`
 - **Key** : `USERNAME`
 
 Cliquer encore sur **Add from ConfigMap or Secret**
@@ -115,10 +115,10 @@ Remplir pour le Secret (PASSWORD) :
 
 - **Environment Variable Name** : `PASSWORD`
 - **Select Resource** : choisir `Secret`
-- **Secret Name** : `nginx-secret`
+- **Secret Name** : `nginx-secret-2`
 - **Key** : `PASSWORD`
 
-![Environment Variables - ConfigMap et Secret](./images/env-variables-configmap-secret.png)
+![Environment Variables - ConfigMap et Secret](./images/-env-variablesconfigmap-secret-2.png)
 
 :::tip
 Tu peux voir dans la section **Environment Variables** :
@@ -137,17 +137,17 @@ OpenShift va redémarrer automatiquement les Pods.
 - Cliquer sur un pod **nginx**
 - Puis **Environment**
 
-![Environment Variables - Pod](./images/pod-environment-variables.png)
+![Environment Variables - Pod](./images/pod-environment-2.png)
 
 Vous pouvez voir les 3 variables d'environnement injectées :
 
-- `APP_MESSAGE` → provenant du **ConfigMap** `nginx-config`
-- `USERNAME` → provenant du **Secret** `nginx-secret`
-- `PASSWORD` → provenant du **Secret** `nginx-secret`
+- `APP_MESSAGE` → provenant du **ConfigMap** `nginx-config-2`
+- `USERNAME` → provenant du **Secret** `nginx-secret-2`
+- `PASSWORD` → provenant du **Secret** `nginx-secret-2`
 
 :::info Ce que vous avez fait
-Vous avez créé un ConfigMap `nginx-config` pour stocker la variable `APP_MESSAGE` et un Secret
-`nginx-secret` pour les données sensibles `USERNAME` et `PASSWORD`. Ces valeurs ont ensuite été
+Vous avez créé un ConfigMap `nginx-config-2` pour stocker la variable `APP_MESSAGE` et un Secret
+`nginx-secret-2` pour les données sensibles `USERNAME` et `PASSWORD`. Ces valeurs ont ensuite été
 injectées dans le Deployment comme variables d'environnement, permettant aux Pods d'y accéder
 sans hardcoder les valeurs dans l'image.
 :::
