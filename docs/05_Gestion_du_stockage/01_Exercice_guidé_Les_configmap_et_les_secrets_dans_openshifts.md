@@ -68,7 +68,7 @@ Remplir :
 Un Secret peut contenir plusieurs paires clé/valeur. Ici on stocke à la fois le nom
 d'utilisateur et le mot de passe dans le même Secret **nginx-secret**.
 :::
-![Create Secret - Formulaire](./images/create-secret-2.png)
+![Create Secret - Formulaire](./images/create-secret2-2.png)
 
 Cliquer sur **Create**
 
@@ -118,7 +118,7 @@ Remplir pour le Secret (PASSWORD) :
 - **Secret Name** : `nginx-secret-2`
 - **Key** : `PASSWORD`
 
-![Environment Variables - ConfigMap et Secret](./images/-env-variablesconfigmap-secret-2.png)
+![Environment Variables - ConfigMap et Secret](./images/env-variablesconfigmap-secret-2.png)
 
 :::tip
 Tu peux voir dans la section **Environment Variables** :
