@@ -66,7 +66,7 @@ Remplir :
 
 :::info Pourquoi deux clés ?
 Un Secret peut contenir plusieurs paires clé/valeur. Ici on stocke à la fois le nom
-d'utilisateur et le mot de passe dans le même Secret **nginx-secret**.
+d'utilisateur et le mot de passe dans le même Secret **nginx-secret-2**.
 :::
 ![Create Secret - Formulaire](./images/create-secret2-2.png)
 
@@ -123,8 +123,8 @@ Remplir pour le Secret (PASSWORD) :
 :::tip
 Tu peux voir dans la section **Environment Variables** :
 - `APP_MESSAGE` provenant du **ConfigMap** `nginx-config` (icône violette CM)
-- `USERNAME` provenant du **Secret** `nginx-secret` (icône orange S)
-- `PASSWORD` provenant du **Secret** `nginx-secret` (icône orange S)
+- `USERNAME` provenant du **Secret** `nginx-secret-2` (icône orange S)
+- `PASSWORD` provenant du **Secret** `nginx-secret-2` (icône orange S)
 :::
 
 Cliquer sur **Save**
@@ -241,8 +241,8 @@ les changements. Les nouvelles valeurs sont bien visibles dans le dashboard.
 
 | Étape | Action | Résultat |
 |-------|--------|---------|
-| 1 | Créer le ConfigMap **nginx-config** | Variable `APP_MESSAGE` stockée |
-| 2 | Créer le Secret **nginx-secret** | Variables `USERNAME` et `PASSWORD` stockées |
+| 1 | Créer le ConfigMap **nginx-config-2** | Variable `APP_MESSAGE` stockée |
+| 2 | Créer le Secret **nginx-secret-2** | Variables `USERNAME` et `PASSWORD` stockées |
 | 3 | Injecter dans le Deployment | Variables disponibles dans les Pods |
 | 4 | Vérifier depuis le Terminal | Variables affichées correctement |
 | 5 | Modifier le ConfigMap et le Secret | Nouvelles valeurs mises à jour |
