@@ -235,12 +235,214 @@ curl -s <CLUSTER_IP>:80 | grep "Bienvenue"
 ```
 
 ---
+## Étape 5 : Communication entre Pods (Pod-à-Pod)
 
-## Étape 5 : Créer et tester le Service NodePort
+Dans cette étape, vous allez déployer un deuxième pod (un client **curl**) dans votre namespace, puis vérifier qu'il peut joindre **welcome-app** via le nom du Service **welcome-svc**, sans jamais utiliser son IP.
+
+C'est le vrai cas d'usage du **ClusterIP** : la communication entre microservices à l'intérieur du cluster.
+
+La communication Pod-à-Pod repose sur trois concepts fondamentaux :
+
+- Le **nom du Service** : une adresse DNS stable résolue automatiquement par le cluster.
+- Le **selector de labels** : le Service trouve les Pods cibles via leurs labels (`app: welcome-app`).
+- Le **load-balancing** : si plusieurs Pods correspondent au selector, le Service répartit les requêtes entre eux.
+
+---
+
+### Objectifs de l'étape
+
+A la fin de cette étape, vous serez capable de :
+
+- Déployer un pod client dans le même namespace qu'une application cible.
+- Appeler un Service par son **nom DNS** depuis un autre pod, sans utiliser son IP.
+- Vérifier la **résolution DNS** d'un Service à l'intérieur du cluster.
+- Démontrer la **résilience** du Service face à une recréation du pod cible.
+- Comprendre pourquoi on n'utilise **jamais** l'IP d'un Pod dans le code d'une application.
+
+---
+
+### 5.1 Déployer un pod client
+
+Créez le fichier `client-deployment.yaml` :
+
+```bash
+vi client-deployment.yaml
+```
+
+<details>
+<summary>Vous préférez nano ?</summary>
+
+```bash
+nano client-deployment.yaml
+```
+
+</details>
+
+Contenu du fichier :
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-app
+  namespace: <CITY>-user-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-app
+  template:
+    metadata:
+      labels:
+        app: client-app
+    spec:
+      containers:
+      - name: client
+        image: curlimages/curl:latest
+        command: ["sleep", "infinity"]
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "32Mi"
+          limits:
+            cpu: "50m"
+            memory: "64Mi"
+```
+
+Ce Deployment définit :
+
+- Un pod unique (**replicas: 1**) étiqueté `app: client-app`.
+- Une image légère **curlimages/curl** contenant l'utilitaire `curl`.
+- Une commande `sleep infinity` pour garder le pod actif en permanence (sinon il s'arrêterait immédiatement).
+- Des limites de ressources adaptées à un simple pod de test.
+
+Appliquez le manifest :
+
+```bash
+oc apply -f client-deployment.yaml
+```
+
+**Sortie attendue :**
+
+```
+deployment.apps/client-app created
+```
+
+Vérifiez que le pod est prêt :
+
+```bash
+oc get pods -l app=client-app
+```
+
+---
+
+### 5.2 Tester la communication via le nom du Service
+
+Entrez dans le pod client :
+
+```bash
+oc exec -it deploy/client-app -- sh
+```
+
+À l'intérieur du pod, lancez :
+
+```bash
+curl -s welcome-svc | grep "Bienvenue"
+```
+
+**Sortie attendue :**
+
+```html
+<h1>Bienvenue</h1>
+```
+
+Vous pouvez aussi vérifier la résolution DNS du nom du Service :
+
+```bash
+nslookup welcome-svc
+```
+
+La commande retournera l'IP virtuelle (ClusterIP) du Service, démontrant que le cluster a bien résolu le nom.
+
+Puis quittez le pod :
+
+```bash
+exit
+```
+
+:::info Pourquoi welcome-svc fonctionne ?
+Le pod **client-app** et le Service **welcome-svc** sont dans le **même namespace**. Le cluster résout automatiquement le nom court vers l'IP du Service.
+
+On utilise toujours **le nom** et jamais l'IP, car l'IP peut changer alors que le nom est stable.
+:::
+
+---
+
+### 5.3 Test en une seule commande (sans shell interactif)
+
+Pour faire le test rapidement sans ouvrir de shell dans le pod :
+
+```bash
+oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
+```
+
+**Sortie attendue :**
+
+```html
+<h1>Bienvenue</h1>
+```
+
+Cette forme est particulièrement utile dans les scripts d'automatisation ou les pipelines CI/CD.
+
+---
+
+### 5.4 Vérifier la résilience du Service
+
+Pour démontrer la résilience, vous allez provoquer une recréation du pod **welcome-app**. Cela simule ce qui arrive en production lors :
+
+- D'une **mise à jour** de l'application (rolling update).
+- D'un **redémarrage** du nœud.
+- D'un **scaling** (ajout ou suppression de répliques).
+- D'un **crash** du pod.
+
+Dans tous ces cas, un nouveau pod est créé avec **une nouvelle IP**, mais le Service reste stable.
+
+Recréez le pod **welcome-app** pour lui donner une nouvelle IP :
+
+```bash
+oc scale deployment/welcome-app --replicas=0
+oc scale deployment/welcome-app --replicas=1
+```
+
+Attendez qu'il redémarre :
+
+```bash
+oc get pods -l app=welcome-app -w
+```
+
+Appuyez sur **Ctrl+C** quand il affiche `1/1 Running`, puis relancez le test depuis le client :
+
+```bash
+oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
+```
+
+**Sortie attendue :**
+
+```html
+<h1>Bienvenue</h1>
+```
+
+:::tip Résilience du Service
+Le client continue de joindre **welcome-app** malgré le changement d'IP du pod. C'est toute la force du **Service ClusterIP** : il sert d'intermédiaire stable entre les clients et les pods qui, eux, peuvent changer à tout moment.
+
+Sans Service, vous devriez modifier manuellement la configuration du client à chaque recréation du pod serveur. Avec un Service, **rien à changer** : l'application continue de fonctionner de façon transparente.
+:::
+
+## Étape 6 : Créer et tester le Service NodePort
 
 Le NodePort expose l'application sur un port fixe de votre serveur (le noeud).
 
-### 5.1 Créer le service NodePort
+### 6.1 Créer le service NodePort
 Créez le fichier `welcome-nodeport.yaml` :
 
 ```bash
@@ -282,7 +484,7 @@ oc apply -f welcome-nodeport.yaml
 service/welcome-svc-nodeport created
 ```
 
-### 5.2 Tester via l'IP du Noeud
+### 6.2 Tester via l'IP du Noeud
 Utilisez l'IP de votre serveur OpenShift (**192.168.0.251**) :
 ```bash
 curl -s http://192.168.0.251:30080 | grep "Bienvenue"
@@ -290,9 +492,9 @@ curl -s http://192.168.0.251:30080 | grep "Bienvenue"
 
 ---
 
-## Étape 6 : Créer la Route HTTPS (Exposition Publique)
+## Étape 7 : Créer la Route HTTPS (Exposition Publique)
 
-### 6.1 Créer la Route Edge
+### 7.1 Créer la Route Edge
 Créez le fichier `welcome-route.yaml` :
 
 ```bash
@@ -334,7 +536,7 @@ oc apply -f welcome-route.yaml
 route.route.openshift.io/welcome-route created
 ```
 
-### 6.2 Tester dans le navigateur
+### 7.2 Tester dans le navigateur
 ```bash
 oc get route welcome-route -o jsonpath='https://{.spec.host}{"\n"}'
 ```
@@ -353,10 +555,10 @@ Ouvrez l'URL générée dans votre navigateur.
 
 ---
 
-## Étape 7 : Nettoyage
+## Étape 6 : Nettoyage
 
 ```bash
-oc delete deployment welcome-app
+oc delete deployment welcome-app client-app
 oc delete svc welcome-svc welcome-svc-nodeport
 oc delete route welcome-route
 oc delete networkpolicy allow-multi-namespace-ingress
