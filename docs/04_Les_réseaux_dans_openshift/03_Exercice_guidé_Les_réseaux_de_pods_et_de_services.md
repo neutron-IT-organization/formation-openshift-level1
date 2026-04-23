@@ -165,7 +165,7 @@ curl -s <POD_IP>:8080 | grep "Bienvenue"
 **Sortie attendue :**
 
 ```
-<h1>Bienvenue</h1>
+<h1>Bienvenue sur notre site de démonstration !</h1>
 ```
 
 :::warning IP instable
@@ -231,7 +231,7 @@ curl -s <CLUSTER_IP>:80 | grep "Bienvenue"
 **Sortie attendue :**
 
 ```
-<h1>Bienvenue</h1>
+ <h1>Bienvenue sur notre site de démonstration !</h1>
 ```
 
 ---
@@ -241,25 +241,7 @@ Dans cette étape, vous allez déployer un deuxième pod (un client **curl**) da
 
 C'est le vrai cas d'usage du **ClusterIP** : la communication entre microservices à l'intérieur du cluster.
 
-La communication Pod-à-Pod repose sur trois concepts fondamentaux :
 
-- Le **nom du Service** : une adresse DNS stable résolue automatiquement par le cluster.
-- Le **selector de labels** : le Service trouve les Pods cibles via leurs labels (`app: welcome-app`).
-- Le **load-balancing** : si plusieurs Pods correspondent au selector, le Service répartit les requêtes entre eux.
-
----
-
-### Objectifs de l'étape
-
-A la fin de cette étape, vous serez capable de :
-
-- Déployer un pod client dans le même namespace qu'une application cible.
-- Appeler un Service par son **nom DNS** depuis un autre pod, sans utiliser son IP.
-- Vérifier la **résolution DNS** d'un Service à l'intérieur du cluster.
-- Démontrer la **résilience** du Service face à une recréation du pod cible.
-- Comprendre pourquoi on n'utilise **jamais** l'IP d'un Pod dans le code d'une application.
-
----
 
 ### 5.1 Déployer un pod client
 
@@ -269,14 +251,11 @@ Créez le fichier `client-deployment.yaml` :
 vi client-deployment.yaml
 ```
 
-<details>
-<summary>Vous préférez nano ?</summary>
-
+:::tip Vous préférez nano ?
 ```bash
 nano client-deployment.yaml
 ```
-
-</details>
+:::
 
 Contenu du fichier :
 
@@ -353,13 +332,13 @@ curl -s welcome-svc | grep "Bienvenue"
 **Sortie attendue :**
 
 ```html
-<h1>Bienvenue</h1>
+<h1>Bienvenue sur notre site de démonstration !</h1>
 ```
 
 Vous pouvez aussi vérifier la résolution DNS du nom du Service :
 
 ```bash
-nslookup welcome-svc
+nslookup welcome-svc.paris-user-ns.svc.cluster.local
 ```
 
 La commande retournera l'IP virtuelle (ClusterIP) du Service, démontrant que le cluster a bien résolu le nom.
@@ -389,10 +368,8 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 **Sortie attendue :**
 
 ```html
-<h1>Bienvenue</h1>
+<h1>Bienvenue sur notre site de démonstration !</h1>
 ```
-
-Cette forme est particulièrement utile dans les scripts d'automatisation ou les pipelines CI/CD.
 
 ---
 
@@ -429,13 +406,11 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 **Sortie attendue :**
 
 ```html
-<h1>Bienvenue</h1>
+<h1>Bienvenue sur notre site de démonstration !</h1>
 ```
 
 :::tip Résilience du Service
-Le client continue de joindre **welcome-app** malgré le changement d'IP du pod. C'est toute la force du **Service ClusterIP** : il sert d'intermédiaire stable entre les clients et les pods qui, eux, peuvent changer à tout moment.
-
-Sans Service, vous devriez modifier manuellement la configuration du client à chaque recréation du pod serveur. Avec un Service, **rien à changer** : l'application continue de fonctionner de façon transparente.
+Le client continue de joindre welcome-app grâce à l'IP virtuelle stable (ClusterIP) du Service, qui reste inchangée même quand le pod est recréé avec une nouvelle IP.
 :::
 
 ## Étape 6 : Créer et tester le Service NodePort
@@ -488,6 +463,11 @@ service/welcome-svc-nodeport created
 Utilisez l'IP de votre serveur OpenShift (**192.168.0.251**) :
 ```bash
 curl -s http://192.168.0.251:30080 | grep "Bienvenue"
+```
+**Sortie attendue :**
+
+```
+<h1>Bienvenue sur notre site de démonstration !</h1>
 ```
 
 ---
