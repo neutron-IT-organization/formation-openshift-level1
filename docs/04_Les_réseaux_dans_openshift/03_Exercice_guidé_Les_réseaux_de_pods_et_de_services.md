@@ -412,6 +412,146 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 :::tip Résilience du Service
 Le client continue de joindre welcome-app grâce à l'IP virtuelle stable (ClusterIP) du Service, qui reste inchangée même quand le pod est recréé avec une nouvelle IP.
 :::
+### 5.5 Couper la communication avec une NetworkPolicy
+ 
+Maintenant que vous avez démontré que le pod **client-app** peut joindre **welcome-app**, vous allez voir comment **bloquer cette communication** avec une NetworkPolicy.
+ 
+C'est un cas d'usage réel en production : on veut souvent **restreindre** quels pods peuvent parler à quels autres pods, pour des raisons de **sécurité** (limiter la surface d'attaque) ou de **conformité**.
+ 
+La communication Pod-à-Pod peut être contrôlée via des **NetworkPolicies ciblées** :
+ 
+- Par défaut, sans policy, tous les Pods d'un namespace peuvent se parler.
+- Dès qu'une policy cible un Pod, **tout le trafic non-autorisé est bloqué**.
+- Les règles fonctionnent en mode **whitelist** : on autorise explicitement ce qu'on veut permettre.
+---
+ 
+#### Créer une NetworkPolicy restrictive
+ 
+Créez le fichier `deny-client-to-welcome.yaml` :
+ 
+```bash
+vi deny-client-to-welcome.yaml
+```
+ 
+:::tip Vous préférez nano ?
+```bash
+nano deny-client-to-welcome.yaml
+```
+:::
+ 
+Contenu du fichier :
+ 
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-client-to-welcome
+  namespace: <CITY>-user-ns
+spec:
+  podSelector:
+    matchLabels:
+      app: welcome-app
+  ingress:
+    - from:
+        # Autorise uniquement le trafic provenant d'autres namespaces
+        # (par exemple le terminal web openshift-terminal)
+        - namespaceSelector: {}
+  policyTypes:
+    - Ingress
+```
+ 
+Cette policy définit :
+ 
+- **podSelector** : elle s'applique aux pods étiquetés `app: welcome-app`.
+- **ingress.from** : elle autorise uniquement le trafic venant **d'autres namespaces** via `namespaceSelector: {}`.
+- **Ce qui est implicitement bloqué** : le trafic venant de pods du **même namespace**, donc `client-app`.
+Appliquez la policy :
+ 
+```bash
+oc apply -f deny-client-to-welcome.yaml
+```
+ 
+**Sortie attendue :**
+ 
+```
+networkpolicy.networking.k8s.io/deny-client-to-welcome created
+```
+ 
+---
+ 
+#### Tester le blocage depuis le client
+ 
+Relancez le test depuis le pod client :
+ 
+```bash
+oc exec deploy/client-app -- curl --max-time 5 -s welcome-svc
+```
+ 
+**Sortie attendue :**
+ 
+```
+(commande bloquée, puis timeout au bout de 5 secondes)
+```
+ 
+La commande **timeout** car le trafic est désormais bloqué par la NetworkPolicy. ⏱️
+ 
+:::warning Important
+Le blocage se fait **silencieusement** : pas de message d'erreur clair, juste un timeout. C'est le comportement normal d'un firewall — il ne répond pas aux paquets bloqués.
+ 
+En production, c'est pour ça qu'il est crucial de bien **documenter** les NetworkPolicies, sinon les équipes passent des heures à chercher "pourquoi ça ne marche pas".
+:::
+ 
+---
+ 
+#### Vérifier depuis le terminal web
+ 
+Faites le test depuis le terminal web OpenShift (qui tourne dans `openshift-terminal`) :
+ 
+```bash
+curl -s <CLUSTER_IP>:80 | grep "Bienvenue"
+```
+ 
+**Sortie attendue :**
+ 
+```html
+<h1>Bienvenue</h1>
+```
+ 
+Le terminal web **continue à fonctionner** car il est dans un autre namespace, autorisé par la règle `namespaceSelector: {}`. ✅
+ 
+---
+ 
+#### Revenir à l'état initial
+ 
+Pour continuer l'exercice avec les étapes suivantes, supprimez la policy restrictive :
+ 
+```bash
+oc delete -f deny-client-to-welcome.yaml
+```
+ 
+**Sortie attendue :**
+ 
+```
+networkpolicy.networking.k8s.io/deny-client-to-welcome deleted
+```
+ 
+Vérifiez que la communication client-app → welcome-app est rétablie :
+ 
+```bash
+oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
+```
+ 
+**Sortie attendue :**
+ 
+```html
+<h1>Bienvenue</h1>
+```
+ 
+:::tip Ce que vous venez de voir
+Les NetworkPolicies permettent de contrôler finement les flux réseau dans un cluster OpenShift. Combinées avec les labels et les namespaces, elles offrent un modèle de sécurité puissant pour isoler les applications et respecter le principe du **moindre privilège**.
+ 
+En production, on applique typiquement une policy **deny-all** par défaut, puis on ouvre explicitement les flux nécessaires (frontend → backend → database).
+:::
 
 ## Étape 6 : Créer et tester le Service NodePort
 
