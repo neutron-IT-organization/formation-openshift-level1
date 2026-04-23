@@ -122,7 +122,7 @@ Remplir pour le Secret (PASSWORD) :
 
 :::tip
 Tu peux voir dans la section **Environment Variables** :
-- `APP_MESSAGE` provenant du **ConfigMap** `nginx-config` (icône violette CM)
+- `APP_MESSAGE` provenant du **ConfigMap** `nginx-config-2` (icône violette CM)
 - `USERNAME` provenant du **Secret** `nginx-secret-2` (icône orange S)
 - `PASSWORD` provenant du **Secret** `nginx-secret-2` (icône orange S)
 :::
