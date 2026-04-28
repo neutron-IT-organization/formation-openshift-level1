@@ -753,12 +753,6 @@ Si elle est absente, restaurez-la depuis le backup :
 oc apply -f allow-same-namespace-backup.yaml
 ```
 
-Renommez le fichier de backup pour avoir un nom propre :
-
-```bash
-mv allow-same-namespace-backup.yaml allow-same-namespace.yaml
-```
-
 Vérifiez que la communication `client-app` → `welcome-app` est rétablie :
 
 ```bash
