@@ -414,18 +414,67 @@ Le client continue de joindre welcome-app grâce à l'IP virtuelle stable (Clust
 :::
 ### 5.5 Couper la communication avec une NetworkPolicy
  
-Maintenant que vous avez démontré que le pod **client-app** peut joindre **welcome-app**, vous allez voir comment **bloquer cette communication** avec une NetworkPolicy.
+Maintenant que vous avez démontré que `client-app` peut joindre `welcome-app`, vous allez voir comment **bloquer cette communication** avec une NetworkPolicy ciblée.
  
-C'est un cas d'usage réel en production : on veut souvent **restreindre** quels pods peuvent parler à quels autres pods, pour des raisons de **sécurité** (limiter la surface d'attaque) ou de **conformité**.
+C'est un cas d'usage réel en production : on veut souvent **restreindre** quels pods peuvent parler à quels autres pods, pour des raisons de **sécurité** ou de **conformité**.
  
-La communication Pod-à-Pod peut être contrôlée via des **NetworkPolicies ciblées** :
+#### Étape 1 — Lister les NetworkPolicies existantes
  
-- Par défaut, sans policy, tous les Pods d'un namespace peuvent se parler.
-- Dès qu'une policy cible un Pod, **tout le trafic non-autorisé est bloqué**.
-- Les règles fonctionnent en mode **whitelist** : on autorise explicitement ce qu'on veut permettre.
----
+Avant tout, regardez les policies déjà en place sur le namespace :
  
-#### Créer une NetworkPolicy restrictive
+```bash
+oc get networkpolicy
+```
+ 
+**Sortie attendue (peut varier) :**
+ 
+```
+NAME                              POD-SELECTOR      AGE
+allow-from-openshift-ingress      <none>            34d
+allow-from-openshift-monitoring   <none>            34d
+allow-from-openshift-operators    <none>            28d
+allow-same-namespace              <none>            34d
+```
+ 
+:::warning Les policies se combinent en OU logique
+Plusieurs NetworkPolicies peuvent cibler le même pod. Le trafic est autorisé **dès qu'au moins une** policy l'autorise.
+ 
+La policy `allow-same-namespace` autorise tous les pods du namespace à communiquer entre eux. Tant qu'elle existe, on **ne peut pas** bloquer le trafic de `client-app` → `welcome-app`.
+:::
+ 
+#### Étape 2 — Sauvegarder la policy `allow-same-namespace`
+ 
+Avant de la supprimer, sauvegardez-la dans un fichier YAML pour pouvoir la restaurer plus tard :
+ 
+```bash
+oc get networkpolicy allow-same-namespace -o yaml > allow-same-namespace-backup.yaml
+```
+ 
+Vérifiez que le backup a bien été créé :
+ 
+```bash
+ls -la allow-same-namespace-backup.yaml
+```
+ 
+**Sortie attendue :**
+ 
+```
+-rw-r--r-- 1 user root 977 Apr 28 11:59 allow-same-namespace-backup.yaml
+```
+ 
+#### Étape 3 — Supprimer `allow-same-namespace`
+ 
+```bash
+oc delete networkpolicy allow-same-namespace
+```
+ 
+**Sortie attendue :**
+ 
+```
+networkpolicy.networking.k8s.io "allow-same-namespace" deleted from <CITY>-user-ns namespace
+```
+ 
+#### Étape 4 — Créer une NetworkPolicy restrictive
  
 Créez le fichier `deny-client-to-welcome.yaml` :
  
@@ -453,9 +502,9 @@ spec:
       app: welcome-app
   ingress:
     - from:
-        # Autorise uniquement le trafic provenant d'autres namespaces
-        # (par exemple le terminal web openshift-terminal)
-        - namespaceSelector: {}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-terminal
   policyTypes:
     - Ingress
 ```
@@ -463,8 +512,8 @@ spec:
 Cette policy définit :
  
 - **podSelector** : elle s'applique aux pods étiquetés `app: welcome-app`.
-- **ingress.from** : elle autorise uniquement le trafic venant **d'autres namespaces** via `namespaceSelector: {}`.
-- **Ce qui est implicitement bloqué** : le trafic venant de pods du **même namespace**, donc `client-app`.
+- **ingress.from** : elle autorise **uniquement** le trafic venant du namespace `openshift-terminal`.
+- **Ce qui est bloqué** : tout le reste, y compris les pods du même namespace comme `client-app`.
 Appliquez la policy :
  
 ```bash
@@ -477,9 +526,7 @@ oc apply -f deny-client-to-welcome.yaml
 networkpolicy.networking.k8s.io/deny-client-to-welcome created
 ```
  
----
- 
-#### Tester le blocage depuis le client
+#### Étape 5 — Tester le blocage depuis le client
  
 Relancez le test depuis le pod client :
  
@@ -490,52 +537,42 @@ oc exec deploy/client-app -- curl --max-time 5 -s welcome-svc
 **Sortie attendue :**
  
 ```
-(commande bloquée, puis timeout au bout de 5 secondes)
+command terminated with exit code 28
 ```
  
-La commande **timeout** car le trafic est désormais bloqué par la NetworkPolicy. ⏱️
+Le code de sortie **28** de curl signifie **"Operation timeout"**. Le trafic est désormais bloqué par la NetworkPolicy. ⏱️
  
-:::warning Important
+:::warning Le blocage est silencieux
 Le blocage se fait **silencieusement** : pas de message d'erreur clair, juste un timeout. C'est le comportement normal d'un firewall — il ne répond pas aux paquets bloqués.
  
 En production, c'est pour ça qu'il est crucial de bien **documenter** les NetworkPolicies, sinon les équipes passent des heures à chercher "pourquoi ça ne marche pas".
 :::
  
----
+#### Étape 6 — Restaurer la situation initiale
  
-#### Vérifier depuis le terminal web
- 
-Faites le test depuis le terminal web OpenShift (qui tourne dans `openshift-terminal`) :
+Pour continuer l'exercice avec les étapes suivantes, supprimez la policy restrictive et restaurez `allow-same-namespace` depuis le backup :
  
 ```bash
-curl -s <CLUSTER_IP>:80 | grep "Bienvenue"
-```
- 
-**Sortie attendue :**
- 
-```html
-<h1>Bienvenue</h1>
-```
- 
-Le terminal web **continue à fonctionner** car il est dans un autre namespace, autorisé par la règle `namespaceSelector: {}`. ✅
- 
----
- 
-#### Revenir à l'état initial
- 
-Pour continuer l'exercice avec les étapes suivantes, supprimez la policy restrictive :
- 
-```bash
-oc delete -f deny-client-to-welcome.yaml
+oc delete networkpolicy deny-client-to-welcome
+oc apply -f allow-same-namespace-backup.yaml
 ```
  
 **Sortie attendue :**
  
 ```
-networkpolicy.networking.k8s.io/deny-client-to-welcome deleted
+networkpolicy.networking.k8s.io "deny-client-to-welcome" deleted from <CITY>-user-ns namespace
+networkpolicy.networking.k8s.io/allow-same-namespace created
 ```
  
-Vérifiez que la communication client-app → welcome-app est rétablie :
+Vérifiez que tout est bien rétabli :
+ 
+```bash
+oc get networkpolicy
+```
+ 
+Vous devez voir `allow-same-namespace` de retour dans la liste.
+ 
+Vérifiez que la communication `client-app` → `welcome-app` est rétablie :
  
 ```bash
 oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
@@ -544,13 +581,15 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 **Sortie attendue :**
  
 ```html
-<h1>Bienvenue</h1>
+<h1>Bienvenue sur notre site de démonstration !</h1>
 ```
  
-:::tip Ce que vous venez de voir
-Les NetworkPolicies permettent de contrôler finement les flux réseau dans un cluster OpenShift. Combinées avec les labels et les namespaces, elles offrent un modèle de sécurité puissant pour isoler les applications et respecter le principe du **moindre privilège**.
+:::tip Ce que vous venez de comprendre
+Les NetworkPolicies fonctionnent en mode **whitelist** et se combinent en **OU logique**. Avant d'ajouter une policy restrictive, il est crucial de **lister celles déjà présentes** pour comprendre l'environnement.
  
-En production, on applique typiquement une policy **deny-all** par défaut, puis on ouvre explicitement les flux nécessaires (frontend → backend → database).
+En production, on applique typiquement une stratégie **deny-all par défaut + autorisations explicites** pour avoir un contrôle réel des flux réseau (frontend → backend → database).
+ 
+Le réflexe à avoir : toujours **sauvegarder** une policy avant de la supprimer, surtout si elle a été déployée par un outil de GitOps comme ArgoCD.
 :::
 
 ## Étape 6 : Créer et tester le Service NodePort
