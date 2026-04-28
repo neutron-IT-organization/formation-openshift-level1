@@ -583,25 +583,23 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 ```html
 <h1>Bienvenue sur notre site de démonstration !</h1>
 ```
-`````markdown
 Renommez le fichier de backup pour avoir un nom propre :
 
-​```bash
+```bash
 mv allow-same-namespace-backup.yaml allow-same-namespace.yaml
-​```
+```
 
 Vérifiez que le fichier a bien été renommé :
 
-​```bash
+```bash
 ls -la allow-same-namespace.yaml
-​```
+```
 
 **Sortie attendue :**
 
-​```
+```
 -rw-r--r--. 1 1001230000 root 977 Apr 28 11:59 allow-same-namespace.yaml
-​```
-`````
+```
 
 ---
 :::tip Bon réflexe DevOps
