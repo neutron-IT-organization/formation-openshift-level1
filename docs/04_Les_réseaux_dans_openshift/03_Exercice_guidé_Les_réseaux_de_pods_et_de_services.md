@@ -583,7 +583,28 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 ```html
 <h1>Bienvenue sur notre site de démonstration !</h1>
 ```
- 
+ Renommez le fichier de backup pour avoir un nom propre :
+
+​```bash
+mv allow-same-namespace-backup.yaml allow-same-namespace.yaml
+​```
+
+Vérifiez que le fichier a bien été renommé :
+
+​```bash
+ls -la allow-same-namespace.yaml
+​```
+
+**Sortie attendue :**
+
+​```
+-rw-r--r--. 1 1001230000 root 977 Apr 28 11:59 allow-same-namespace.yaml
+​```
+
+:::tip Bon réflexe DevOps
+Garder un fichier YAML propre comme `allow-same-namespace.yaml` permet de versionner facilement la configuration dans Git et de la réappliquer en une commande si besoin.
+:::
+
 :::tip Ce que vous venez de comprendre
 Les NetworkPolicies fonctionnent en mode **whitelist** et se combinent en **OU logique**. Avant d'ajouter une policy restrictive, il est crucial de **lister celles déjà présentes** pour comprendre l'environnement.
  
