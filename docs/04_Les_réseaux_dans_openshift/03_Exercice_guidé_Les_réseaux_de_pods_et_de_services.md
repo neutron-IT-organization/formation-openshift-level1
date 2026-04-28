@@ -637,7 +637,7 @@ ls -la allow-same-namespace-backup.yaml
 **Sortie attendue :**
 
 ```
--rw-r--r-- 1 user root 977 Apr 28 11:59 allow-same-namespace-backup.yaml
+-rw-r--r--. 1 1001230000 root 977 Apr 28 11:59 allow-same-namespace-backup.yaml
 ```
 
 #### Étape 3 — Supprimer `allow-same-namespace`
@@ -729,27 +729,35 @@ En production, c'est pour ça qu'il est crucial de bien **documenter** les Netwo
 
 #### Étape 6 — Restaurer la situation initiale
 
-Pour continuer l'exercice avec les étapes suivantes, supprimez la policy restrictive et restaurez `allow-same-namespace` depuis le backup :
+Pour continuer l'exercice avec les étapes suivantes, supprimez la policy restrictive :
 
 ```bash
 oc delete networkpolicy deny-client-to-welcome
-oc apply -f allow-same-namespace-backup.yaml
 ```
 
 **Sortie attendue :**
 
 ```
 networkpolicy.networking.k8s.io "deny-client-to-welcome" deleted from <CITY>-user-ns namespace
-networkpolicy.networking.k8s.io/allow-same-namespace created
 ```
 
-Vérifiez que tout est bien rétabli :
+Vérifiez que `allow-same-namespace` est bien revenue (recréée automatiquement par ArgoCD ou via votre backup) :
 
 ```bash
 oc get networkpolicy
 ```
 
-Vous devez voir `allow-same-namespace` de retour dans la liste.
+Si elle est absente, restaurez-la depuis le backup :
+
+```bash
+oc apply -f allow-same-namespace-backup.yaml
+```
+
+Renommez le fichier de backup pour avoir un nom propre :
+
+```bash
+mv allow-same-namespace-backup.yaml allow-same-namespace.yaml
+```
 
 Vérifiez que la communication `client-app` → `welcome-app` est rétablie :
 
