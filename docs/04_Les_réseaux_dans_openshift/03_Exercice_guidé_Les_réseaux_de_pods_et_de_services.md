@@ -582,7 +582,8 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
  
 ```html
 <h1>Bienvenue sur notre site de démonstration !</h1>
-````````markdown
+```
+`````markdown
 Renommez le fichier de backup pour avoir un nom propre :
 
 ​```bash
