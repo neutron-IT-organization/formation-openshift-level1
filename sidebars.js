@@ -89,7 +89,7 @@ const sidebars = {
         'Gestion_et_administration_du_cluster/User_management',
         'Gestion_et_administration_du_cluster/Exercice_guidé_user_management',
         'Gestion_et_administration_du_cluster/Observabilité_du_cluster',
-        'Gestion_et_administration_du_cluster/Exercice_guidé_Observabilité_du_cluster',
+        'Gestion_et_administration_du_cluster/Exercice_dashboards_observe',
         'Gestion_et_administration_du_cluster/Node_MachineSet_MachineConfigs',
         'Gestion_et_administration_du_cluster/Exercice_guidé_MachineSet_MachineConfigs',
         'Gestion_et_administration_du_cluster/Gestion_des_mises_a_jours',
@@ -156,7 +156,7 @@ const sidebars = {
         },
         {
           type: 'doc',
-          id: 'Gestion_et_administration_du_cluster/Exercice_guidé_Observabilité_du_cluster',
+          id: 'Gestion_et_administration_du_cluster/Exercice_dashboards_observe',
           label: 'Exercice 11 — Observabilité du cluster',
         },
         {
