@@ -412,22 +412,200 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 :::tip Résilience du Service
 Le client continue de joindre welcome-app grâce à l'IP virtuelle stable (ClusterIP) du Service, qui reste inchangée même quand le pod est recréé avec une nouvelle IP.
 :::
+## Étape 5 : Communication entre Pods (Pod-à-Pod)
+
+Dans cette étape, vous allez déployer un deuxième pod (un client **curl**) dans votre namespace, puis vérifier qu'il peut joindre **welcome-app** via le nom du Service **welcome-svc**, sans jamais utiliser son IP.
+
+C'est le vrai cas d'usage du **ClusterIP** : la communication entre microservices à l'intérieur du cluster.
+
+### 5.1 Déployer un pod client
+
+Créez le fichier `client-deployment.yaml` :
+
+```bash
+vi client-deployment.yaml
+```
+
+:::tip Vous préférez nano ?
+```bash
+nano client-deployment.yaml
+```
+:::
+
+Contenu du fichier :
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-app
+  namespace: <CITY>-user-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-app
+  template:
+    metadata:
+      labels:
+        app: client-app
+    spec:
+      containers:
+      - name: client
+        image: curlimages/curl:latest
+        command: ["sleep", "infinity"]
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "32Mi"
+          limits:
+            cpu: "50m"
+            memory: "64Mi"
+```
+
+Ce Deployment définit :
+
+- Un pod unique (**replicas: 1**) étiqueté `app: client-app`.
+- Une image légère **curlimages/curl** contenant l'utilitaire `curl`.
+- Une commande `sleep infinity` pour garder le pod actif en permanence (sinon il s'arrêterait immédiatement).
+- Des limites de ressources adaptées à un simple pod de test.
+
+Appliquez le manifest :
+
+```bash
+oc apply -f client-deployment.yaml
+```
+
+**Sortie attendue :**
+
+```
+deployment.apps/client-app created
+```
+
+Vérifiez que le pod est prêt :
+
+```bash
+oc get pods -l app=client-app
+```
+
+---
+
+### 5.2 Tester la communication via le nom du Service
+
+Entrez dans le pod client :
+
+```bash
+oc exec -it deploy/client-app -- sh
+```
+
+À l'intérieur du pod, lancez :
+
+```bash
+curl -s welcome-svc | grep "Bienvenue"
+```
+
+**Sortie attendue :**
+
+```html
+<h1>Bienvenue sur notre site de démonstration !</h1>
+```
+
+Vous pouvez aussi vérifier la résolution DNS du nom du Service :
+
+```bash
+nslookup welcome-svc.<CITY>-user-ns.svc.cluster.local
+```
+
+La commande retournera l'IP virtuelle (ClusterIP) du Service, démontrant que le cluster a bien résolu le nom.
+
+Puis quittez le pod :
+
+```bash
+exit
+```
+
+:::info Pourquoi welcome-svc fonctionne ?
+Le pod **client-app** et le Service **welcome-svc** sont dans le **même namespace**. Le cluster résout automatiquement le nom court vers l'IP du Service.
+
+On utilise toujours **le nom** et jamais l'IP, car l'IP peut changer alors que le nom est stable.
+:::
+
+---
+
+### 5.3 Test en une seule commande (sans shell interactif)
+
+Pour faire le test rapidement sans ouvrir de shell dans le pod :
+
+```bash
+oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
+```
+
+**Sortie attendue :**
+
+```html
+<h1>Bienvenue sur notre site de démonstration !</h1>
+```
+
+---
+
+### 5.4 Vérifier la résilience du Service
+
+Pour démontrer la résilience, vous allez provoquer une recréation du pod **welcome-app**. Cela simule ce qui arrive en production lors :
+
+- D'une **mise à jour** de l'application (rolling update).
+- D'un **redémarrage** du nœud.
+- D'un **scaling** (ajout ou suppression de répliques).
+- D'un **crash** du pod.
+
+Dans tous ces cas, un nouveau pod est créé avec **une nouvelle IP**, mais le Service reste stable.
+
+Recréez le pod **welcome-app** pour lui donner une nouvelle IP :
+
+```bash
+oc scale deployment/welcome-app --replicas=0
+oc scale deployment/welcome-app --replicas=1
+```
+
+Attendez qu'il redémarre :
+
+```bash
+oc get pods -l app=welcome-app -w
+```
+
+Appuyez sur **Ctrl+C** quand il affiche `1/1 Running`, puis relancez le test depuis le client :
+
+```bash
+oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
+```
+
+**Sortie attendue :**
+
+```html
+<h1>Bienvenue sur notre site de démonstration !</h1>
+```
+
+:::tip Résilience du Service
+Le client continue de joindre welcome-app grâce à l'IP virtuelle stable (ClusterIP) du Service, qui reste inchangée même quand le pod est recréé avec une nouvelle IP.
+:::
+
+---
+
 ### 5.5 Couper la communication avec une NetworkPolicy
- 
+
 Maintenant que vous avez démontré que `client-app` peut joindre `welcome-app`, vous allez voir comment **bloquer cette communication** avec une NetworkPolicy ciblée.
- 
+
 C'est un cas d'usage réel en production : on veut souvent **restreindre** quels pods peuvent parler à quels autres pods, pour des raisons de **sécurité** ou de **conformité**.
- 
+
 #### Étape 1 — Lister les NetworkPolicies existantes
- 
+
 Avant tout, regardez les policies déjà en place sur le namespace :
- 
+
 ```bash
 oc get networkpolicy
 ```
- 
+
 **Sortie attendue (peut varier) :**
- 
+
 ```
 NAME                              POD-SELECTOR      AGE
 allow-from-openshift-ingress      <none>            34d
@@ -435,61 +613,61 @@ allow-from-openshift-monitoring   <none>            34d
 allow-from-openshift-operators    <none>            28d
 allow-same-namespace              <none>            34d
 ```
- 
+
 :::warning Les policies se combinent en OU logique
 Plusieurs NetworkPolicies peuvent cibler le même pod. Le trafic est autorisé **dès qu'au moins une** policy l'autorise.
- 
+
 La policy `allow-same-namespace` autorise tous les pods du namespace à communiquer entre eux. Tant qu'elle existe, on **ne peut pas** bloquer le trafic de `client-app` → `welcome-app`.
 :::
- 
+
 #### Étape 2 — Sauvegarder la policy `allow-same-namespace`
- 
+
 Avant de la supprimer, sauvegardez-la dans un fichier YAML pour pouvoir la restaurer plus tard :
- 
+
 ```bash
 oc get networkpolicy allow-same-namespace -o yaml > allow-same-namespace-backup.yaml
 ```
- 
+
 Vérifiez que le backup a bien été créé :
- 
+
 ```bash
 ls -la allow-same-namespace-backup.yaml
 ```
- 
+
 **Sortie attendue :**
- 
+
 ```
 -rw-r--r-- 1 user root 977 Apr 28 11:59 allow-same-namespace-backup.yaml
 ```
- 
+
 #### Étape 3 — Supprimer `allow-same-namespace`
- 
+
 ```bash
 oc delete networkpolicy allow-same-namespace
 ```
- 
+
 **Sortie attendue :**
- 
+
 ```
 networkpolicy.networking.k8s.io "allow-same-namespace" deleted from <CITY>-user-ns namespace
 ```
- 
+
 #### Étape 4 — Créer une NetworkPolicy restrictive
- 
+
 Créez le fichier `deny-client-to-welcome.yaml` :
- 
+
 ```bash
 vi deny-client-to-welcome.yaml
 ```
- 
+
 :::tip Vous préférez nano ?
 ```bash
 nano deny-client-to-welcome.yaml
 ```
 :::
- 
+
 Contenu du fichier :
- 
+
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -508,112 +686,90 @@ spec:
   policyTypes:
     - Ingress
 ```
- 
+
 Cette policy définit :
- 
+
 - **podSelector** : elle s'applique aux pods étiquetés `app: welcome-app`.
 - **ingress.from** : elle autorise **uniquement** le trafic venant du namespace `openshift-terminal`.
 - **Ce qui est bloqué** : tout le reste, y compris les pods du même namespace comme `client-app`.
+
 Appliquez la policy :
- 
+
 ```bash
 oc apply -f deny-client-to-welcome.yaml
 ```
- 
+
 **Sortie attendue :**
- 
+
 ```
 networkpolicy.networking.k8s.io/deny-client-to-welcome created
 ```
- 
+
 #### Étape 5 — Tester le blocage depuis le client
- 
+
 Relancez le test depuis le pod client :
- 
+
 ```bash
 oc exec deploy/client-app -- curl --max-time 5 -s welcome-svc
 ```
- 
+
 **Sortie attendue :**
- 
+
 ```
 command terminated with exit code 28
 ```
- 
+
 Le code de sortie **28** de curl signifie **"Operation timeout"**. Le trafic est désormais bloqué par la NetworkPolicy. ⏱️
- 
+
 :::warning Le blocage est silencieux
 Le blocage se fait **silencieusement** : pas de message d'erreur clair, juste un timeout. C'est le comportement normal d'un firewall — il ne répond pas aux paquets bloqués.
- 
+
 En production, c'est pour ça qu'il est crucial de bien **documenter** les NetworkPolicies, sinon les équipes passent des heures à chercher "pourquoi ça ne marche pas".
 :::
- 
+
 #### Étape 6 — Restaurer la situation initiale
- 
+
 Pour continuer l'exercice avec les étapes suivantes, supprimez la policy restrictive et restaurez `allow-same-namespace` depuis le backup :
- 
+
 ```bash
 oc delete networkpolicy deny-client-to-welcome
 oc apply -f allow-same-namespace-backup.yaml
 ```
- 
+
 **Sortie attendue :**
- 
+
 ```
 networkpolicy.networking.k8s.io "deny-client-to-welcome" deleted from <CITY>-user-ns namespace
 networkpolicy.networking.k8s.io/allow-same-namespace created
 ```
- 
+
 Vérifiez que tout est bien rétabli :
- 
+
 ```bash
 oc get networkpolicy
 ```
- 
+
 Vous devez voir `allow-same-namespace` de retour dans la liste.
- 
+
 Vérifiez que la communication `client-app` → `welcome-app` est rétablie :
- 
+
 ```bash
 oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 ```
- 
+
 **Sortie attendue :**
- 
+
 ```html
 <h1>Bienvenue sur notre site de démonstration !</h1>
 ```
-Renommez le fichier de backup pour avoir un nom propre :
-
-```bash
-mv allow-same-namespace-backup.yaml allow-same-namespace.yaml
-```
-
-Vérifiez que le fichier a bien été renommé :
-
-```bash
-ls -la allow-same-namespace.yaml
-```
-
-**Sortie attendue :**
-
-```
--rw-r--r--. 1 1001230000 root 977 Apr 28 11:59 allow-same-namespace.yaml
-```
-
----
-:::tip Bon réflexe DevOps
-Garder un fichier YAML propre comme `allow-same-namespace.yaml` permet de versionner facilement la configuration dans Git et de la réappliquer en une commande si besoin.
-:::
 
 :::tip Ce que vous venez de comprendre
 Les NetworkPolicies fonctionnent en mode **whitelist** et se combinent en **OU logique**. Avant d'ajouter une policy restrictive, il est crucial de **lister celles déjà présentes** pour comprendre l'environnement.
- 
+
 En production, on applique typiquement une stratégie **deny-all par défaut + autorisations explicites** pour avoir un contrôle réel des flux réseau (frontend → backend → database).
- 
+
 Le réflexe à avoir : toujours **sauvegarder** une policy avant de la supprimer, surtout si elle a été déployée par un outil de GitOps comme ArgoCD.
 :::
-
 ## Étape 6 : Créer et tester le Service NodePort
 
 Le NodePort expose l'application sur un port fixe de votre serveur (le noeud).
