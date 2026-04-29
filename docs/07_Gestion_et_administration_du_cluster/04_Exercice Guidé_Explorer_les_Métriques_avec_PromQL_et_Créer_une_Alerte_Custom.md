@@ -24,7 +24,7 @@ L'objectif est de **passer du dashboard à l'analyse fine**, et d'**automatiser 
 ## Préparation
 
 1. Connectez-vous à la console OpenShift.
-2. En haut de la page, sélectionnez votre projet : **`<CITY>-user-ns`**.
+2. En haut de la page, sélectionnez votre projet : **`paris-user-ns`**.
 3. Dans le menu de gauche, cliquez sur **Observe → Metrics**.
 4. Vous arrivez sur une page avec un champ de saisie de requête PromQL.
 
@@ -48,16 +48,16 @@ up
 
 Puis cliquez sur **Run queries**.
 
-> **Q1** — Que vous renvoie cette requête ?
+> **Q1** — Que vous renvoie cette requête dans votre namespace ?
 
 <details>
 <summary>Voir la réponse</summary>
 
-La requête `up` retourne **1** pour chaque cible (target) Prometheus qui est **disponible**, et **0** pour celles qui sont **down**.
+La requête `up` peut afficher **"No datapoints found"** dans `paris-user-ns` car les exporters principaux tournent dans le namespace `openshift-monitoring` (Prometheus surveille des cibles globales du cluster, pas du namespace utilisateur).
 
-C'est la **requête de santé** la plus simple : elle vérifie que les exporters fonctionnent et que Prometheus arrive à les scraper.
+C'est normal pour un namespace utilisateur. Pour voir les cibles `up` dans votre namespace, il faudrait avoir un ServiceMonitor configuré, ce qui n'est pas le cas par défaut.
 
-Vous verrez plusieurs lignes (une par cible monitorée), avec différents labels (`job`, `instance`, `namespace`, etc.).
+Cette requête sert surtout sur le cluster global pour vérifier que les exporters Prometheus sont disponibles.
 </details>
 
 ### Question 1.2
@@ -65,10 +65,8 @@ Vous verrez plusieurs lignes (une par cible monitorée), avec différents labels
 Effacez la requête et tapez :
 
 ```promql
-kube_pod_info{namespace="<CITY>-user-ns"}
+kube_pod_info{namespace="paris-user-ns"}
 ```
-
-(Remplacez `<CITY>` par votre ville, par exemple `paris-user-ns`.)
 
 > **Q2** — Combien de pods sont retournés par cette requête ?
 
@@ -76,11 +74,13 @@ kube_pod_info{namespace="<CITY>-user-ns"}
 <summary>Voir la réponse</summary>
 
 **3 pods** :
-- `monitoring-pod`
 - `postgres-5b59c7f5ff-scm4n`
 - `todo-app-dd5dfc87-2hw4q`
+- `monitoring-pod`
 
 La métrique `kube_pod_info` retourne **une ligne par pod** dans le namespace, avec des labels comme `pod`, `namespace`, `node`, `pod_ip`, etc.
+
+Toutes les lignes affichent `host_ip = 192.168.0.251` (IP du nœud) et `job = kube-state-metrics`.
 </details>
 
 ### Question 1.3
@@ -91,16 +91,23 @@ Tapez :
 container_memory_working_set_bytes{namespace="paris-user-ns", container!=""}
 ```
 
-> **Q3** — Que représente cette métrique et pourquoi le filtre `container!=""` est-il important ?
+> **Q3** — Combien de résultats obtenez-vous et pourquoi le filtre `container!=""` est-il important ?
 
 <details>
 <summary>Voir la réponse</summary>
 
-**`container_memory_working_set_bytes`** retourne la **mémoire de travail** (working set) en octets pour chaque conteneur du namespace. C'est la métrique utilisée par Kubernetes pour évaluer la pression mémoire et déclencher OOMKill.
+Vous obtenez **7 résultats**. La métrique `container_memory_working_set_bytes` retourne une ligne par conteneur (et par sandbox) :
 
-Le filtre **`container!=""`** est crucial pour **exclure les pseudo-conteneurs** (le conteneur "pause" qui est créé pour chaque pod). Sans ce filtre, on aurait des doublons.
+- 3 lignes `POD` → ce sont les **pause containers** (sandboxes Kubernetes)
+- 3 lignes pour les vrais conteneurs : `monitoring`, `postgres`, `todo-app`
+- 1 ligne supplémentaire pour `monitoring` (peut-être un init container ou ancien)
 
-Vous verrez des valeurs en **octets** (par exemple `263555648` ≈ 251 MiB pour `todo-app`).
+Le filtre **`container!=""`** est crucial pour **exclure les pseudo-conteneurs** vides. Sans ce filtre, on aurait des doublons et des entrées non pertinentes.
+
+**Valeurs principales observées (en octets)** :
+- `monitoring-pod` → ~553k (≈ 540 KiB)
+- `postgres-5b59c7f5ff-scm4n` → ~18,85M (≈ 18 MiB)
+- `todo-app-dd5dfc87-2hw4q` → ~266,6M (≈ 254 MiB)
 </details>
 
 ---
@@ -118,16 +125,20 @@ sum(kube_pod_container_resource_limits{namespace="paris-user-ns", resource="memo
 * 100
 ```
 
-> **Q4** — Quelle valeur obtient-on pour le pod `todo-app-dd5dfc87-2hw4q` ?
+> **Q4** — Quelles sont les valeurs obtenues pour les 3 pods ?
 
 <details>
 <summary>Voir la réponse</summary>
 
-Environ **99,33 %** (ou très proche).
+| Pod | % Mémoire vs Limit |
+|---|---|
+| `monitoring-pod` | **0,824 %** |
+| `postgres-5b59c7f5ff-scm4n` | **7,02 %** |
+| `todo-app-dd5dfc87-2hw4q` | **99,33 %** 🚨 |
 
-C'est la même valeur que celle affichée dans le dashboard `Memory Limits %` que vous avez vue précédemment.
+Ces valeurs sont **identiques** à celles affichées dans le dashboard `Memory Limits %` que vous avez vu précédemment. C'est cohérent : le dashboard utilise cette même requête PromQL en arrière-plan.
 
-🚨 Le pod est très proche de sa limite mémoire et risque d'être OOMKilled.
+🚨 Le pod `todo-app` est très proche de sa limite mémoire et risque d'être OOMKilled.
 </details>
 
 ### Question 2.2
@@ -138,16 +149,22 @@ Tapez :
 sum(rate(container_cpu_usage_seconds_total{namespace="paris-user-ns", container!=""}[5m])) by (pod)
 ```
 
-> **Q5** — Quelle métrique calcule cette requête, et quel pod en consomme le plus ?
+> **Q5** — Quelles sont les valeurs CPU obtenues pour les 3 pods ?
 
 <details>
 <summary>Voir la réponse</summary>
 
+| Pod | CPU Usage (cores) |
+|---|---|
+| `monitoring-pod` | **0** |
+| `postgres-5b59c7f5ff-scm4n` | **1,3e-4** (≈ 0,13 millicore) |
+| `todo-app-dd5dfc87-2hw4q` | **5,2e-4** (≈ 0,52 millicore) |
+
 Cette requête calcule le **taux d'utilisation CPU** (en cores) sur les **5 dernières minutes**, agrégé par pod.
 
-Le pod qui consomme le plus est **`todo-app-dd5dfc87-2hw4q`**.
+`todo-app` consomme **4x plus de CPU** que `postgres` (5,2e-4 vs 1,3e-4). C'est cohérent avec le dashboard où il était à `CPU Requests % = 53,95 %`.
 
-C'est cohérent avec la valeur du dashboard `CPU Requests % = 53,95 %` (pour des requests à 0,001 core).
+Le graphique montre ces valeurs **stables dans le temps** : la consommation CPU est régulière, sans pic.
 </details>
 
 ### Question 2.3
@@ -158,16 +175,24 @@ Tapez :
 container_memory_rss{namespace="paris-user-ns", container!="", pod=~"todo-app.*"}
 ```
 
-> **Q6** — Quelle est la valeur retournée pour le pod `todo-app` ?
+> **Q6** — Combien de résultats obtenez-vous et que représente le filtre `pod=~"todo-app.*"` ?
 
 <details>
 <summary>Voir la réponse</summary>
 
-Environ **263 555 648 octets** (soit **≈ 251,4 MiB**).
+Vous obtenez **2 résultats** :
+- 1 ligne pour le pause container (`POD`)
+- 1 ligne pour le vrai conteneur `todo-app`
 
-C'est la même valeur que celle affichée dans le dashboard sous **Memory Usage (RSS)** = 251,4 MiB.
+Le filtre **`pod=~"todo-app.*"`** utilise une **regex** (notez l'opérateur `=~` au lieu de `=`) pour matcher tous les pods dont le nom **commence par** `todo-app`. C'est utile quand le nom complet du pod change à chaque redéploiement (suffixe aléatoire `dd5dfc87-2hw4q`).
 
-Le filtre `pod=~"todo-app.*"` utilise une **regex** pour matcher tous les pods dont le nom commence par `todo-app`.
+**Opérateurs PromQL pour les labels** :
+- `=` : égalité stricte
+- `!=` : différent
+- `=~` : regex match
+- `!~` : regex no-match
+
+Le RSS (Resident Set Size) du conteneur `todo-app` doit être proche de **263 555 648 octets** (≈ 251,4 MiB), comme vu dans le dashboard.
 </details>
 
 ---
@@ -176,7 +201,7 @@ Le filtre `pod=~"todo-app.*"` utilise une **regex** pour matcher tous les pods d
 
 Maintenant que vous savez écrire des requêtes PromQL, vous allez créer une **alerte automatique** qui se déclenche quand un pod approche sa limite mémoire.
 
-### Question 3.1 — Créer le manifest
+### Étape 1 — Créer le manifest
 
 Créez le fichier `pod-memory-alert.yaml` :
 
@@ -197,7 +222,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: pod-memory-alert
-  namespace: <CITY>-user-ns
+  namespace: paris-user-ns
   labels:
     role: alert-rules
 spec:
@@ -207,14 +232,14 @@ spec:
         - alert: PodMemoryNearLimit
           expr: |
             (
-              sum(container_memory_working_set_bytes{namespace="<CITY>-user-ns", container!=""}) by (pod)
+              sum(container_memory_working_set_bytes{namespace="paris-user-ns", container!=""}) by (pod)
               /
-              sum(kube_pod_container_resource_limits{namespace="<CITY>-user-ns", resource="memory"}) by (pod)
+              sum(kube_pod_container_resource_limits{namespace="paris-user-ns", resource="memory"}) by (pod)
             ) > 0.85
           for: 2m
           labels:
             severity: warning
-            namespace: <CITY>-user-ns
+            namespace: paris-user-ns
           annotations:
             summary: "Le pod {{ $labels.pod }} approche sa limite mémoire"
             description: "Le pod {{ $labels.pod }} utilise plus de 85% de sa limite mémoire depuis 2 minutes."
@@ -223,39 +248,30 @@ spec:
 Cette PrometheusRule définit :
 
 - **`alert: PodMemoryNearLimit`** : le nom de l'alerte.
-- **`expr`** : la requête PromQL qui déclenche l'alerte (mémoire > 85 % de la limit).
+- **`expr`** : la requête PromQL qui déclenche l'alerte (mémoire > 85 % de la limit) — c'est exactement la requête testée à la Q4.
 - **`for: 2m`** : l'alerte ne se déclenche que si la condition est vraie pendant **2 minutes** (évite les faux positifs).
 - **`severity: warning`** : niveau de gravité.
 - **`annotations`** : message affiché quand l'alerte est active.
 
-### Question 3.2 — Appliquer le manifest
+### Étape 2 — Appliquer le manifest
 
 ```bash
 oc apply -f pod-memory-alert.yaml
 ```
 
-> **Q7** — Quelle est la sortie attendue ?
-
-<details>
-<summary>Voir la réponse</summary>
+**Sortie attendue :**
 
 ```
 prometheusrule.monitoring.coreos.com/pod-memory-alert created
 ```
 
-La PrometheusRule est maintenant déployée dans votre namespace.
-</details>
-
-### Question 3.3 — Vérifier que la règle existe
+### Étape 3 — Vérifier que la règle existe
 
 ```bash
 oc get prometheusrule
 ```
 
-> **Q8** — Que voyez-vous dans la sortie ?
-
-<details>
-<summary>Voir la réponse</summary>
+**Sortie attendue :**
 
 ```
 NAME                AGE
@@ -263,7 +279,6 @@ pod-memory-alert    10s
 ```
 
 Votre PrometheusRule est bien enregistrée sur le cluster. Prometheus va automatiquement la prendre en compte au prochain reload (quelques secondes).
-</details>
 
 ---
 
@@ -273,7 +288,7 @@ Votre PrometheusRule est bien enregistrée sur le cluster. Prometheus va automat
 
 Dans le menu de gauche, cliquez sur **Observe → Alerting**.
 
-> **Q9** — Dans quel onglet allez-vous chercher votre alerte ?
+> **Q7** — Dans quel onglet allez-vous chercher votre alerte ?
 
 <details>
 <summary>Voir la réponse</summary>
@@ -291,12 +306,12 @@ Pour voir votre nouvelle règle, allez dans **Alerting Rules**.
 
 Dans **Alerting Rules**, cherchez `PodMemoryNearLimit` (vous pouvez utiliser le filtre).
 
-> **Q10** — Dans quel état votre règle apparaît-elle après quelques minutes ?
+> **Q8** — Dans quel état votre règle apparaît-elle après quelques minutes ?
 
 <details>
 <summary>Voir la réponse</summary>
 
-L'alerte devrait apparaître en état **`Firing`** 🔥 parce que `todo-app` dépasse 85 % de sa limite mémoire (il est à 99,33 %).
+L'alerte devrait apparaître en état **`Firing`** 🔥 parce que `todo-app` dépasse 85 % de sa limite mémoire (il est à **99,33 %**).
 
 Si elle est encore en **`Pending`**, attendez 2 minutes (la durée définie par `for: 2m`).
 
@@ -310,7 +325,7 @@ Vous verrez aussi :
 
 Cliquez sur l'alerte `PodMemoryNearLimit` pour voir ses détails.
 
-> **Q11** — Quelles informations sont affichées sur la page de détail ?
+> **Q9** — Quelles informations sont affichées sur la page de détail ?
 
 <details>
 <summary>Voir la réponse</summary>
@@ -328,7 +343,7 @@ Vous pouvez cliquer sur **"View in Metrics"** pour ouvrir la requête dans **Obs
 
 ---
 
-## Partie 5 — Tester en désactivant l'alerte
+## Partie 5 — Silencer une alerte
 
 ### Question 5.1
 
@@ -336,7 +351,7 @@ Vous voulez **silencer temporairement** l'alerte (par exemple pendant une mainte
 
 Dans la page de détail de l'alerte, cliquez sur **Silence Alert**.
 
-> **Q12** — Quels champs faut-il remplir pour créer un silence ?
+> **Q10** — Quels champs faut-il remplir pour créer un silence ?
 
 <details>
 <summary>Voir la réponse</summary>
@@ -390,7 +405,7 @@ oc get prometheusrule
 **Sortie attendue :**
 
 ```
-No resources found in <CITY>-user-ns namespace.
+No resources found in paris-user-ns namespace.
 ```
 
 Vérifiez aussi dans la console **Observe → Alerting → Alerting Rules** que `PodMemoryNearLimit` a bien disparu de la liste (peut prendre quelques secondes après la suppression).
@@ -406,8 +421,9 @@ Toujours nettoyer les ressources de test sur un cluster partagé. Une Prometheus
 À l'issue de cet exercice, vous savez :
 
 - ✅ Naviguer dans **Observe → Metrics** et lancer des requêtes **PromQL**.
-- ✅ Utiliser les métriques de base : `up`, `kube_pod_info`, `container_memory_working_set_bytes`.
+- ✅ Utiliser les métriques de base : `up`, `kube_pod_info`, `container_memory_working_set_bytes`, `container_memory_rss`.
 - ✅ Filtrer par **namespace**, **pod** (avec regex `=~`), **container**.
+- ✅ Calculer un **pourcentage** entre deux métriques (ex: utilisation vs limit).
 - ✅ Créer une **PrometheusRule** custom avec une expression PromQL.
 - ✅ Comprendre les états d'une alerte : **Pending** → **Firing**.
 - ✅ Vérifier vos alertes dans **Observe → Alerting → Alerting Rules**.
