@@ -33,6 +33,16 @@ L'objectif est de **développer votre capacité à lire et naviguer** dans les d
    - **Time range** est sur `Last 30 minutes`
    - **Refresh interval** est sur `30 seconds`
 
+:::info Contexte de la formation
+Chaque namespace utilisateur (`paris-user-ns`, `rome-user-ns`, etc.) contient les **mêmes 3 pods de référence** déployés pour la formation :
+
+- **`monitoring-pod`** : pod léger de surveillance
+- **`postgres-5b59c7f5ff-scm4n`** : base de données PostgreSQL (en attente d'activité)
+- **`todo-app-dd5dfc87-2hw4q`** : application web avec un problème de mémoire
+
+Les valeurs présentées dans cet exercice correspondent à l'état stable de ces 3 pods. Quel que soit votre namespace, vous devriez observer des valeurs très similaires.
+:::
+
 ---
 
 ## Tableau de référence — Valeurs fixes du namespace
@@ -41,34 +51,34 @@ L'objectif est de **développer votre capacité à lire et naviguer** dans les d
 
 | Métrique | Valeur |
 |---|---|
-| CPU Utilisation (from requests) | **23,25 %** |
-| CPU Utilisation (from limits) | **0,16 %** |
-| Memory Utilisation (from requests) | **94,72 %** |
-| Memory Utilisation (from limits) | **47,36 %** |
+| CPU Utilisation (from requests) | **21,97 %** |
+| CPU Utilisation (from limits) | **0,15 %** |
+| Memory Utilisation (from requests) | **94,70 %** |
+| Memory Utilisation (from limits) | **47,35 %** |
 
 ### Tableau CPU Quota
 
 | Pod | CPU Usage | CPU Requests | CPU Requests % | CPU Limits | CPU Limits % |
 |---|---|---|---|---|---|
 | `monitoring-pod` | 0 | 0,001 | 0,00 % | 0,05 | 0,00 % |
-| `postgres-5b59c7f5ff-scm4n` | 0 | 0,001 | **15,80 %** | 0,2 | 0,08 % |
-| `todo-app-dd5dfc87-2hw4q` | 0,001 | 0,001 | **53,95 %** | 0,2 | 0,27 % |
+| `postgres-5b59c7f5ff-scm4n` | 0 | 0,001 | **13,53 %** | 0,2 | 0,07 % |
+| `todo-app-dd5dfc87-2hw4q` | 0,001 | 0,001 | **52,37 %** | 0,2 | 0,26 % |
 
 ### Tableau Memory Quota
 
-| Pod | Memory Usage | Memory Requests | Memory Requests % | Memory Limits | Memory Limits % | RSS | Cache |
-|---|---|---|---|---|---|---|---|
-| `monitoring-pod` | 540 KiB | 32 MiB | 1,65 % | 64 MiB | 0,82 % | 212 KiB | 0 B |
-| `postgres-5b59c7f5ff-scm4n` | 17,98 MiB | 128 MiB | 14,05 % | 256 MiB | 7,02 % | 3,68 MiB | **10,47 MiB** |
-| `todo-app-dd5dfc87-2hw4q` | 254,3 MiB | 128 MiB | **198,65 %** | 256 MiB | **99,33 %** | **251,4 MiB** | 12 KiB |
+| Pod | Memory Usage | Memory Requests % | Memory Limits % | RSS | Cache |
+|---|---|---|---|---|---|
+| `monitoring-pod` | 540 KiB | 1,65 % | 0,82 % | 212 KiB | 0 B |
+| `postgres-5b59c7f5ff-scm4n` | 17,91 MiB | 14,00 % | 7,00 % | 3,68 MiB | **10,46 MiB** |
+| `todo-app-dd5dfc87-2hw4q` | 254,3 MiB | **198,68 %** | **99,34 %** | **251,4 MiB** | 32 KiB |
 
 ### Tableau Current Storage IO
 
-| Pod | IOPS Reads | IOPS Writes | Throughput Read | Throughput Write |
-|---|---|---|---|---|
-| `monitoring-pod` | 0 | 0 | 0 Bps | 0 Bps |
-| `postgres-5b59c7f5ff-scm4n` | 0 | **0,067** | 0 Bps | **341,3 Bps** |
-| `todo-app-dd5dfc87-2hw4q` | 0 | **0,393** | 0 Bps | **2,41 KBps** |
+| Pod | IOPS Writes | Throughput Write |
+|---|---|---|
+| `monitoring-pod` | 0 | 0 Bps |
+| `postgres-5b59c7f5ff-scm4n` | **0,069** | **352,7 Bps** |
+| `todo-app-dd5dfc87-2hw4q` | **0,393** | **2,41 KBps** |
 
 ---
 
@@ -81,9 +91,9 @@ L'objectif est de **développer votre capacité à lire et naviguer** dans les d
 <details>
 <summary>Voir la réponse</summary>
 
-**23,25 %**
+**21,97 %**
 
-Cette métrique indique que les pods de votre namespace consomment **23,25 % de la CPU qu'ils ont réservée** (`requests`). C'est une utilisation modérée.
+Cette métrique indique que les pods de votre namespace consomment **21,97 % de la CPU qu'ils ont réservée** (`requests`). C'est une utilisation modérée.
 </details>
 
 ### Question 1.2
@@ -93,41 +103,14 @@ Cette métrique indique que les pods de votre namespace consomment **23,25 % de 
 <details>
 <summary>Voir la réponse</summary>
 
-**0,16 %**
+**0,15 %**
 
 Cette valeur est très basse car les `limits` (le maximum autorisé) sont beaucoup plus élevées que les `requests`. Les pods ont donc beaucoup de marge avant d'être limités.
 </details>
 
 ### Question 1.3
 
-> **Q3** — Dans le tableau **CPU Quota**, quel pod a la valeur **CPU Requests %** la plus élevée ?
-
-<details>
-<summary>Voir la réponse</summary>
-
-**`todo-app-dd5dfc87-2hw4q`** avec **53,95 %**.
-
-Voici le classement :
-- `todo-app-dd5dfc87-2hw4q` → **53,95 %**
-- `postgres-5b59c7f5ff-scm4n` → 15,80 %
-- `monitoring-pod` → 0,00 %
-</details>
-
-### Question 1.4
-
-> **Q4** — Dans le tableau **CPU Quota**, quelle est la valeur **CPU Limits** du pod `monitoring-pod` ?
-
-<details>
-<summary>Voir la réponse</summary>
-
-**0,05** (soit 50 millicores)
-
-Cette valeur est plus basse que celle de `postgres` et `todo-app` (qui ont chacun 0,2). C'est cohérent avec un pod de monitoring léger qui n'a pas besoin de beaucoup de CPU.
-</details>
-
-### Question 1.5
-
-> **Q5** — Combien de pods sont listés dans le tableau **CPU Quota** ?
+> **Q3** — Combien de pods sont listés dans le tableau **CPU Quota** ?
 
 <details>
 <summary>Voir la réponse</summary>
@@ -136,6 +119,33 @@ Cette valeur est plus basse que celle de `postgres` et `todo-app` (qui ont chacu
 - `monitoring-pod`
 - `postgres-5b59c7f5ff-scm4n`
 - `todo-app-dd5dfc87-2hw4q`
+</details>
+
+### Question 1.4
+
+> **Q4** — Dans le tableau **CPU Quota**, quel pod a la valeur **CPU Requests %** la plus élevée ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+**`todo-app-dd5dfc87-2hw4q`** avec **52,37 %**.
+
+Voici le classement :
+- `todo-app-dd5dfc87-2hw4q` → **52,37 %**
+- `postgres-5b59c7f5ff-scm4n` → 13,53 %
+- `monitoring-pod` → 0,00 %
+</details>
+
+### Question 1.5
+
+> **Q5** — Dans le tableau **CPU Quota**, quelle est la valeur **CPU Limits** du pod `monitoring-pod` ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+**0,05** (soit 50 millicores)
+
+Cette valeur est plus basse que celle de `postgres` et `todo-app` (qui ont chacun 0,2). C'est cohérent avec un pod de monitoring léger qui n'a pas besoin de beaucoup de CPU.
 </details>
 
 ---
@@ -149,7 +159,7 @@ Cette valeur est plus basse que celle de `postgres` et `todo-app` (qui ont chacu
 <details>
 <summary>Voir la réponse</summary>
 
-**94,72 %**
+**94,70 %**
 
 ⚠️ Cette valeur est très élevée ! Les pods consomment **presque toute la mémoire qu'ils ont réservée**. C'est un signal d'alerte qu'il faut investiguer.
 </details>
@@ -161,7 +171,7 @@ Cette valeur est plus basse que celle de `postgres` et `todo-app` (qui ont chacu
 <details>
 <summary>Voir la réponse</summary>
 
-**47,36 %**
+**47,35 %**
 
 Cette valeur indique qu'il reste de la marge avant d'atteindre le maximum autorisé (les `limits`).
 </details>
@@ -173,7 +183,7 @@ Cette valeur indique qu'il reste de la marge avant d'atteindre le maximum autori
 <details>
 <summary>Voir la réponse</summary>
 
-**99,33 %**
+**99,34 %**
 
 🚨 **C'est dangereux !** Le pod utilise **presque 100 % de sa limite mémoire**. S'il dépasse, il sera **OOMKilled** (Out Of Memory) par Kubernetes.
 </details>
@@ -185,14 +195,14 @@ Cette valeur indique qu'il reste de la marge avant d'atteindre le maximum autori
 <details>
 <summary>Voir la réponse</summary>
 
-**198,65 %**
+**198,68 %**
 
 Cette valeur dépasse 100 %, ce qui signifie que `todo-app` utilise **presque le double de ce qu'il a demandé**. Les `requests` ont été sous-estimées.
 </details>
 
 ### Question 2.5
 
-> **Q10** — Pour le pod `postgres-5b59c7f5ff-scm4n`, quelle est la valeur **Memory Usage (RSS)** affichée dans le tableau ?
+> **Q10** — Pour le pod `postgres-5b59c7f5ff-scm4n`, quelle est la valeur **Memory Usage (RSS)** ?
 
 <details>
 <summary>Voir la réponse</summary>
@@ -204,19 +214,19 @@ Le **RSS** est la mémoire **vraiment utilisée** par le processus. C'est la mé
 
 ### Question 2.6
 
-> **Q11** — Pour le pod `postgres-5b59c7f5ff-scm4n`, quelle est la valeur **Memory Usage (Cache)** affichée dans le tableau ?
+> **Q11** — Pour le pod `postgres-5b59c7f5ff-scm4n`, quelle est la valeur **Memory Usage (Cache)** ?
 
 <details>
 <summary>Voir la réponse</summary>
 
-**10,47 MiB**
+**10,46 MiB**
 
 Le cache peut être **libéré par le système** si nécessaire. Il ne représente pas une "vraie" pression mémoire.
 </details>
 
 ### Question 2.7
 
-> **Q12** — Quel pod a la valeur **Memory Usage (RSS)** la plus élevée dans le tableau ?
+> **Q12** — Quel pod a la valeur **Memory Usage (RSS)** la plus élevée ?
 
 <details>
 <summary>Voir la réponse</summary>
@@ -264,7 +274,7 @@ Aucun paquet reçu à l'instant T pour `monitoring-pod`.
 <details>
 <summary>Voir la réponse</summary>
 
-Le pic le plus élevé atteint environ **2 Bps** vers **9:17 AM**.
+Le pic le plus élevé atteint environ **50 Bps** vers **10:45 AM**.
 
 C'est probablement dû à un test `curl` effectué pendant les exercices précédents.
 </details>
@@ -316,14 +326,14 @@ Le pod fait environ 0,4 opérations d'écriture par seconde sur le disque.
 <details>
 <summary>Voir la réponse</summary>
 
-**341,3 Bps**
+**352,7 Bps**
 
-`postgres` écrit environ 341 octets par seconde, ce qui est très faible. C'est cohérent avec un PostgreSQL en attente d'activité (idle).
+`postgres` écrit environ 353 octets par seconde, ce qui est très faible. C'est cohérent avec un PostgreSQL en attente d'activité (idle).
 </details>
 
 ### Question 4.4
 
-> **Q20** — Quel pod a la valeur **Throughput(Write)** la plus élevée dans le tableau ?
+> **Q20** — Quel pod a la valeur **Throughput(Write)** la plus élevée ?
 
 <details>
 <summary>Voir la réponse</summary>
@@ -332,7 +342,7 @@ Le pod fait environ 0,4 opérations d'écriture par seconde sur le disque.
 
 Voici le classement :
 - `todo-app-dd5dfc87-2hw4q` → **2,41 KBps**
-- `postgres-5b59c7f5ff-scm4n` → 341,3 Bps
+- `postgres-5b59c7f5ff-scm4n` → 352,7 Bps
 - `monitoring-pod` → 0 Bps
 </details>
 
@@ -350,10 +360,11 @@ Voici le classement :
 **`todo-app-dd5dfc87-2hw4q`** nécessite votre attention.
 
 **Cumul de signaux d'alerte** :
-- 🚨 **Memory Limits % = 99,33 %** → risque imminent d'OOMKill
-- ⚠️ **Memory Requests % = 198,65 %** → les requests sont sous-estimées
-- ⚠️ **CPU Requests % = 53,95 %** → consommation soutenue
+- 🚨 **Memory Limits % = 99,34 %** → risque imminent d'OOMKill
+- ⚠️ **Memory Requests % = 198,68 %** → les requests sont sous-estimées
+- ⚠️ **CPU Requests % = 52,37 %** → consommation soutenue
 - 📊 **Throughput(Write) = 2,41 KBps** → c'est aussi le pod le plus actif en écriture
+- 📊 **Memory RSS = 251,4 MiB** → le pod qui consomme le plus de mémoire
 </details>
 
 ### Question 5.2
@@ -377,7 +388,7 @@ Cela permet de **passer du dashboard à l'analyse fine** rapidement, et de modif
 - ✅ Naviguer vers **Observe → Dashboards** et sélectionner le bon dashboard
 - ✅ Lire les métriques **CPU** dans les cartes principales et le tableau Quota
 - ✅ Lire les métriques **Memory** (Usage, RSS, Cache, Requests, Limits)
-- ✅ Détecter une **saturation mémoire** : `todo-app` à 99,33 % de Memory Limits
+- ✅ Détecter une **saturation mémoire** : `todo-app` à 99,34 % de Memory Limits
 - ✅ Lire les métriques **Network** (Bandwidth, Rate of Packets, Packets Dropped)
 - ✅ Lire les métriques **Storage IO** (IOPS, Throughput)
 - ✅ **Diagnostiquer** un namespace en synthétisant plusieurs métriques
