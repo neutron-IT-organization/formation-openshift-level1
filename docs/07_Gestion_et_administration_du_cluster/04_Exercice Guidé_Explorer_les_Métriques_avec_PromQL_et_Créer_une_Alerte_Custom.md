@@ -53,7 +53,7 @@ Puis cliquez sur **Run queries**.
 <details>
 <summary>Voir la réponse</summary>
 
-La requête `up` peut afficher **"No datapoints found"** dans `paris-user-ns` car les exporters principaux tournent dans le namespace `openshift-monitoring` (Prometheus surveille des cibles globales du cluster, pas du namespace utilisateur).
+La requête `up` peut afficher **"No datapoints found"** dans `<CITY>-user-ns` car les exporters principaux tournent dans le namespace `openshift-monitoring` (Prometheus surveille des cibles globales du cluster, pas du namespace utilisateur).
 
 C'est normal pour un namespace utilisateur. Pour voir les cibles `up` dans votre namespace, il faudrait avoir un ServiceMonitor configuré, ce qui n'est pas le cas par défaut.
 
@@ -65,7 +65,7 @@ Cette requête sert surtout sur le cluster global pour vérifier que les exporte
 Effacez la requête et tapez :
 
 ```promql
-kube_pod_info{namespace="paris-user-ns"}
+kube_pod_info{namespace="<CITY>-user-ns"}
 ```
 
 > **Q2** — Combien de pods sont retournés par cette requête ?
@@ -88,7 +88,7 @@ Toutes les lignes affichent `host_ip = 192.168.0.251` (IP du nœud) et `job = ku
 Tapez :
 
 ```promql
-container_memory_working_set_bytes{namespace="paris-user-ns", container!=""}
+container_memory_working_set_bytes{namespace="<CITY>-user-ns", container!=""}
 ```
 
 > **Q3** — Combien de résultats obtenez-vous et pourquoi le filtre `container!=""` est-il important ?
@@ -119,9 +119,9 @@ Le filtre **`container!=""`** est crucial pour **exclure les pseudo-conteneurs**
 Tapez cette requête qui calcule l'**utilisation mémoire en pourcentage** par rapport aux limits :
 
 ```promql
-sum(container_memory_working_set_bytes{namespace="paris-user-ns", container!=""}) by (pod)
+sum(container_memory_working_set_bytes{namespace="<CITY>-user-ns", container!=""}) by (pod)
 /
-sum(kube_pod_container_resource_limits{namespace="paris-user-ns", resource="memory"}) by (pod)
+sum(kube_pod_container_resource_limits{namespace="<CITY>-user-ns", resource="memory"}) by (pod)
 * 100
 ```
 
@@ -146,7 +146,7 @@ Ces valeurs sont **identiques** à celles affichées dans le dashboard `Memory L
 Tapez :
 
 ```promql
-sum(rate(container_cpu_usage_seconds_total{namespace="paris-user-ns", container!=""}[5m])) by (pod)
+sum(rate(container_cpu_usage_seconds_total{namespace="<CITY>-user-ns", container!=""}[5m])) by (pod)
 ```
 
 > **Q5** — Quelles sont les valeurs CPU obtenues pour les 3 pods ?
@@ -172,7 +172,7 @@ Le graphique montre ces valeurs **stables dans le temps** : la consommation CPU 
 Tapez :
 
 ```promql
-container_memory_rss{namespace="paris-user-ns", container!="", pod=~"todo-app.*"}
+container_memory_rss{namespace="<CITY>-user-ns", container!="", pod=~"todo-app.*"}
 ```
 
 > **Q6** — Combien de résultats obtenez-vous et que représente le filtre `pod=~"todo-app.*"` ?
@@ -222,7 +222,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: pod-memory-alert
-  namespace: paris-user-ns
+  namespace: <CITY>-user-ns
   labels:
     role: alert-rules
 spec:
@@ -232,14 +232,14 @@ spec:
         - alert: PodMemoryNearLimit
           expr: |
             (
-              sum(container_memory_working_set_bytes{namespace="paris-user-ns", container!=""}) by (pod)
+              sum(container_memory_working_set_bytes{namespace="<CITY>-user-ns", container!=""}) by (pod)
               /
-              sum(kube_pod_container_resource_limits{namespace="paris-user-ns", resource="memory"}) by (pod)
+              sum(kube_pod_container_resource_limits{namespace="<CITY>-user-ns", resource="memory"}) by (pod)
             ) > 0.85
           for: 2m
           labels:
             severity: warning
-            namespace: paris-user-ns
+            namespace: <CITY>-user-ns
           annotations:
             summary: "Le pod {{ $labels.pod }} approche sa limite mémoire"
             description: "Le pod {{ $labels.pod }} utilise plus de 85% de sa limite mémoire depuis 2 minutes."
