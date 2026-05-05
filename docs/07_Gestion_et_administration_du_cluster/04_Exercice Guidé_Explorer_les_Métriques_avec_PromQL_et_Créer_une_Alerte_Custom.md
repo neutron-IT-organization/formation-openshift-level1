@@ -18,13 +18,14 @@ L'objectif est de **passer du dashboard à l'analyse fine**, et d'**automatiser 
 - [ ] Filtrer les résultats par **namespace** et par **pod**.
 - [ ] Créer une **PrometheusRule** custom qui surveille la mémoire.
 - [ ] Vérifier que l'alerte apparaît dans **Observe → Alerting**.
+- [ ] **Silencer** temporairement une alerte.
 
 ---
 
 ## Préparation
 
 1. Connectez-vous à la console OpenShift.
-2. En haut de la page, sélectionnez votre projet : **`paris-user-ns`**.
+2. En haut de la page, sélectionnez votre projet : **`<CITY>-user-ns`**.
 3. Dans le menu de gauche, cliquez sur **Observe → Metrics**.
 4. Vous arrivez sur une page avec un champ de saisie de requête PromQL.
 
@@ -338,18 +339,73 @@ La page de détail affiche :
 - **Source** : un lien vers la requête PromQL qui a déclenché l'alerte
 - **Graph** : un mini-graphique de la métrique sur la dernière période
 
-Vous pouvez cliquer sur **"View in Metrics"** pour ouvrir la requête dans **Observe → Metrics**.
+Vous pouvez cliquer sur **"Inspect"** (en haut à droite du graphique) pour ouvrir la requête PromQL dans **Observe → Metrics**.
 </details>
 
 ---
 
 ## Partie 5 — Silencer une alerte
 
+Imaginez que vous savez qu'un pod va consommer beaucoup de mémoire pendant une **maintenance prévue**. Vous ne voulez pas être spammé d'alertes pendant ce temps. La solution : **créer un Silence** qui suspend temporairement les notifications.
+
+:::info Qu'est-ce qu'un Silence ?
+Un **Silence** est comme un bouton **MUTE** sur une alerte 🔇. La règle continue d'être évaluée par Prometheus, mais **aucune notification n'est envoyée** pendant la durée définie. À la fin du silence, l'alerte redevient active automatiquement.
+:::
+
+### Étape 1 — Aller dans l'onglet Silences
+
+Dans la console OpenShift :
+
+1. Menu de gauche : **Observe → Alerting**
+2. Cliquez sur l'onglet **`Silences`**
+3. Au début, vous voyez **"No silences found"** (normal)
+4. Cliquez sur le bouton bleu **`Create silence`** en haut à gauche
+
+### Étape 2 — Remplir le formulaire de Silence
+
+Le formulaire est divisé en 3 sections : **Duration**, **Alert labels** et **Info**.
+
+#### Section 1 : Duration (durée du silence)
+
+| Champ | Valeur à choisir |
+|---|---|
+| **Silence alert from** | `Now` (déjà rempli) |
+| **For** | `2h` (par défaut) ou `1h` pour tester |
+| **Until** | Auto-rempli en fonction de "For" |
+| ☑️ **Start immediately** | Cochez (déjà coché par défaut) |
+
+#### Section 2 : Alert labels (matchers)
+
+C'est ici que vous **ciblez l'alerte** à silencer. Le label `namespace` est déjà prérempli :
+
+| Label name | Label value |
+|---|---|
+| `namespace` | `<CITY>-user-ns` |
+
+**Ajoutez** un deuxième matcher pour cibler **votre alerte spécifique** :
+
+| Label name | Label value |
+|---|---|
+| `alertname` | `PodMemoryNearLimit` |
+
+⚠️ **Attention** : respectez les majuscules dans `PodMemoryNearLimit`.
+
+#### Section 3 : Info
+
+| Champ | Valeur |
+|---|---|
+| **Creator** | `<CITY>-user` (auto-rempli) |
+| **Comment** ⭐ | `Test du silence pendant la formation` |
+
+:::caution Le commentaire est obligatoire
+Le champ **Comment** est marqué d'une étoile rouge `*`, donc il est **obligatoire**. Sans commentaire, le bouton `Silence` reste désactivé.
+:::
+
+### Étape 3 — Cliquer sur `Silence`
+
+Le bouton bleu **`Silence`** en bas du formulaire. Vous serez redirigé vers la liste des Silences.
+
 ### Question 5.1
-
-Vous voulez **silencer temporairement** l'alerte (par exemple pendant une maintenance).
-
-Dans la page de détail de l'alerte, cliquez sur **Silence Alert**.
 
 > **Q10** — Quels champs faut-il remplir pour créer un silence ?
 
@@ -358,13 +414,69 @@ Dans la page de détail de l'alerte, cliquez sur **Silence Alert**.
 
 Un silence demande :
 
-- **Duration** : durée du silence (1h, 2h, 1d, ou custom)
-- **Comment** : raison du silence (par exemple "Maintenance todo-app en cours")
-- **Created by** : votre nom (auto-rempli)
-- **Matchers** : conditions pour matcher l'alerte (auto-remplies)
+- **Duration (For)** : durée du silence (1h, 2h, 1d, ou custom).
+- **Alert labels (matchers)** : conditions pour cibler l'alerte. Le `namespace` est auto-rempli, on ajoute généralement `alertname=PodMemoryNearLimit`.
+- **Comment** : raison du silence (obligatoire, par exemple "Maintenance todo-app en cours").
+- **Creator** : votre nom (auto-rempli).
 
-Cliquez sur **Silence** pour confirmer. L'alerte n'enverra plus de notification pendant la durée choisie, mais la condition sera toujours évaluée.
+Cliquez sur **`Silence`** pour confirmer. L'alerte n'enverra plus de notification pendant la durée choisie, mais la condition sera toujours évaluée.
 </details>
+
+### Question 5.2
+
+Après avoir créé le silence, allez dans l'onglet **`Silences`**.
+
+> **Q11** — Quel est l'état de votre Silence et que voyez-vous ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+Vous voyez votre Silence avec ces informations :
+
+```
+Name                  State    Created by    Expires
+PodMemoryNearLimit    Active   <CITY>-user   in 2h
+```
+
+- **State : Active** 🟢 → le silence est en cours
+- **Expires** → indique quand le silence se terminera automatiquement
+- **Firing alerts** → vous montre quelles alertes sont actuellement silencées par ce silence
+</details>
+
+### Question 5.3
+
+Retournez dans l'onglet **`Alerts`**.
+
+> **Q12** — Que constatez-vous concernant l'alerte `PodMemoryNearLimit` ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+L'alerte n'apparaît **plus** dans l'onglet `Alerts` (ou apparaît avec un état **Silenced** 🔇).
+
+C'est exactement le but du Silence : faire **disparaître l'alerte de l'écran** sans supprimer la règle. La condition continue d'être évaluée par Prometheus, mais aucune notification n'est envoyée pendant la durée du silence.
+
+⚠️ **Important** : la PrometheusRule existe toujours (`oc get prometheusrule`), seule la **notification** est suspendue.
+</details>
+
+### Étape 4 — Annuler un Silence
+
+Pour réactiver l'alerte avant la fin du Silence :
+
+1. Allez dans **Observe → Alerting → Silences**
+2. Cliquez sur votre silence `PodMemoryNearLimit`
+3. Cliquez sur le bouton **`Expire Silence`** en haut à droite
+4. Confirmez
+
+L'alerte redevient `Firing` 🔥 immédiatement dans l'onglet `Alerts`.
+
+:::tip Cas d'usage des Silences
+Les Silences sont très utiles pour :
+- 🔧 **Maintenance prévue** : "Je vais redémarrer todo-app pendant 1h"
+- 🐛 **Bug connu** : "On sait qu'il y a un problème, on travaille dessus"
+- 🌙 **Heures non ouvrables** : "On veut pas être réveillé la nuit"
+- 🎯 **Ajustement d'alerte** : "On modifie le seuil, on silence pour 24h"
+:::
 
 ---
 
@@ -405,7 +517,7 @@ oc get prometheusrule
 **Sortie attendue :**
 
 ```
-No resources found in paris-user-ns namespace.
+No resources found in <CITY>-user-ns namespace.
 ```
 
 Vérifiez aussi dans la console **Observe → Alerting → Alerting Rules** que `PodMemoryNearLimit` a bien disparu de la liste (peut prendre quelques secondes après la suppression).
@@ -427,5 +539,6 @@ Toujours nettoyer les ressources de test sur un cluster partagé. Une Prometheus
 - ✅ Créer une **PrometheusRule** custom avec une expression PromQL.
 - ✅ Comprendre les états d'une alerte : **Pending** → **Firing**.
 - ✅ Vérifier vos alertes dans **Observe → Alerting → Alerting Rules**.
-- ✅ Créer un **Silence** pour suspendre temporairement une alerte.
+- ✅ **Créer un Silence** pour suspendre temporairement une alerte (avec matchers, durée et commentaire).
+- ✅ **Annuler un Silence** avant son expiration (Expire Silence).
 - ✅ Nettoyer les ressources créées (`oc delete prometheusrule`).
