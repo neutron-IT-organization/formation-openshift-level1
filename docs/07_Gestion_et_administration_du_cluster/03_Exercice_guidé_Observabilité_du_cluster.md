@@ -274,23 +274,22 @@ Aucun paquet reçu à l'instant T pour `monitoring-pod`.
 <details>
 <summary>Voir la réponse</summary>
 
-Le pic le plus élevé atteint environ **50 Bps** vers **10:45 AM**.
+Le pic le plus élevé atteint environ **3 Bps** vers **11:15 AM**.
 
-C'est probablement dû à un test `curl` effectué pendant les exercices précédents.
+C'est probablement dû à un test `curl` effectué pendant les exercices précédents (par exemple lors de la communication Pod-à-Pod).
 </details>
 
 ### Question 3.4
 
-> **Q16** — Dans la section **Rate of Packets Dropped**, quelle est la valeur observée pour les paquets perdus en réception ?
+> **Q16** — Dans la section **Rate of Packets**, regardez le graphique **Rate of Received Packets**. Quelle est la valeur du pic le plus élevé ?
 
 <details>
 <summary>Voir la réponse</summary>
 
-**0 pps** sur toute la période.
+Le pic le plus élevé atteint environ **0,04 pps** vers **11:15 AM**.
 
-✅ Aucun paquet n'est perdu, le réseau fonctionne correctement.
+Cela représente environ 0,04 paquets par seconde, ce qui est très faible. Cela correspond à quelques requêtes `curl` ponctuelles, et non à un trafic continu.
 </details>
-
 ---
 
 ## Partie 4 — Storage IO
