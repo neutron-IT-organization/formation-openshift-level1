@@ -429,7 +429,3 @@ Toujours nettoyer les ressources de test sur un cluster partagé. Une Prometheus
 - ✅ Vérifier vos alertes dans **Observe → Alerting → Alerting Rules**.
 - ✅ Créer un **Silence** pour suspendre temporairement une alerte.
 - ✅ Nettoyer les ressources créées (`oc delete prometheusrule`).
-
-:::tip Pour aller plus loin
-Dans un prochain exercice, vous configurerez **Alertmanager** pour envoyer des notifications par **email**, **Slack** ou **PagerDuty** quand vos alertes se déclenchent. C'est ce qui transforme une alerte affichée dans la console en une vraie action opérationnelle.
-:::
