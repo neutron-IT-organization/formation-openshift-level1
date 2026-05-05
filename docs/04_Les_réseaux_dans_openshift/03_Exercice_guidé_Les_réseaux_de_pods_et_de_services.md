@@ -413,84 +413,130 @@ oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 Le client continue de joindre welcome-app grâce à l'IP virtuelle stable (ClusterIP) du Service, qui reste inchangée même quand le pod est recréé avec une nouvelle IP.
 :::
 
+---
+ 
 ### 5.5 Couper la communication avec une NetworkPolicy
-
+ 
 Maintenant que vous avez démontré que `client-app` peut joindre `welcome-app`, vous allez voir comment **bloquer cette communication** avec une NetworkPolicy ciblée.
-
+ 
 C'est un cas d'usage réel en production : on veut souvent **restreindre** quels pods peuvent parler à quels autres pods, pour des raisons de **sécurité** ou de **conformité**.
-
+ 
 #### Étape 1 — Lister les NetworkPolicies existantes
-
+ 
 Avant tout, regardez les policies déjà en place sur le namespace :
-
+ 
 ```bash
 oc get networkpolicy
 ```
-
+ 
 **Sortie attendue (peut varier) :**
-
+ 
 ```
 NAME                              POD-SELECTOR      AGE
-allow-from-openshift-ingress      <none>            34d
-allow-from-openshift-monitoring   <none>            34d
-allow-from-openshift-operators    <none>            28d
-allow-same-namespace              <none>            34d
+allow-from-openshift-ingress      <none>            41d
+allow-from-openshift-monitoring   <none>            41d
+allow-from-openshift-operators    <none>            34d
+allow-multi-namespace-ingress     app=welcome-app   17m
+allow-same-namespace              <none>            10h
 ```
-
+ 
 :::warning Les policies se combinent en OU logique
 Plusieurs NetworkPolicies peuvent cibler le même pod. Le trafic est autorisé **dès qu'au moins une** policy l'autorise.
-
-La policy `allow-same-namespace` autorise tous les pods du namespace à communiquer entre eux. Tant qu'elle existe, on **ne peut pas** bloquer le trafic de `client-app` → `welcome-app`.
+ 
+Dans votre namespace, **deux policies autorisent actuellement** la communication vers `welcome-app` :
+ 
+- **`allow-same-namespace`** : autorise tous les pods du même namespace (donc `client-app`).
+- **`allow-multi-namespace-ingress`** : créée à l'étape 2 de cet exercice, elle autorise tout namespace.
+Tant que ces deux policies existent, on **ne peut pas** bloquer le trafic. Il faut les supprimer toutes les deux.
 :::
-
+ 
 #### Étape 2 — Sauvegarder la policy `allow-same-namespace`
-
+ 
 Avant de la supprimer, sauvegardez-la dans un fichier YAML pour pouvoir la restaurer plus tard :
-
+ 
 ```bash
 oc get networkpolicy allow-same-namespace -o yaml > allow-same-namespace-backup.yaml
 ```
-
+ 
 Vérifiez que le backup a bien été créé :
-
+ 
 ```bash
 ls -la allow-same-namespace-backup.yaml
 ```
-
+ 
 **Sortie attendue :**
-
+ 
 ```
--rw-r--r--. 1 1001230000 root 977 Apr 28 11:59 allow-same-namespace-backup.yaml
+-rw-r--r--. 1 1001230000 root 978 May  5 07:34 allow-same-namespace-backup.yaml
 ```
-
-#### Étape 3 — Supprimer `allow-same-namespace`
-
+ 
+#### Étape 3 — Supprimer les policies permissives
+ 
+:::caution Important : il faut supprimer LES DEUX policies
+Pour que le blocage fonctionne, vous devez **impérativement** supprimer les deux policies qui autorisent le trafic :
+ 
+1. `allow-same-namespace`
+2. `allow-multi-namespace-ingress`
+Si vous oubliez l'une des deux, le test de blocage **ne fonctionnera pas** (curl renverra la page HTML au lieu de timeout).
+:::
+ 
+Supprimez d'abord `allow-same-namespace` :
+ 
 ```bash
 oc delete networkpolicy allow-same-namespace
 ```
-
+ 
 **Sortie attendue :**
-
+ 
 ```
 networkpolicy.networking.k8s.io "allow-same-namespace" deleted from <CITY>-user-ns namespace
 ```
-
+ 
+Puis supprimez `allow-multi-namespace-ingress` (créée à l'étape 2 de l'exercice) :
+ 
+```bash
+oc delete networkpolicy allow-multi-namespace-ingress
+```
+ 
+**Sortie attendue :**
+ 
+```
+networkpolicy.networking.k8s.io "allow-multi-namespace-ingress" deleted from <CITY>-user-ns namespace
+```
+ 
+Vérifiez qu'il ne reste que les policies système :
+ 
+```bash
+oc get networkpolicy
+```
+ 
+**Sortie attendue :**
+ 
+```
+NAME                              POD-SELECTOR   AGE
+allow-from-openshift-ingress      <none>         41d
+allow-from-openshift-monitoring   <none>         41d
+allow-from-openshift-operators    <none>         34d
+```
+ 
+✅ **Si vous voyez encore `allow-multi-namespace-ingress` ou `allow-same-namespace` dans la liste, supprimez-la avant de continuer**, sinon le blocage ne fonctionnera pas.
+ 
 #### Étape 4 — Créer une NetworkPolicy restrictive
-
+ 
 Créez le fichier `deny-client-to-welcome.yaml` :
-
+ 
 ```bash
 vi deny-client-to-welcome.yaml
 ```
-
+ 
 :::tip Vous préférez nano ?
 ```bash
 nano deny-client-to-welcome.yaml
 ```
 :::
-
+ 
 Contenu du fichier :
-
+ 
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -509,92 +555,105 @@ spec:
   policyTypes:
     - Ingress
 ```
-
+ 
 Cette policy définit :
-
+ 
 - **podSelector** : elle s'applique aux pods étiquetés `app: welcome-app`.
 - **ingress.from** : elle autorise **uniquement** le trafic venant du namespace `openshift-terminal`.
 - **Ce qui est bloqué** : tout le reste, y compris les pods du même namespace comme `client-app`.
-
 Appliquez la policy :
-
+ 
 ```bash
 oc apply -f deny-client-to-welcome.yaml
 ```
-
+ 
 **Sortie attendue :**
-
+ 
 ```
 networkpolicy.networking.k8s.io/deny-client-to-welcome created
 ```
-
+ 
 #### Étape 5 — Tester le blocage depuis le client
-
+ 
 Relancez le test depuis le pod client :
-
+ 
 ```bash
 oc exec deploy/client-app -- curl --max-time 5 -s welcome-svc
 ```
-
+ 
 **Sortie attendue :**
-
+ 
 ```
 command terminated with exit code 28
 ```
-
+ 
 Le code de sortie **28** de curl signifie **"Operation timeout"**. Le trafic est désormais bloqué par la NetworkPolicy. ⏱️
-
+ 
 :::warning Le blocage est silencieux
 Le blocage se fait **silencieusement** : pas de message d'erreur clair, juste un timeout. C'est le comportement normal d'un firewall — il ne répond pas aux paquets bloqués.
-
+ 
 En production, c'est pour ça qu'il est crucial de bien **documenter** les NetworkPolicies, sinon les équipes passent des heures à chercher "pourquoi ça ne marche pas".
 :::
-
+ 
 #### Étape 6 — Restaurer la situation initiale
-
+ 
 Pour continuer l'exercice avec les étapes suivantes, supprimez la policy restrictive :
-
+ 
 ```bash
 oc delete networkpolicy deny-client-to-welcome
 ```
-
+ 
 **Sortie attendue :**
-
+ 
 ```
 networkpolicy.networking.k8s.io "deny-client-to-welcome" deleted from <CITY>-user-ns namespace
 ```
-
-Vérifiez que `allow-same-namespace` est bien revenue (recréée automatiquement par ArgoCD ou via votre backup) :
-
+ 
+Vérifiez que `allow-same-namespace` est bien revenue (recréée automatiquement par ArgoCD) :
+ 
 ```bash
 oc get networkpolicy
 ```
-
+ 
 Si elle est absente, restaurez-la depuis le backup :
-
+ 
 ```bash
 oc apply -f allow-same-namespace-backup.yaml
 ```
-
+ 
+Recréez aussi `allow-multi-namespace-ingress` (nécessaire pour les étapes suivantes de l'exercice) :
+ 
+```bash
+oc apply -f welcome-policy.yaml
+```
+ 
+**Sortie attendue :**
+ 
+```
+networkpolicy.networking.k8s.io/allow-multi-namespace-ingress created
+```
+ 
 Vérifiez que la communication `client-app` → `welcome-app` est rétablie :
-
+ 
 ```bash
 oc exec deploy/client-app -- curl -s welcome-svc | grep "Bienvenue"
 ```
-
+ 
 **Sortie attendue :**
-
+ 
 ```html
 <h1>Bienvenue sur notre site de démonstration !</h1>
 ```
-
+ 
 :::tip Ce que vous venez de comprendre
 Les NetworkPolicies fonctionnent en mode **whitelist** et se combinent en **OU logique**. Avant d'ajouter une policy restrictive, il est crucial de **lister celles déjà présentes** pour comprendre l'environnement.
-
+ 
 En production, on applique typiquement une stratégie **deny-all par défaut + autorisations explicites** pour avoir un contrôle réel des flux réseau (frontend → backend → database).
-
+ 
 Le réflexe à avoir : toujours **sauvegarder** une policy avant de la supprimer, surtout si elle a été déployée par un outil de GitOps comme ArgoCD.
 :::
+ 
+---
 ## Étape 6 : Créer et tester le Service NodePort
 
 Le NodePort expose l'application sur un port fixe de votre serveur (le noeud).
@@ -724,4 +783,5 @@ oc delete deployment welcome-app client-app
 oc delete svc welcome-svc welcome-svc-nodeport
 oc delete route welcome-route
 oc delete networkpolicy allow-multi-namespace-ingress
+rm welcome-*.yaml client-deployment.yaml deny-client-to-welcome.yaml
 ```
