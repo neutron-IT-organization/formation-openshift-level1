@@ -472,10 +472,10 @@ L'alerte redevient `Firing` 🔥 immédiatement dans l'onglet `Alerts`.
 
 :::tip Cas d'usage des Silences
 Les Silences sont très utiles pour :
-- 🔧 **Maintenance prévue** : "Je vais redémarrer todo-app pendant 1h"
-- 🐛 **Bug connu** : "On sait qu'il y a un problème, on travaille dessus"
-- 🌙 **Heures non ouvrables** : "On veut pas être réveillé la nuit"
-- 🎯 **Ajustement d'alerte** : "On modifie le seuil, on silence pour 24h"
+-  **Maintenance prévue** : "Je vais redémarrer todo-app pendant 1h"
+-  **Bug connu** : "On sait qu'il y a un problème, on travaille dessus"
+-  **Heures non ouvrables** : "On veut pas être réveillé la nuit"
+-  **Ajustement d'alerte** : "On modifie le seuil, on silence pour 24h"
 :::
 
 ---
