@@ -388,7 +388,6 @@ C'est ici que vous **ciblez l'alerte** à silencer. Le label `namespace` est dé
 |---|---|
 | `alertname` | `PodMemoryNearLimit` |
 
-⚠️ **Attention** : respectez les majuscules dans `PodMemoryNearLimit`.
 
 #### Section 3 : Info
 
