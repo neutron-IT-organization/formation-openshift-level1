@@ -184,16 +184,6 @@ spec:
             source: data:text/plain;base64,<COLLER_BASE64_ICI>
 ```
 
-:::tip Astuce — remplacement automatique
-Pour insérer le base64 et la ville automatiquement, utilisez ces commandes en remplaçant `paris` par votre ville :
-
-```bash
-CITY=paris
-sed -i "s|<CITY>|$CITY|g" 99-ca-certificate.yaml
-sed -i "s|<COLLER_BASE64_ICI>|$(cat my-ca.b64)|" 99-ca-certificate.yaml
-```
-:::
-
 ---
 
 ## Étape 6 — Valider la syntaxe avec `--dry-run=client`
@@ -247,30 +237,8 @@ oc apply --dry-run=client -f 99-ca-certificate.yaml -o jsonpath='{.spec.config.s
 
 Vous devez voir les détails du certificat ✅
 
----
 
-## Étape 9 — Lister les CA actuelles sur le nœud (lecture seule)
-
-Connectez-vous au nœud avec `oc debug` (lecture pure) :
-
-```bash
-oc debug node/$(oc get nodes -o jsonpath='{.items[0].metadata.name}')
-```
-
-Une fois dans le pod debug :
-
-```bash
-chroot /host
-ls -la /etc/pki/ca-trust/source/anchors/
-exit
-exit
-```
-
-⚠️ **Sur SNO** : si trop d'utilisateurs lancent `oc debug` en parallèle, le nœud peut être saturé. Faites-le par groupes de 2-3 maximum.
-
----
-
-## Étape 10 — Nettoyage complet
+## Étape 9 — Nettoyage complet
 
 Supprimez **tous les fichiers** créés pendant l'exercice :
 
@@ -299,37 +267,7 @@ Comme vous avez utilisé `--dry-run=client` partout, **aucune ressource n'a ét�
 
 ---
 
-## Que se passerait-il si on appliquait vraiment ?
 
-Si la MachineConfig était appliquée :
-
-1. Le **MachineConfigOperator** détecte la nouvelle MC
-2. Il génère un nouveau `rendered-master-XXX` (fusion de toutes les MC)
-3. Le **MachineConfigPool master** passe en `Updating`
-4. Le nœud est **drainé** (impossible sur SNO car nœud unique)
-5. Le fichier `/etc/pki/ca-trust/source/anchors/internal-ca-<CITY>.crt` est créé
-6. La commande `update-ca-trust extract` s'exécute automatiquement
-7. Le nœud **redémarre** (5-10 min sur SNO)
-8. **Pendant le reboot** : cluster **indisponible** pour tous
-9. **Après reboot** : la CA est dans le store, `curl`/`podman`/`docker` lui font confiance
-
-⚠️ **Sur SNO**, ce processus rend le cluster **indisponible 10-15 minutes**. C'est pourquoi on **ne l'applique pas** dans cet exercice.
-
----
-
-## Bonnes pratiques en production
-
-:::caution Risques sécurité
-Ajouter un CA dans le store de confiance, c'est **lui accorder une confiance totale**. Un attaquant qui possède la clé privée peut signer **n'importe quel certificat** (google.com, github.com...).
-
-**Toujours** :
-- ✅ Utiliser uniquement des CA fournies par l'équipe sécurité
-- ✅ Documenter chaque ajout de CA (qui, quand, pourquoi)
-- ✅ Auditer régulièrement les CA installées
-- ✅ Avoir un processus de revue avant tout ajout en production
-:::
-
----
 
 ## Récapitulatif
 
@@ -344,10 +282,3 @@ Ajouter un CA dans le store de confiance, c'est **lui accorder une confiance tot
 - ✅ Vérifié la cohérence du contenu base64
 - ✅ Compris ce qui se passerait à l'application réelle
 - ✅ Nettoyé proprement pour pouvoir recommencer
-
-:::tip Pour aller plus loin
-Vous pouvez écrire d'autres MachineConfigs sur le même modèle :
-- Plusieurs CA en même temps (1 fichier par CA)
-- CRL (Certificate Revocation List) pour révoquer des certificats
-- Chaîne de certificats (intermediate CA)
-:::
