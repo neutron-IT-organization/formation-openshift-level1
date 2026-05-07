@@ -12,7 +12,7 @@ Vous allez **rédiger une MachineConfig** qui ajoute un **certificat CA** au sto
 Vous validerez votre fichier en mode `--dry-run=client` **sans jamais l'appliquer** sur le cluster.
 
 :::danger Cluster partagé — NE JAMAIS APPLIQUER
-Ce cluster OpenShift est **partagé entre 15 utilisateurs**. Une MachineConfig appliquée déclenche un **reboot du nœud**, ce qui rend le cluster indisponible pour tous.
+Ce cluster OpenShift est **partagé entre plusieurs utilisateurs**. Une MachineConfig appliquée déclenche un **reboot du nœud**, ce qui rend le cluster indisponible pour tous.
 
 ✅ Autorisé : `oc apply --dry-run=client -f fichier.yaml`
 ❌ Interdit : `oc apply -f fichier.yaml`
