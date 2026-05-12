@@ -1,290 +1,295 @@
 ---
-id: Observabilité_du_cluster
-
-slug: /Gestion_et_administration_du_cluster/Observabilité_du_cluster
----
-# Observabilité du Cluster OpenShift
-
-## Introduction
-
-L'observabilité est la capacité à comprendre l'état interne d'un système à partir de ses sorties externes. Dans le contexte d'un cluster OpenShift, cela signifie être capable de répondre à des questions comme : les nœuds sont-ils sains ? Les applications consomment-elles trop de mémoire ? Y a-t-il des erreurs réseau répétées ? Des pods sont-ils en boucle de redémarrage ?
-
-OpenShift intègre nativement une stack d'observabilité complète, basée sur des outils open-source de référence. Ce chapitre présente l'architecture de monitoring, les métriques essentielles, les requêtes PromQL et les bonnes pratiques d'exploitation.
-
+id: Exercice_dashboards_observe
+slug: /Observability/Exercice_dashboards_observe
 ---
 
-## Les Trois Piliers de l'Observabilité
+# Exercice Guidé : Lire les Dashboards dans OpenShift Observe
 
-L'observabilité d'une plateforme cloud-native repose sur trois disciplines complémentaires :
+## Ce que vous allez apprendre
 
-| Pilier | Description | Outil dans OpenShift |
-|--------|-------------|----------------------|
-| **Métriques** | Mesures numériques collectées à intervalles réguliers (CPU, mémoire, latence, taux d'erreur) | Prometheus |
-| **Logs** | Enregistrements textuels des événements produits par les applications et les composants système | OpenShift Logging (Loki / Elasticsearch) |
-| **Traces** | Suivi du chemin d'une requête à travers les différents microservices | OpenShift Distributed Tracing (Jaeger / Tempo) |
+Dans cet exercice, vous allez **explorer les dashboards intégrés** d'OpenShift et **répondre à des questions** sur les **valeurs de configuration** affichées dans la console.
 
-:::info Portée de ce chapitre
-Ce chapitre se concentre sur les **métriques** et l'**alerting**, qui constituent la couche d'observabilité activée par défaut dans tout cluster OpenShift. Les logs et les traces nécessitent l'installation d'opérateurs supplémentaires.
+L'objectif est de **développer votre capacité à lire et naviguer** dans les différentes sections du dashboard pour identifier les ressources allouées à chaque pod d'un namespace.
+
+## Objectifs
+
+- [ ] Naviguer dans **Observe → Dashboards** et choisir le bon dashboard.
+- [ ] Identifier les **3 pods** présents dans le namespace.
+- [ ] Lire les **CPU Limits** configurées pour chaque pod.
+- [ ] Lire les **CPU Requests** configurées pour chaque pod.
+- [ ] Lire les **Memory Limits** configurées pour chaque pod.
+- [ ] Lire les **valeurs RSS** (Resident Set Size) de chaque pod.
+
+---
+
+## Préparation
+
+1. Connectez-vous à la console OpenShift.
+2. En haut de la page, sélectionnez votre projet : **`<CITY>-user-ns`**.
+3. Dans le menu de gauche, cliquez sur **Observe → Dashboards**.
+4. Dans le menu déroulant **Dashboard**, sélectionnez :
+   `Kubernetes / Compute Resources / Namespace (Pods)`
+5. En haut à droite, vérifiez que :
+   - **Time range** est sur `Last 30 minutes`
+   - **Refresh interval** est sur `30 seconds`
+
+:::info Contexte de la formation
+Chaque namespace utilisateur (`paris-user-ns`, `rome-user-ns`, etc.) contient les **mêmes 3 pods de référence** déployés pour la formation :
+
+- **`monitoring-pod`** : pod léger de surveillance
+- **`postgres-5b59c7f5ff-scm4n`** : base de données PostgreSQL
+- **`todo-app-dd5dfc87-2hw4q`** : application web
+
+Quel que soit votre namespace, vous travaillez avec les **mêmes pods configurés de la même façon**. Les **valeurs de configuration** (Limits, Requests) sont **identiques pour tout le monde**.
+:::
+
+:::caution Pourquoi on ne demande pas les pourcentages de consommation
+Les valeurs comme **CPU Usage %**, **Memory Usage %**, **Throughput** **changent en permanence** selon l'activité du cluster et l'utilisateur.
+
+Cet exercice se concentre sur les **valeurs de configuration FIXES** qui sont les mêmes pour tous les utilisateurs : Limits, Requests, RSS, et le nombre de pods.
 :::
 
 ---
 
-## Architecture de la Stack de Monitoring
+## Notions clés à connaître
 
-OpenShift déploie automatiquement une stack de monitoring complète dans le namespace `openshift-monitoring`. Cette stack est entièrement gérée par l'opérateur **Cluster Monitoring Operator (CMO)**, qui assure sa configuration, sa mise à jour et sa haute disponibilité.
+### 🔵 Requests vs Limits
 
-![Architecture de monitoring OpenShift](./images/slide-monitoring.png)
+| Concept | Définition |
+|---|---|
+| **Requests** | Ressources **garanties** au pod (réservées même si pas utilisées) |
+| **Limits** | Ressources **maximales** que le pod peut utiliser (au-delà → throttle ou kill) |
 
-*Architecture de la stack de monitoring OpenShift : Prometheus collecte les métriques, Alertmanager gère les notifications, et la console affiche les dashboards.*
+### 🔵 Unités CPU
 
-### Les composants principaux
+- `1` = 1 CPU complet (1000 millicores)
+- `0,5` = 500 millicores (½ CPU)
+- `0,2` = 200 millicores (⅕ CPU)
+- `0,05` = 50 millicores (1/20 CPU) → pour pods très légers
+- `0,001` = 1 millicore (le minimum)
 
-| Composant | Rôle | Namespace |
-|-----------|------|-----------|
-| **Prometheus** | Collecte et stockage des métriques, évaluation des règles d'alerte | `openshift-monitoring` |
-| **Alertmanager** | Réception, déduplication et routage des alertes vers les canaux de notification | `openshift-monitoring` |
-| **Thanos Querier** | Agrégation des métriques entre plusieurs instances Prometheus | `openshift-monitoring` |
-| **Grafana** | Tableaux de bord de visualisation (lecture seule par défaut) | `openshift-monitoring` |
-| **kube-state-metrics** | Exporte les métriques d'état des objets Kubernetes (Deployments, Pods, Nodes) | `openshift-monitoring` |
-| **node-exporter** | Exporte les métriques système des nœuds (CPU, RAM, disque, réseau) | `openshift-monitoring` |
+### 🔵 Unités mémoire
 
-### Monitoring des applications utilisateur
-
-En plus du monitoring de la plateforme, OpenShift permet d'activer un monitoring dédié aux **workloads utilisateur**. Cela déploie une instance Prometheus séparée dans `openshift-user-workload-monitoring`.
-
-```bash
-# Activer le monitoring des workloads utilisateur
-oc patch configmap cluster-monitoring-config \
-  -n openshift-monitoring \
-  --type=merge \
-  -p '{"data":{"config.yaml":"enableUserWorkload: true\n"}}'
-```
-
-:::tip Séparation des concerns
-La séparation entre le monitoring de la plateforme et celui des workloads utilisateur permet aux équipes applicatives de définir leurs propres règles d'alerte sans impacter la configuration système.
-:::
+- `1 KiB` = 1024 octets
+- `1 MiB` = 1024 KiB ≈ 1 Mo
+- `1 GiB` = 1024 MiB ≈ 1 Go
 
 ---
 
-## Consulter les Métriques depuis la Console
+## Partie 1 — Identifier les pods du namespace
 
-La console OpenShift expose une interface dédiée à l'observabilité sous la section **Observe** du menu latéral.
+### Question 1
 
-![Console OpenShift - Observe > Dashboards](./images/console-monitoring.svg)
+> **Q1** — Dans le tableau **CPU Quota**, combien de pods sont listés et quels sont leurs noms ?
 
-*Vue "Dashboards" dans la console OpenShift : le tableau de bord "Kubernetes / Compute Resources / Namespace" affiche l'utilisation CPU, mémoire et le nombre de pods pour un namespace sélectionné.*
+<details>
+<summary>Voir la réponse</summary>
 
-### Les sous-sections disponibles
+**3 pods** sont listés :
 
-| Section | Contenu |
-|---------|---------|
-| **Dashboards** | Tableaux de bord préconfigurés (nœuds, namespaces, pods, Kubernetes) |
-| **Metrics** | Interface de requêtes PromQL avec graphiques interactifs |
-| **Alerts** | Liste des alertes actives et de leur historique |
-| **Targets** | Etat des cibles de scraping Prometheus (up/down) |
+- `monitoring-pod`
+- `postgres-5b59c7f5ff-scm4n`
+- `todo-app-dd5dfc87-2hw4q`
 
----
+📖 **Définition — Pourquoi cette valeur est fixe** :
+Ces 3 pods sont **déployés à l'identique** dans tous les namespaces utilisateur de la formation. C'est une valeur qui ne change **jamais** d'un utilisateur à l'autre.
 
-## Métriques Essentielles à Surveiller
-
-### Métriques de ressources computationnelles
-
-| Métrique | Signification | Seuil d'alerte typique |
-|----------|---------------|------------------------|
-| CPU usage par pod | Consommation CPU réelle vs limite configurée | > 90% de la limite |
-| Memory usage par pod | Consommation mémoire réelle vs limite | > 85% de la limite |
-| CPU throttling | Pourcentage du temps où le pod est limité en CPU | > 25% |
-| OOMKill | Nombre de fois où un pod a été tué pour dépassement mémoire | > 0 |
-
-### Métriques réseau
-
-| Métrique | Signification |
-|----------|---------------|
-| `container_network_receive_bytes_total` | Octets reçus par conteneur |
-| `container_network_transmit_bytes_total` | Octets envoyés par conteneur |
-| `container_network_receive_errors_total` | Erreurs de réception réseau |
-
-### Métriques d'état des workloads
-
-| Métrique | Signification |
-|----------|---------------|
-| `kube_pod_container_status_restarts_total` | Nombre de redémarrages d'un conteneur |
-| `kube_deployment_status_replicas_unavailable` | Replicas non disponibles dans un Deployment |
-| `kube_node_status_condition` | Etat de santé d'un nœud |
-| `kubelet_running_pods` | Nombre de pods actifs sur un nœud |
-
-### Métriques de stockage
-
-| Métrique | Signification |
-|----------|---------------|
-| `kubelet_volume_stats_used_bytes` | Espace utilisé dans un volume persistant |
-| `kubelet_volume_stats_capacity_bytes` | Capacité totale d'un volume persistant |
-| `kubelet_volume_stats_inodes_free` | Inodes disponibles (saturation système de fichiers) |
+**Note** : Si vous voyez d'autres pods (comme `welcome-app` ou `client-app`), c'est que vous avez fait les exercices réseau précédents qui ont déployé des pods supplémentaires. Concentrez-vous sur les **3 pods de référence** ci-dessus.
+</details>
 
 ---
 
-## Requêtes PromQL : Exemples Pratiques
+## Partie 2 — CPU Limits (valeurs configurées)
 
-**PromQL** (Prometheus Query Language) est le langage de requête natif de Prometheus. Il permet d'interroger, d'agréger et de transformer les métriques collectées.
+### Question 2
 
-### Utilisation CPU d'un namespace
+> **Q2** — Dans le tableau **CPU Quota**, quelle est la valeur **CPU Limits** configurée pour le pod `monitoring-pod` ?
 
-```promql
-# CPU utilisé par tous les pods d'un namespace (en cores)
-sum(rate(container_cpu_usage_seconds_total{namespace="webapp", container!=""}[5m]))
-```
+<details>
+<summary>Voir la réponse</summary>
 
-### Pourcentage de mémoire utilisée par un pod
+**`0,05`** (soit 50 millicores)
 
-```promql
-# Ratio mémoire utilisée / limite pour chaque conteneur
-container_memory_working_set_bytes{namespace="webapp"}
-  /
-container_spec_memory_limit_bytes{namespace="webapp"} * 100
-```
+📖 **Définition — CPU Limits** :
+La **CPU maximale autorisée** pour le pod.
 
-### Détecter les pods en redémarrage fréquent
+**Pourquoi cette valeur** : un pod de monitoring fait des opérations légères (collecte de métriques, healthchecks). 50 millicores (`0,05` CPU) est largement suffisant.
 
-```promql
-# Pods avec plus de 5 redémarrages dans le namespace "webapp"
-kube_pod_container_status_restarts_total{namespace="webapp"} > 5
-```
-
-### Taux d'erreurs HTTP (si métriques applicatives exposées)
-
-```promql
-# Taux d'erreurs 5xx sur les 5 dernières minutes
-rate(http_requests_total{status=~"5..", namespace="webapp"}[5m])
-```
-
-### Espace disque restant sur les volumes persistants (alerte < 20%)
-
-```promql
-(
-  kubelet_volume_stats_capacity_bytes - kubelet_volume_stats_used_bytes
-) / kubelet_volume_stats_capacity_bytes * 100 < 20
-```
-
-:::info Accès à l'interface PromQL
-Dans la console OpenShift, accédez à **Observe > Metrics** pour saisir et exécuter des requêtes PromQL directement depuis le navigateur, avec visualisation graphique intégrée.
-:::
-
----
-
-## Gestion des Alertes avec Alertmanager
-
-### Architecture de l'alerting
-
-Le flux d'alerte dans OpenShift suit ce chemin :
-
-1. **Prometheus** évalue en continu les règles d'alerte (PrometheusRule).
-2. Quand une condition est vraie pendant la durée `for` configurée, l'alerte passe en état **firing**.
-3. **Alertmanager** reçoit l'alerte et applique les règles de routage.
-4. L'alerte est transmise aux **receivers** configurés (email, Slack, PagerDuty, webhook).
-
-### Configurer un receiver Alertmanager
-
+**Cette valeur est fixe** car elle est définie dans le YAML du Deployment :
 ```yaml
-apiVersion: monitoring.coreos.com/v1beta1
-kind: AlertmanagerConfig
-metadata:
-  name: slack-alerts
-  namespace: webapp
-spec:
-  route:
-    receiver: slack-notifications
-    groupBy: ['alertname', 'namespace']
-    groupWait: 30s
-    groupInterval: 5m
-    repeatInterval: 12h
-  receivers:
-    - name: slack-notifications
-      slackConfigs:
-        - apiURL:
-            name: slack-webhook-secret
-            key: url
-          channel: '#openshift-alerts'
-          title: 'Alerte OpenShift - {{ .GroupLabels.alertname }}'
-          text: 'Namespace: {{ .GroupLabels.namespace }}'
+resources:
+  limits:
+    cpu: 50m
 ```
+</details>
 
-### Créer une règle d'alerte personnalisée
+### Question 3
 
+> **Q3** — Dans le tableau **CPU Quota**, quelle est la valeur **CPU Limits** configurée pour le pod `postgres-5b59c7f5ff-scm4n` ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+**`0,2`** (soit 200 millicores)
+
+📖 **Définition — Pourquoi PostgreSQL a plus de CPU que monitoring** :
+Une base de données comme PostgreSQL doit pouvoir gérer plusieurs requêtes simultanées, des transactions, et l'écriture des WAL (Write-Ahead Logs).
+
+**200 millicores** (`0,2` CPU) est une valeur raisonnable pour une base de test/formation.
+
+**Cette valeur est fixe** car elle est définie dans le YAML du Deployment :
 ```yaml
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  name: webapp-alerts
-  namespace: webapp
-spec:
-  groups:
-    - name: webapp.rules
-      interval: 30s
-      rules:
-        - alert: PodRestartingTooOften
-          expr: |
-            rate(kube_pod_container_status_restarts_total{namespace="webapp"}[15m]) * 60 > 1
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: "Pod {{ $labels.pod }} redémarre trop souvent"
-            description: "Le pod {{ $labels.pod }} du namespace {{ $labels.namespace }} a redémarré plus d'une fois par minute sur les 15 dernières minutes."
+resources:
+  limits:
+    cpu: 200m
 ```
+</details>
 
-:::warning Alertes système prédéfinies
-OpenShift fournit plus de 200 règles d'alerte prédéfinies couvrant tous les composants de la plateforme. Avant de créer vos propres règles, vérifiez dans **Observe > Alerts** si une alerte similaire n'existe pas déjà.
-:::
+### Question 4
+
+> **Q4** — Dans le tableau **CPU Quota**, quelle est la valeur **CPU Limits** configurée pour le pod `todo-app-dd5dfc87-2hw4q` ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+**`0,2`** (soit 200 millicores)
+
+📖 **Définition — CPU Limits identiques entre postgres et todo-app** :
+`todo-app` et `postgres` ont la **même CPU Limits** (`0,2`) car ce sont **deux applications** qui doivent gérer du trafic.
+
+**Cette valeur est fixe** car elle est définie dans le YAML du Deployment :
+```yaml
+resources:
+  limits:
+    cpu: 200m
+```
+</details>
 
 ---
 
-## Tableaux de Bord Préconfigurés
+## Partie 3 — CPU Requests (valeurs configurées)
 
-La console OpenShift inclut plusieurs tableaux de bord Grafana accessibles directement dans **Observe > Dashboards** :
+### Question 5
 
-| Tableau de bord | Contenu |
-|-----------------|---------|
-| `Kubernetes / Compute Resources / Cluster` | Vue globale du cluster (CPU, mémoire, pods) |
-| `Kubernetes / Compute Resources / Namespace` | Ressources consommées par namespace |
-| `Kubernetes / Compute Resources / Pod` | Ressources d'un pod spécifique |
-| `Kubernetes / Networking / Namespace` | Trafic réseau par namespace |
-| `Node Exporter / Nodes` | Métriques système des nœuds (disque, réseau, charge) |
-| `OpenShift / etcd` | Santé et performance du cluster etcd |
+> **Q5** — Dans le tableau **CPU Quota**, quelle est la valeur **CPU Requests** configurée pour les 3 pods ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+Les **3 pods** ont la **même CPU Requests** : **`0,001`** (soit 1 millicore)
+
+| Pod | CPU Requests |
+|---|---|
+| `monitoring-pod` | `0,001` |
+| `postgres-5b59c7f5ff-scm4n` | `0,001` |
+| `todo-app-dd5dfc87-2hw4q` | `0,001` |
+
+📖 **Définition — Pourquoi des Requests si basses** :
+**`0,001` CPU** = 1 millicore = le **minimum** Kubernetes.
+
+C'est volontaire pour cette formation : les pods peuvent **démarrer sur n'importe quel nœud** sans bloquer le scheduling, même sur un cluster fortement sollicité.
+
+⚠️ **En production**, on définit des Requests **plus élevées** et **proches de l'usage réel** pour que le scheduler place les pods sur des nœuds avec assez de ressources.
+
+**Cette valeur est fixe** car elle est définie dans le YAML du Deployment :
+```yaml
+resources:
+  requests:
+    cpu: 1m
+```
+</details>
 
 ---
 
-## Commandes CLI Utiles pour le Monitoring
+## Partie 4 — Memory (valeurs de configuration)
 
-```bash
-# Lister toutes les règles d'alerte actives
-oc get prometheusrule --all-namespaces
+### Question 6
 
-# Voir les alertes en cours de déclenchement
-oc get alerts -n openshift-monitoring
+> **Q6** — Dans le tableau **Memory Usage (RSS)**, quelle est la valeur **RSS** affichée pour le pod `monitoring-pod` ?
 
-# Accéder à l'interface Prometheus (port-forward)
-oc port-forward svc/prometheus-k8s 9090:9090 -n openshift-monitoring
+<details>
+<summary>Voir la réponse</summary>
 
-# Accéder à l'interface Alertmanager (port-forward)
-oc port-forward svc/alertmanager-main 9093:9093 -n openshift-monitoring
+**`212 KiB`** (soit environ 0,2 Mo)
 
-# Vérifier l'état du Cluster Monitoring Operator
-oc get clusteroperator monitoring
-```
+📖 **Définition — RSS (Resident Set Size)** :
+La mémoire **vraiment utilisée** par le processus du pod en RAM physique.
+
+**Pourquoi cette valeur est stable** :
+- `monitoring-pod` est un pod **idle** (en attente)
+- Il ne fait rien d'autre que rester en vie (sleep infini)
+- Sa consommation mémoire est **constante** : ~212 KiB
+
+C'est un excellent exemple de pod **léger** : il consomme moins d'1 Mo de RAM.
+</details>
+
+### Question 7
+
+> **Q7** — Dans le tableau **Memory Usage (RSS)**, quelle est la valeur **RSS** affichée pour le pod `postgres-5b59c7f5ff-scm4n` ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+**`3,68 MiB`**
+
+📖 **Définition — RSS d'une base de données idle** :
+Quand PostgreSQL **n'a aucune requête à traiter** (idle), il garde quand même un **footprint mémoire minimal** pour :
+- Le processus principal (postmaster)
+- Les processus auxiliaires (autovacuum, stats collector)
+- Les buffers internes
+
+**3,68 MiB** est la valeur **stable** d'un PostgreSQL idle dans cette formation.
+
+⚠️ Cette valeur peut **augmenter** si la base reçoit du trafic, mais dans la formation, **personne ne se connecte** à postgres, donc la valeur reste fixe à 3,68 MiB.
+</details>
+
+### Question 8
+
+> **Q8** — Dans le tableau **Memory Usage (RSS)**, quelle est la valeur **RSS** affichée pour le pod `todo-app-dd5dfc87-2hw4q` ?
+
+<details>
+<summary>Voir la réponse</summary>
+
+**`251,4 MiB`**
+
+📖 **Définition — Pourquoi todo-app consomme autant de mémoire** :
+`todo-app` est l'application web avec un **problème de fuite mémoire** intentionnel pour la formation.
+
+Elle alloue progressivement de la mémoire et la **garde sans la libérer**, jusqu'à atteindre une valeur **stable autour de 251 MiB**.
+
+🚨 Cette valeur est **très proche** de la **Memory Limit** configurée du pod (~256 MiB), ce qui explique pourquoi `todo-app` est **à risque** d'OOMKill.
+
+C'est volontaire pour vous apprendre à **détecter une saturation mémoire** dans les exercices suivants (PromQL + alertes).
+</details>
 
 ---
 
-## Bonnes Pratiques d'Observabilité
+## Récapitulatif des valeurs FIXES de la formation
 
-1. **Définissez des limites de ressources** sur tous vos pods : sans limites, les métriques d'utilisation relative (CPU throttling, mémoire en %) n'ont pas de sens.
-2. **Créez des alertes sur les symptômes, pas sur les causes** : une alerte "taux d'erreur > 1%" est plus utile qu'une alerte "CPU > 80%".
-3. **Instrumentez vos applications** : exposez un endpoint `/metrics` au format Prometheus pour bénéficier du monitoring applicatif en plus du monitoring infrastructure.
-4. **Testez vos alertes** : utilisez `amtool` ou l'interface Alertmanager pour simuler des alertes et vérifier que les receivers sont bien configurés.
-5. **Archivez les métriques importantes** : Prometheus conserve les métriques par défaut pendant 15 jours. Pour une rétention plus longue, configurez Thanos avec un stockage objet externe.
+À l'issue de cet exercice, vous connaissez les **valeurs de configuration et baseline** des 3 pods :
 
-:::tip Monitoring des quotas de ressources
-Ajoutez une alerte sur l'utilisation des `ResourceQuota` de chaque namespace. Quand un quota est à 80% de sa limite, il est temps d'anticiper une augmentation ou une optimisation.
-```promql
-kube_resourcequota{type="used"} / kube_resourcequota{type="hard"} > 0.8
-```
+| Pod | CPU Requests | CPU Limits | RSS (baseline) |
+|---|---|---|---|
+| `monitoring-pod` | `0,001` | `0,05` | `212 KiB` |
+| `postgres-5b59c7f5ff-scm4n` | `0,001` | `0,2` | `3,68 MiB` |
+| `todo-app-dd5dfc87-2hw4q` | `0,001` | `0,2` | `251,4 MiB` |
+
+**Ces valeurs sont identiques pour tous les utilisateurs de la formation.** ✅
+
+---
+
+## Récapitulatif
+
+À l'issue de cet exercice, vous savez :
+
+- ✅ Naviguer vers **Observe → Dashboards** et sélectionner le bon dashboard
+- ✅ Identifier les **3 pods de référence** d'un namespace utilisateur
+- ✅ Lire les **CPU Limits** configurées dans le tableau CPU Quota
+- ✅ Lire les **CPU Requests** configurées
+- ✅ Lire les **valeurs RSS** (Resident Set Size) de chaque pod
+- ✅ Comprendre la différence entre **Requests** et **Limits**
+- ✅ Identifier le pod qui consomme le plus de mémoire (`todo-app`)
+
+:::tip Pour aller plus loin
+Dans le prochain exercice, vous apprendrez à **explorer les métriques avec PromQL** (page **Observe → Metrics**), puis à **créer une alerte custom** qui se déclenche automatiquement quand `todo-app` approche sa limite mémoire.
 :::
