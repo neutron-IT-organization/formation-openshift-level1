@@ -38,37 +38,14 @@ Les métriques sont sous forme : `nom_metrique{label1="valeur", label2="valeur"}
 ---
 
 ## Partie 1 — Premières requêtes PromQL
-
 ### Question 1.1
 
 Dans le champ de requête, tapez :
 
 ```promql
-up
-```
-
-Puis cliquez sur **Run queries**.
-
-> **Q1** — Que vous renvoie cette requête dans votre namespace ?
-
-<details>
-<summary>Voir la réponse</summary>
-
-La requête `up` peut afficher **"No datapoints found"** dans `<CITY>-user-ns` car les exporters principaux tournent dans le namespace `openshift-monitoring` (Prometheus surveille des cibles globales du cluster, pas du namespace utilisateur).
-
-C'est normal pour un namespace utilisateur. Pour voir les cibles `up` dans votre namespace, il faudrait avoir un ServiceMonitor configuré, ce qui n'est pas le cas par défaut.
-
-Cette requête sert surtout sur le cluster global pour vérifier que les exporters Prometheus sont disponibles.
-</details>
-
-### Question 1.2
-
-Effacez la requête et tapez :
-
-```promql
 kube_pod_info{namespace="<CITY>-user-ns"}
 ```
-
+Puis cliquez sur **Run queries**.
 > **Q2** — Combien de pods sont retournés par cette requête ?
 
 <details>
@@ -84,7 +61,7 @@ La métrique `kube_pod_info` retourne **une ligne par pod** dans le namespace, a
 Toutes les lignes affichent `host_ip = 192.168.0.251` (IP du nœud) et `job = kube-state-metrics`.
 </details>
 
-### Question 1.3
+### Question 1.2
 
 Tapez :
 
