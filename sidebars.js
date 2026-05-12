@@ -88,7 +88,6 @@ const sidebars = {
       items: [
         'Gestion_et_administration_du_cluster/User_management',
         'Gestion_et_administration_du_cluster/Exercice_guidé_user_management',
-        'Gestion_et_administration_du_cluster/Observabilité_du_cluster',
         'Gestion_et_administration_du_cluster/Exercice_dashboards_observe',
         'Gestion_et_administration_du_cluster/Exercice_metrics_alerts_promql',
         'Gestion_et_administration_du_cluster/Node_MachineSet_MachineConfigs',
