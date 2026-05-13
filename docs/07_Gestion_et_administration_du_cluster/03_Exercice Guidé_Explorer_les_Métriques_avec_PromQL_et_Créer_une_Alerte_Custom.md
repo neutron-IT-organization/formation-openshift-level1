@@ -56,16 +56,15 @@ Puis cliquez sur **Run queries**.
 
 **3 résultats** correspondant aux 3 pods de votre namespace.
 
-Dans la console, chaque ligne affiche :
+Dans la console, chaque ligne affiche plusieurs colonnes :
+
 - **Name** : `kube_pod_info` (le nom de la métrique)
-- **container** : `kube-rbac-proxy-main`
-- **created_by_kind** : `ReplicaSet`
-- **created_by_name** : ⭐ c'est ici que vous voyez les noms des pods :
+- **container** : nom du container associé
+- **created_by_kind** : type de contrôleur (ex: `ReplicaSet`)
+- **created_by_name** : ⭐ c'est ici que vous voyez les **noms des pods** :
   - `postgres-5b59c7f5ff`
   - `todo-app-dd5dfc87`
-- **endpoint** : `https-main`
-- **host_ip** : `192.168.0.251`
-- **host_network** : `false`
+- **endpoint** : endpoint de scraping (ex: `https-main`)
 - **job** : `kube-state-metrics`
 
 C'est la métrique idéale pour vérifier **quels pods existent** dans un namespace.
@@ -94,7 +93,7 @@ Vous obtenez **6 résultats**. La métrique `container_memory_working_set_bytes`
 
 Le filtre **`container!=""`** est crucial pour **exclure les pseudo-conteneurs** vides. Sans ce filtre, on aurait des doublons et des entrées non pertinentes.
 
-Chaque ligne affiche son `endpoint` (`https-metrics`) et son `id` qui correspond au chemin cgroup du conteneur (`/kubepods.slice/...`).
+Chaque ligne affiche son `endpoint` (`https-metrics`) et son `id` qui correspond au chemin cgroup du conteneur.
 </details>
 
 ---
