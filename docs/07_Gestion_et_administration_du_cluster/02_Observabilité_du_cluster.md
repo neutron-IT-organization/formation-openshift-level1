@@ -40,13 +40,6 @@ Chaque namespace utilisateur (`paris-user-ns`, `rome-user-ns`, etc.) contient le
 - **`postgres-5b59c7f5ff-scm4n`** : base de données PostgreSQL
 - **`todo-app-dd5dfc87-2hw4q`** : application web
 
-Quel que soit votre namespace, vous travaillez avec les **mêmes pods configurés de la même façon**. Les **valeurs de configuration** (Limits, Requests) sont **identiques pour tout le monde**.
-:::
-
-:::caution Pourquoi on ne demande pas les pourcentages de consommation
-Les valeurs comme **CPU Usage %**, **Memory Usage %**, **Throughput** **changent en permanence** selon l'activité du cluster et l'utilisateur.
-
-Cet exercice se concentre sur les **valeurs de configuration FIXES** qui sont les mêmes pour tous les utilisateurs : Limits, Requests, RSS, et le nombre de pods.
 :::
 
 ---
@@ -68,14 +61,6 @@ Cet exercice se concentre sur les **valeurs de configuration FIXES** qui sont le
 - `0,05` = 50 millicores (1/20 CPU) → pour pods très légers
 - `0,001` = 1 millicore (le minimum)
 
-### 🔵 Unités mémoire
-
-- `1 KiB` = 1024 octets
-- `1 MiB` = 1024 KiB ≈ 1 Mo
-- `1 GiB` = 1024 MiB ≈ 1 Go
-
----
-
 ## Partie 1 — Identifier les pods du namespace
 
 ### Question 1
@@ -94,7 +79,6 @@ Cet exercice se concentre sur les **valeurs de configuration FIXES** qui sont le
 📖 **Définition — Pourquoi cette valeur est fixe** :
 Ces 3 pods sont **déployés à l'identique** dans tous les namespaces utilisateur de la formation. C'est une valeur qui ne change **jamais** d'un utilisateur à l'autre.
 
-**Note** : Si vous voyez d'autres pods (comme `welcome-app` ou `client-app`), c'est que vous avez fait les exercices réseau précédents qui ont déployé des pods supplémentaires. Concentrez-vous sur les **3 pods de référence** ci-dessus.
 </details>
 
 ---
