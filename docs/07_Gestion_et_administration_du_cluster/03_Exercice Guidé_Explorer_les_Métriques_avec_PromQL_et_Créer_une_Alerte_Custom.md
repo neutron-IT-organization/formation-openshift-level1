@@ -91,9 +91,6 @@ Vous obtenez **6 résultats**. La métrique `container_memory_working_set_bytes`
   - `postgres`
   - `todo-app`
 
-Le filtre **`container!=""`** est crucial pour **exclure les pseudo-conteneurs** vides. Sans ce filtre, on aurait des doublons et des entrées non pertinentes.
-
-Chaque ligne affiche son `endpoint` (`https-metrics`) et son `id` qui correspond au chemin cgroup du conteneur.
 </details>
 
 ---
@@ -148,9 +145,6 @@ sum(rate(container_cpu_usage_seconds_total{namespace="<CITY>-user-ns", container
 
 Cette requête calcule le **taux d'utilisation CPU** (en cores) sur les **5 dernières minutes**, agrégé par pod.
 
-`todo-app` consomme **4x plus de CPU** que `postgres` (5,4e-4 vs 1,3e-4). C'est cohérent avec le dashboard où il avait une consommation CPU plus élevée.
-
-Le graphique montre ces valeurs **stables dans le temps** : la consommation CPU est régulière, sans pic.
 </details>
 
 ### Question 2.3
