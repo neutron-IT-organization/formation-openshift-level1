@@ -259,5 +259,3 @@ C'est volontaire pour vous apprendre à **détecter une saturation mémoire** da
 | `todo-app-dd5dfc87-2hw4q` | `0,001` | `0,2` | `251,4 MiB` |
 
 **Ces valeurs sont identiques pour tous les utilisateurs de la formation.** ✅
-
----
