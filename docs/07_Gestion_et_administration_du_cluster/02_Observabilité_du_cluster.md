@@ -240,10 +240,6 @@ Quand PostgreSQL **n'a aucune requête à traiter** (idle), il garde quand même
 `todo-app` est l'application web avec un **problème de fuite mémoire** intentionnel pour la formation.
 
 Elle alloue progressivement de la mémoire et la **garde sans la libérer**, jusqu'à atteindre une valeur **stable autour de 251 MiB**.
-
-🚨 Cette valeur est **très proche** de la **Memory Limit** configurée du pod (~256 MiB), ce qui explique pourquoi `todo-app` est **à risque** d'OOMKill.
-
-C'est volontaire pour vous apprendre à **détecter une saturation mémoire** dans les exercices suivants (PromQL + alertes).
 </details>
 
 ---
