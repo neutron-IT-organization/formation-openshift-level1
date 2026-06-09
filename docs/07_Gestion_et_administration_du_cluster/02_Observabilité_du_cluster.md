@@ -248,14 +248,6 @@ C'est volontaire pour vous apprendre à **détecter une saturation mémoire** da
 
 ---
 
-## Récapitulatif des valeurs FIXES de la formation
+## Conclusion
 
-À l'issue de cet exercice, vous connaissez les **valeurs de configuration et baseline** des 3 pods :
-
-| Pod | CPU Requests | CPU Limits | RSS (baseline) |
-|---|---|---|---|
-| `monitoring-pod` | `0,001` | `0,05` | `212 KiB` |
-| `postgres-5b59c7f5ff-scm4n` | `0,001` | `0,2` | `3,68 MiB` |
-| `todo-app-dd5dfc87-2hw4q` | `0,001` | `0,2` | `251,4 MiB` |
-
-**Ces valeurs sont identiques pour tous les utilisateurs de la formation.** ✅
+À travers cet exercice, vous avez exploré l'un des outils les plus utilisés au quotidien par les équipes DevOps et SRE : les dashboards de monitoring. Vous savez maintenant ouvrir le dashboard adapté, repérer rapidement les pods qui composent un namespace et en extraire les paramètres essentiels — la CPU réservée, la CPU plafonnée, et la mémoire consommée en temps réel. Au-delà des valeurs elles-mêmes, vous avez surtout appris à les interpréter : un pod léger doit consommer peu, une base de données conserve un footprint minimal même au repos, et une application qui frôle sa limite mémoire mérite une attention immédiate. C'est ce regard analytique sur les chiffres qui fait la différence entre subir les incidents et les anticiper.

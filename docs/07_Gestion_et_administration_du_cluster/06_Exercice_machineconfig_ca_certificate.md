@@ -267,7 +267,5 @@ Comme vous avez utilisé `--dry-run=client` partout, **aucune ressource n'a ét�
 ---
 ## Conclusion
 
-Cet exercice montre comment ajouter une autorité de certification aux nœuds OpenShift via une MachineConfig, un besoin courant en production.
-Il inclut la création d'un certificat CA, son encodage et son intégration conforme aux standards (Ignition, chemins, labels).
-La validation se fait en dry-run pour éviter tout impact, une bonne pratique essentielle car chaque modification redémarre les nœuds.
-Enfin, il souligne l'importance de bien planifier et maîtriser ce type de configuration en environnement de production.
+
+Cet exercice montre comment ajouter une autorité de certification aux nœuds OpenShift via une MachineConfig, un besoin courant en production. Il inclut la création d'un certificat CA, son encodage et son intégration conforme aux standards (Ignition, chemins, labels). La validation se fait en dry-run pour éviter tout impact, une bonne pratique essentielle car chaque modification redémarre les nœuds. Enfin, il souligne l'importance de bien planifier et maîtriser ce type de configuration en environnement de production.
