@@ -517,23 +517,11 @@ No resources found in <CITY>-user-ns namespace.
 
 Vérifiez aussi dans la console **Observe → Alerting → Alerting Rules** que `PodMemoryNearLimit` a bien disparu de la liste (peut prendre quelques secondes après la suppression).
 
-:::tip Bon réflexe
-Toujours nettoyer les ressources de test sur un cluster partagé. Une PrometheusRule oubliée peut envoyer des notifications inutiles ou consommer des ressources de Prometheus.
-:::
-
 ---
 
-## Récapitulatif
+## Conclusion
 
-À l'issue de cet exercice, vous savez :
-
-- ✅ Naviguer dans **Observe → Metrics** et lancer des requêtes **PromQL**.
-- ✅ Utiliser les métriques de base : `kube_pod_info`, `container_memory_working_set_bytes`, `container_memory_rss`, `container_cpu_usage_seconds_total`.
-- ✅ Filtrer par **namespace**, **pod** (avec regex `=~`), **container**.
-- ✅ Calculer un **pourcentage** entre deux métriques (ex: utilisation vs limit).
-- ✅ Créer une **PrometheusRule** custom avec une expression PromQL.
-- ✅ Comprendre les états d'une alerte : **Pending** → **Firing**.
-- ✅ Vérifier vos alertes dans **Observe → Alerting → Alerting Rules**.
-- ✅ **Créer un Silence** pour suspendre temporairement une alerte (avec matchers, durée et commentaire).
-- ✅ Terminer un Silence de **2 façons** : automatiquement (à la fin de la durée) ou manuellement (bouton **Expire Silence**).
-- ✅ Nettoyer les ressources créées (`oc delete prometheusrule`).
+Cet exercice vous a permis de découvrir l'observabilité d'OpenShift via PromQL et les alertes Prometheus.
+Vous avez appris à exploiter les métriques du cluster et à construire des indicateurs pertinents (CPU, mémoire, ratios).
+Vous avez également suivi le cycle de vie complet d'une alerte, de son déclenchement à sa mise en silence.
+Enfin, il met en avant l'importance de créer des alertes utiles et bien gérées pour un monitoring efficace en production.
