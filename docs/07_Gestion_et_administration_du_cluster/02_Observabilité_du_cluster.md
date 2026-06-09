@@ -171,9 +171,7 @@ Les **3 pods** ont la **même CPU Requests** : **`0,001`** (soit 1 millicore)
 📖 **Définition — Pourquoi des Requests si basses** :
 **`0,001` CPU** = 1 millicore = le **minimum** Kubernetes.
 
-C'est volontaire pour cette formation : les pods peuvent **démarrer sur n'importe quel nœud** sans bloquer le scheduling, même sur un cluster fortement sollicité.
 
-⚠️ **En production**, on définit des Requests **plus élevées** et **proches de l'usage réel** pour que le scheduler place les pods sur des nœuds avec assez de ressources.
 
 **Cette valeur est fixe** car elle est définie dans le YAML du Deployment :
 ```yaml
@@ -204,7 +202,6 @@ La mémoire **vraiment utilisée** par le processus du pod en RAM physique.
 - Il ne fait rien d'autre que rester en vie (sleep infini)
 - Sa consommation mémoire est **constante** : ~212 KiB
 
-C'est un excellent exemple de pod **léger** : il consomme moins d'1 Mo de RAM.
 </details>
 
 ### Question 7
@@ -224,8 +221,6 @@ Quand PostgreSQL **n'a aucune requête à traiter** (idle), il garde quand même
 
 **3,68 MiB** est la valeur **stable** d'un PostgreSQL idle dans cette formation.
 
-⚠️ Cette valeur peut **augmenter** si la base reçoit du trafic, mais dans la formation, **personne ne se connecte** à postgres, donc la valeur reste fixe à 3,68 MiB.
-</details>
 
 ### Question 8
 
