@@ -215,14 +215,13 @@ Vous verrez le manifest avec les métadonnées auto-générées par Kubernetes.
 
 Vérifiez que le certificat encodé dans la MachineConfig est bien valide :
 
-​```bash
+```bash
 oc create --dry-run=client -f 99-ca-certificate.yaml \
   -o jsonpath='{.spec.config.storage.files[0].contents.source}' \
   | sed 's|data:text/plain;base64,||' \
   | base64 -d \
   | openssl x509 -text -noout | head -10
-​```
-
+```
 **Sortie attendue :**
 
 ​```
