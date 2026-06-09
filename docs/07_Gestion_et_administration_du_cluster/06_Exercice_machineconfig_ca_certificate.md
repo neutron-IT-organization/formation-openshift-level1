@@ -224,7 +224,7 @@ oc create --dry-run=client -f 99-ca-certificate.yaml \
 ```
 **Sortie attendue :**
 
-​```
+```bash
 Certificate:
     Data:
         Version: 3 (0x2)
@@ -233,7 +233,7 @@ Certificate:
             Not Before: ...
             Not After : ...
         Subject: CN=Internal CA <CITY>, O=Neutron IT, C=FR
-​```
+```
 
 ✅ Si vous voyez votre ville dans **Issuer** et **Subject**, le certificat est bien encodé dans la MachineConfig sans corruption.
 
