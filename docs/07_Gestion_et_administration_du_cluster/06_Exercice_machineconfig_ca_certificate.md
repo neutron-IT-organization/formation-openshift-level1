@@ -211,25 +211,32 @@ oc apply --dry-run=client -f 99-ca-certificate.yaml -o yaml
 Vous verrez le manifest avec les métadonnées auto-générées par Kubernetes.
 
 ---
-
 ## Étape 8 — Vérifier la cohérence du contenu
 
-Décodez le contenu de la MachineConfig et comparez avec votre certificat :
+Vérifiez que le certificat encodé dans la MachineConfig est bien valide :
 
-```bash
-diff <(cat my-ca.crt) <(oc apply --dry-run=client -f 99-ca-certificate.yaml -o jsonpath='{.spec.config.storage.files[0].contents.source}' | sed 's|data:text/plain;base64,||' | base64 -d)
-```
+​```bash
+oc create --dry-run=client -f 99-ca-certificate.yaml \
+  -o jsonpath='{.spec.config.storage.files[0].contents.source}' \
+  | sed 's|data:text/plain;base64,||' \
+  | base64 -d \
+  | openssl x509 -text -noout | head -10
+​```
 
-✅ Si **rien** ne s'affiche → les deux contenus sont identiques.
+**Sortie attendue :**
 
-Vérifiez aussi que le décodage donne bien un certificat valide :
+​```
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Issuer: CN=Internal CA <CITY>, O=Neutron IT, C=FR
+        Validity
+            Not Before: ...
+            Not After : ...
+        Subject: CN=Internal CA <CITY>, O=Neutron IT, C=FR
+​```
 
-```bash
-oc apply --dry-run=client -f 99-ca-certificate.yaml -o jsonpath='{.spec.config.storage.files[0].contents.source}' | sed 's|data:text/plain;base64,||' | base64 -d | openssl x509 -text -noout | head -10
-```
-
-Vous devez voir les détails du certificat ✅
-
+✅ Si vous voyez votre ville dans **Issuer** et **Subject**, le certificat est bien encodé dans la MachineConfig sans corruption.
 
 ## Étape 9 — Nettoyage complet
 
