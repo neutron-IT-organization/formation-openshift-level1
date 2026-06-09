@@ -147,36 +147,6 @@ Cette requête calcule le **taux d'utilisation CPU** (en cores) sur les **5 dern
 
 </details>
 
-### Question 2.3
-
-Tapez :
-
-```promql
-container_memory_rss{namespace="<CITY>-user-ns", container!="", pod=~"todo-app.*"}
-```
-
-> **Q5** — Combien de résultats obtenez-vous et que représente le filtre `pod=~"todo-app.*"` ?
-
-<details>
-<summary>Voir la réponse</summary>
-
-Vous obtenez **1 résultat** : la ligne du pause container (`POD`) du pod todo-app.
-
-Le filtre **`pod=~"todo-app.*"`** utilise une **regex** (notez l'opérateur `=~` au lieu de `=`) pour matcher tous les pods dont le nom **commence par** `todo-app`. C'est utile quand le nom complet du pod change à chaque redéploiement (suffixe aléatoire `dd5dfc87-2hw4q`).
-
-**Opérateurs PromQL pour les labels** :
-- `=` : égalité stricte
-- `!=` : différent
-- `=~` : regex match
-- `!~` : regex no-match
-
-Pour voir aussi le vrai conteneur `todo-app` (pas seulement le POD pause), vous pouvez modifier la requête en enlevant `container!=""` ou en filtrant sur `container="todo-app"` :
-
-```promql
-container_memory_rss{namespace="<CITY>-user-ns", container="todo-app"}
-```
-</details>
-
 ---
 
 ## Partie 3 — Créer une PrometheusRule custom
