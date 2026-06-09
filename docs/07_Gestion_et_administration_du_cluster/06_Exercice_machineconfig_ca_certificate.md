@@ -265,19 +265,9 @@ Comme vous avez utilisé `--dry-run=client` partout, **aucune ressource n'a ét�
 :::
 
 ---
+## Conclusion
 
-
-
-## Récapitulatif
-
-À l'issue de cet exercice, vous avez :
-
-- ✅ Généré un certificat CA auto-signé avec `openssl`
-- ✅ Vérifié le certificat avec `openssl x509`
-- ✅ Encodé le certificat en base64
-- ✅ Rédigé une MachineConfig complète au format Ignition 3.2.0
-- ✅ Utilisé un **nom unique par utilisateur** (avec `<CITY>`) pour éviter les conflits
-- ✅ Validé la syntaxe avec `oc apply --dry-run=client`
-- ✅ Vérifié la cohérence du contenu base64
-- ✅ Compris ce qui se passerait à l'application réelle
-- ✅ Nettoyé proprement pour pouvoir recommencer
+Cet exercice montre comment ajouter une autorité de certification aux nœuds OpenShift via une MachineConfig, un besoin courant en production.
+Il inclut la création d'un certificat CA, son encodage et son intégration conforme aux standards (Ignition, chemins, labels).
+La validation se fait en dry-run pour éviter tout impact, une bonne pratique essentielle car chaque modification redémarre les nœuds.
+Enfin, il souligne l'importance de bien planifier et maîtriser ce type de configuration en environnement de production.
