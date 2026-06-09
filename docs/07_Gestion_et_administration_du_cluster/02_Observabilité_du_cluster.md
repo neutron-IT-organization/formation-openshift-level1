@@ -261,19 +261,3 @@ C'est volontaire pour vous apprendre à **détecter une saturation mémoire** da
 **Ces valeurs sont identiques pour tous les utilisateurs de la formation.** ✅
 
 ---
-
-## Récapitulatif
-
-À l'issue de cet exercice, vous savez :
-
-- ✅ Naviguer vers **Observe → Dashboards** et sélectionner le bon dashboard
-- ✅ Identifier les **3 pods de référence** d'un namespace utilisateur
-- ✅ Lire les **CPU Limits** configurées dans le tableau CPU Quota
-- ✅ Lire les **CPU Requests** configurées
-- ✅ Lire les **valeurs RSS** (Resident Set Size) de chaque pod
-- ✅ Comprendre la différence entre **Requests** et **Limits**
-- ✅ Identifier le pod qui consomme le plus de mémoire (`todo-app`)
-
-:::tip Pour aller plus loin
-Dans le prochain exercice, vous apprendrez à **explorer les métriques avec PromQL** (page **Observe → Metrics**), puis à **créer une alerte custom** qui se déclenche automatiquement quand `todo-app` approche sa limite mémoire.
-:::
